@@ -1,3 +1,0 @@
-Ajuste realizado no layout dos formulários no Figma, de acordo com issue #3
-link:
-https://www.figma.com/design/X8aDNU6dsVgwy3KqTYELfc/CuidaPet?node-id=0-1&p=f&t=gAV90LqXy4TDcVBu-0
