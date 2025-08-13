@@ -1,6 +1,8 @@
 using Core;
+using Core.Service;
+using CuidaPetWebFilter;
 using Microsoft.EntityFrameworkCore;
-
+using Service;
 namespace CuidaPetWeb
 {
     public class Program
@@ -9,10 +11,17 @@ namespace CuidaPetWeb
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<CustomExceptionFilter>();
+            });
+
+            builder.Services.AddTransient<IProdutoService, ProdutoService>();
+
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDbContext<CuidaPetContext>(
-                options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")));
+                options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")!));
 
             var app = builder.Build();
 
