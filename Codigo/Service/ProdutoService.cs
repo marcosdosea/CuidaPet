@@ -14,6 +14,11 @@ namespace Service
             this.context = context;
         }
 
+        /// <summary>
+        /// Criar um novo produto na base de dados
+        /// </summary>
+        /// <param name="produto">Dados do Produto</param>
+        /// <returns>ID do Produto</returns>
         public uint Create(Produto produto)
         {
             context.Produtos.Add(produto);
@@ -21,12 +26,20 @@ namespace Service
             return produto.Id;
         }
 
+        /// <summary>
+        /// Editar um produto existente na base de dados
+        /// </summary>
+        /// <param name="produto">Dados do Produto</param>
         public void Edit(Produto produto)
         {
             context.Produtos.Update(produto);
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletar um produto da base de dados
+        /// </summary>
+        /// <param name="id">ID do Produto</param>
         public void Delete(uint id)
         {
             var produto = context.Produtos.Find(id);
@@ -37,16 +50,30 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Buscar um produto na base de dados
+        /// </summary>
+        /// <param name="id">ID do Produto</param>
+        /// <returns>Dados do Produto</returns>
         public Produto? Get(uint id)
         {
             return context.Produtos.Find(id);
         }
 
+        /// <summary>
+        /// Buscar todos os produtos na base de dados
+        /// </summary>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<Produto> GetAll()
         {
             return context.Produtos.AsNoTracking().ToList();
         }
 
+        /// <summary>
+        /// Buscar produtos pelo nome
+        /// </summary>
+        /// <param name="nome">Nome do Produto</param>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<ProdutoDTO> GetByNome(string nome)
         {
             return context.Produtos
@@ -64,6 +91,11 @@ namespace Service
                 }).ToList();
         }
 
+        /// <summary>
+        /// Buscar produtos pelo estabelecimento
+        /// </summary>
+        /// <param name="idEstabelecimento">ID do Estabelecimento</param>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<ProdutoDTO> GetByEstabelecimento(uint idEstabelecimento)
         {
             return context.Produtos
@@ -81,6 +113,12 @@ namespace Service
                 }).ToList();
         }
 
+        /// <summary>
+        /// Buscar produtos pelo nome e estabelecimento
+        /// </summary>
+        /// <param name="nome">Nome do Produto</param>
+        /// <param name="idEstabelecimento">ID do Estabelecimento</param>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<ProdutoDTO> GetByNomeAndEstabelecimento(string nome, uint idEstabelecimento)
         {
             return context.Produtos
@@ -98,6 +136,11 @@ namespace Service
                 }).ToList();
         }
 
+        /// <summary>
+        /// Buscar produtos pela categoria
+        /// </summary>
+        /// <param name="idCategoria">ID da Categoria</param>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<ProdutoDTO> GetByCategoria(uint idCategoria)
         {
             return context.Produtos
@@ -115,6 +158,10 @@ namespace Service
                 }).ToList();
         }
 
+        /// <summary>
+        /// Buscar produtos em promoção
+        /// </summary>
+        /// <returns>Lista de Produtos</returns>
         public IEnumerable<ProdutoDTO> GetProdutosPromocao()
         {
             return context.Produtos
