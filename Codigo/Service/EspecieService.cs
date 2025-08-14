@@ -14,6 +14,11 @@ namespace Service
             this.context = context;
         }
 
+        /// <summary>
+        /// Criar uma nova espécie na base de dados
+        /// </summary>
+        /// <param name="especie">Dados da espécie</param>
+        /// <returns>ID da espécie</returns>
         public uint Create(EspecieDto especie)
         {
             Especie entity = new()
@@ -25,6 +30,10 @@ namespace Service
             return entity.Id;
         }
 
+        /// <summary>
+        /// Editar uma espécie existente na base de dados
+        /// </summary>
+        /// <param name="especie">Dados da espécie</param>
         public void Edit(EspecieDto especie)
         {
             Especie? entity = context.Especies.Find(especie.Id);
@@ -33,6 +42,10 @@ namespace Service
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletar uma espécie da base de dados
+        /// </summary>
+        /// <param name="id">ID da espécie</param>
         public void Delete(uint id)
         {
             Especie? entity = context.Especies.Find(id);
@@ -41,6 +54,11 @@ namespace Service
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Retorna uma espécie na base de dados
+        /// </summary>
+        /// <param name="id">ID da espécie</param>
+        /// <returns>Dados da espécie</returns>
         public EspecieDto? Get(uint id)
         {
             return context.Especies
@@ -54,6 +72,10 @@ namespace Service
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Buscar todas as espécies na base de dados
+        /// </summary>
+        /// <returns>Lista de espécies</returns>
         public IEnumerable<EspecieDto> GetAll()
         {
             return context.Especies
@@ -66,6 +88,11 @@ namespace Service
                 .ToList();
         }
 
+        /// <summary>
+        /// Buscar espécies pelo nome na base de dados
+        /// </summary>
+        /// <param name="nome">Nome da Espécie</param>
+        /// <returns>Lista de Espécies</returns>
         public IEnumerable<EspecieDto> GetByNome(string nome)
         {
             return context.Especies
