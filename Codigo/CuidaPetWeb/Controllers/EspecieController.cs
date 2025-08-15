@@ -29,9 +29,7 @@ namespace CuidaPetWeb.Controllers
         public IActionResult Details(uint id)
         {
             var especie = especieService.Get(id);
-            if (especie == null)
-                return NotFound();
-
+            
             var viewModel = mapper.Map<EspecieViewModel>(especie);
             return View(viewModel);
         }
@@ -60,9 +58,7 @@ namespace CuidaPetWeb.Controllers
         public IActionResult Edit(uint id)
         {
             var especie = especieService.Get(id);
-            if (especie == null)
-                return NotFound();
-
+            
             var viewModel = mapper.Map<EspecieViewModel>(especie);
             return View(viewModel);
         }
@@ -88,9 +84,7 @@ namespace CuidaPetWeb.Controllers
         public IActionResult Delete(uint id)
         {
             var especie = especieService.Get(id);
-            if (especie == null)
-                return NotFound();
-
+            
             var viewModel = mapper.Map<EspecieViewModel>(especie);
             return View(viewModel);
         }
