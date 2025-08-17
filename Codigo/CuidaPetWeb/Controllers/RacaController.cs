@@ -84,6 +84,7 @@ namespace CuidaPetWeb.Controllers
         }
 
         // POST: Raca/Delete/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, RacaViewModel racaViewModel)
         {
