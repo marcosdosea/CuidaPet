@@ -21,6 +21,9 @@ namespace Service
         /// <returns>ID do Produto</returns>
         public uint Create(Produto produto)
         {
+            if(produto.PrecoPromocao > produto.Preco)
+                throw new ServiceException("O preço promocional não pode ser maior que o preço normal.");
+
             context.Produtos.Add(produto);
             context.SaveChanges();
             return produto.Id;
@@ -32,6 +35,9 @@ namespace Service
         /// <param name="produto">Dados do Produto</param>
         public void Edit(Produto produto)
         {
+            if(produto.PrecoPromocao > produto.Preco)
+                throw new ServiceException("O preço promocional não pode ser maior que o preço normal.");
+
             context.Produtos.Update(produto);
             context.SaveChanges();
         }
@@ -66,7 +72,7 @@ namespace Service
         /// <returns>Lista de Produtos</returns>
         public IEnumerable<Produto> GetAll()
         {
-            return context.Produtos.AsNoTracking().ToList();
+            return context.Produtos.AsNoTracking();
         }
 
         /// <summary>
