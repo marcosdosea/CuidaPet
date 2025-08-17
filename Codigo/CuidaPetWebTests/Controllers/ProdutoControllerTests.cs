@@ -11,7 +11,7 @@ namespace CuidaPetWeb.Controllers.Tests
     [TestClass()]
     public class ProdutoControllerTests
     {
-        private static ProdutoController controller;
+        private static ProdutoController controller = null!;
 
         [TestInitialize]
         public void Initialize()
@@ -77,7 +77,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void CreateTest_Post_Valid()
+        public void CreateTest_Post_Valido()
         {
             // Act
             var result = controller.Create(GetNewProduto());
@@ -90,7 +90,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void CreateTest_Post_Invalid()
+        public void CreateTest_Post_Invalido()
         {
             // Arrange
             controller.ModelState.AddModelError("Nome", "Campo requerido");
@@ -106,7 +106,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void EditTest_Get_Valid()
+        public void EditTest_Get_Valido()
         {
             // Act
             var result = controller.Edit(1);
@@ -121,7 +121,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void EditTest_Post_Valid()
+        public void EditTest_Post_Valido()
         {
             // Act
             var result = controller.Edit(GetTargetProdutoModel());
@@ -134,7 +134,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void DeleteTest_Get_Valid()
+        public void DeleteTest_Get_Valido()
         {
             // Act
             var result = controller.Delete(1);
@@ -149,7 +149,7 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void DeleteTest_Post_Valid()
+        public void DeleteTest_Post_Valido()
         {
             // Act
             var result = controller.Delete(1, GetTargetProdutoModel());

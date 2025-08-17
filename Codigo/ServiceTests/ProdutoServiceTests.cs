@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Core.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Service.Tests
@@ -7,8 +8,8 @@ namespace Service.Tests
     [TestClass()]
     public class ProdutoServiceTests
     {
-        private CuidaPetContext context;
-        private IProdutoService produtoService;
+        private CuidaPetContext context = null!;
+        private IProdutoService produtoService = null!;
 
         [TestInitialize]
         public void Initialize()
@@ -22,7 +23,6 @@ namespace Service.Tests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            // Criar dados de teste para Categoria
             var categorias = new List<Categoria>
             {
                 new() { Id = 1, Nome = "Ração", Descricao = "Alimentos para pets" },
@@ -32,7 +32,6 @@ namespace Service.Tests
 
             context.AddRange(categorias);
 
-            // Criar dados de teste para Estabelecimento
             var estabelecimentos = new List<Estabelecimento>
             {
                 new() { Id = 1, Nome = "Pet Shop Central", Cnpj = "12345678000100", Tipo = "P", IdGerente = 1, Cidade = "São Paulo", Estado = "SP", Logradouro = "Rua A", Numero = "123", Bairro = "Centro", Telefone = "11999999999" },
@@ -41,7 +40,6 @@ namespace Service.Tests
 
             context.AddRange(estabelecimentos);
 
-            // Criar dados de teste para Produto
             var produtos = new List<Produto>
             {
                 new() { Id = 1, Nome = "Ração Premium Cães", Preco = 45.90m, Status = "D", Descricao = "Ração premium para cães adultos", IdCategoria = 1, IdEstabelecimento = 1 },
@@ -147,9 +145,13 @@ namespace Service.Tests
             var produtos = produtoService.GetByNome("Ração");
 
             //Assert
+            Assert.IsInstanceOfType(produtos, typeof(IEnumerable<ProdutoDTO>));
             Assert.IsNotNull(produtos);
             Assert.AreEqual(1, produtos.Count());
-            Assert.AreEqual("Ração Premium Cães", produtos.First().Nome);
+            var produto = produtos.First();
+            Assert.AreEqual("Ração Premium Cães", produto.Nome);
+            Assert.AreEqual(45.90m, produto.Preco);
+            Assert.AreEqual("D", produto.Status);
         }
 
         [TestMethod()]
@@ -159,6 +161,7 @@ namespace Service.Tests
             var produtos = produtoService.GetByEstabelecimento(1);
 
             //Assert
+            Assert.IsInstanceOfType(produtos, typeof(IEnumerable<ProdutoDTO>));
             Assert.IsNotNull(produtos);
             Assert.AreEqual(2, produtos.Count());
             Assert.IsTrue(produtos.Any(p => p.Nome == "Ração Premium Cães"));
@@ -172,10 +175,13 @@ namespace Service.Tests
             var produtos = produtoService.GetByNomeAndEstabelecimento("Bola", 1);
 
             //Assert
+            Assert.IsInstanceOfType(produtos, typeof(IEnumerable<ProdutoDTO>));
             Assert.IsNotNull(produtos);
             Assert.AreEqual(1, produtos.Count());
-            Assert.AreEqual("Bola de Borracha", produtos.First().Nome);
-            Assert.AreEqual("Pet Shop Central", produtos.First().Estabelecimento);
+            var produto = produtos.First();
+            Assert.AreEqual("Bola de Borracha", produto.Nome);
+            Assert.IsNotNull(produto.Estabelecimento);
+            Assert.IsNotNull(produto.Categoria);
         }
 
         [TestMethod()]
@@ -185,10 +191,13 @@ namespace Service.Tests
             var produtos = produtoService.GetByCategoria(1);
 
             //Assert
+            Assert.IsInstanceOfType(produtos, typeof(IEnumerable<ProdutoDTO>));
             Assert.IsNotNull(produtos);
             Assert.AreEqual(1, produtos.Count());
-            Assert.AreEqual("Ração Premium Cães", produtos.First().Nome);
-            Assert.AreEqual("Ração", produtos.First().Categoria);
+            var produto = produtos.First();
+            Assert.AreEqual("Ração Premium Cães", produto.Nome);
+            Assert.IsNotNull(produto.Categoria);
+            Assert.IsNotNull(produto.Estabelecimento);
         }
 
         [TestMethod()]
@@ -198,12 +207,15 @@ namespace Service.Tests
             var produtos = produtoService.GetProdutosPromocao();
 
             //Assert
+            Assert.IsInstanceOfType(produtos, typeof(IEnumerable<ProdutoDTO>));
             Assert.IsNotNull(produtos);
             Assert.AreEqual(1, produtos.Count());
-            Assert.AreEqual("Bola de Borracha", produtos.First().Nome);
-            Assert.AreEqual("P", produtos.First().Status);
-            Assert.IsNotNull(produtos.First().PrecoPromocao);
-            Assert.AreEqual(12.40m, produtos.First().PrecoPromocao);
+            var produto = produtos.First();
+            Assert.AreEqual("Bola de Borracha", produto.Nome);
+            Assert.AreEqual("P", produto.Status);
+            Assert.IsNotNull(produto.PrecoPromocao);
+            Assert.AreEqual(12.40m, produto.PrecoPromocao);
+            Assert.AreEqual(15.50m, produto.Preco);
         }
     }
 }
