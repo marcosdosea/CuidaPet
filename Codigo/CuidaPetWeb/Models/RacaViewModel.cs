@@ -15,8 +15,5 @@ namespace CuidaPetWeb.Models
         [Required(ErrorMessage = "A espécie é obrigatória.")]
         [Display(Name = "Espécie")]
         public uint IdEspecie { get; set; }
-
-        [Display(Name = "Nome da Espécie")]
-        public string? NomeEspecie { get; set; }
     }
 }
