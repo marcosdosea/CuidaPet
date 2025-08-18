@@ -4,11 +4,11 @@ namespace Core.Service
 {
     public interface IEspecieService
     {
-        uint Create(EspecieDto especie);
-        void Edit(EspecieDto especie);
+        uint Create(Especie especie);
+        void Edit(Especie especie);
         void Delete(uint id);
-        EspecieDto? Get(uint id);
-        IEnumerable<EspecieDto> GetAll();
+        Especie? Get(uint id);
+        IEnumerable<Especie> GetAll();
         IEnumerable<EspecieDto> GetByNome(string nome);
     }
 }

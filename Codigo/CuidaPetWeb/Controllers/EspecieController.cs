@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core;
 using Core.DTO;
 using Core.Service;
 using CuidaPetWeb.Models;
@@ -21,17 +22,17 @@ namespace CuidaPetWeb.Controllers
         public IActionResult Index()
         {
             var especies = especieService.GetAll();
-            var viewModel = mapper.Map<IEnumerable<EspecieViewModel>>(especies);
-            return View(viewModel);
+            var especiesViewModel = mapper.Map<IEnumerable<EspecieViewModel>>(especies);
+            return View(especiesViewModel);
         }
 
         // GET: EspecieController/Details/5
         public IActionResult Details(uint id)
         {
             var especie = especieService.Get(id);
-            
-            var viewModel = mapper.Map<EspecieViewModel>(especie);
-            return View(viewModel);
+
+            var especieViewModel = mapper.Map<EspecieViewModel>(especie);
+            return View(especieViewModel);
         }
 
         // GET: EspecieController/Create
@@ -43,50 +44,47 @@ namespace CuidaPetWeb.Controllers
         // POST: EspecieController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(EspecieViewModel viewModel)
+        public IActionResult Create(EspecieViewModel especieViewModel)
         {
             if (ModelState.IsValid)
             {
-                var dto = mapper.Map<EspecieDto>(viewModel);
-                especieService.Create(dto);
+                var especie = mapper.Map<Especie>(especieViewModel);
+                especieService.Create(especie);
                 return RedirectToAction(nameof(Index));
             }
-            return View(viewModel);
+            return View(especieViewModel);
         }
 
         // GET: EspecieController/Edit/5
         public IActionResult Edit(uint id)
         {
             var especie = especieService.Get(id);
-            
-            var viewModel = mapper.Map<EspecieViewModel>(especie);
-            return View(viewModel);
+
+            var especieViewModel = mapper.Map<EspecieViewModel>(especie);
+            return View(especieViewModel);
         }
 
         // POST: EspecieController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(uint id, EspecieViewModel viewModel)
+        public IActionResult Edit(EspecieViewModel especieViewModel)
         {
-            if (id != viewModel.Id)
-                return BadRequest();
-
             if (ModelState.IsValid)
             {
-                var dto = mapper.Map<EspecieDto>(viewModel);
-                especieService.Edit(dto);
+                var especie = mapper.Map<Especie>(especieViewModel);
+                especieService.Edit(especie);
                 return RedirectToAction(nameof(Index));
             }
-            return View(viewModel);
+            return View(especieViewModel);
         }
 
         // GET: EspecieController/Delete/5
         public IActionResult Delete(uint id)
         {
             var especie = especieService.Get(id);
-            
-            var viewModel = mapper.Map<EspecieViewModel>(especie);
-            return View(viewModel);
+
+            var especieViewModel = mapper.Map<EspecieViewModel>(especie);
+            return View(especieViewModel);
         }
 
         // POST: EspecieController/Delete/5

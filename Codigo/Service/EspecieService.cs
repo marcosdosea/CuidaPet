@@ -19,7 +19,7 @@ namespace Service
         /// </summary>
         /// <param name="especie">Dados da espécie</param>
         /// <returns>ID da espécie</returns>
-        public uint Create(EspecieDto especie)
+        public uint Create(Especie especie)
         {
             Especie entity = new()
             {
@@ -34,7 +34,7 @@ namespace Service
         /// Editar uma espécie existente na base de dados
         /// </summary>
         /// <param name="especie">Dados da espécie</param>
-        public void Edit(EspecieDto especie)
+        public void Edit(Especie especie)
         {
             Especie? entity = context.Especies.Find(especie.Id);
             if (entity == null) return;
@@ -59,12 +59,12 @@ namespace Service
         /// </summary>
         /// <param name="id">ID da espécie</param>
         /// <returns>Dados da espécie</returns>
-        public EspecieDto? Get(uint id)
+        public Especie? Get(uint id)
         {
             return context.Especies
                 .AsNoTracking()
                 .Where(e => e.Id == id)
-                .Select(e => new EspecieDto
+                .Select(e => new Especie
                 {
                     Id = e.Id,
                     Nome = e.Nome
@@ -76,11 +76,11 @@ namespace Service
         /// Buscar todas as espécies na base de dados
         /// </summary>
         /// <returns>Lista de espécies</returns>
-        public IEnumerable<EspecieDto> GetAll()
+        public IEnumerable<Especie> GetAll()
         {
             return context.Especies
                 .AsNoTracking()
-                .Select(e => new EspecieDto
+                .Select(e => new Especie
                 {
                     Id = e.Id,
                     Nome = e.Nome
