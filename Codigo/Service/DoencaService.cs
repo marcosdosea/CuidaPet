@@ -21,8 +21,6 @@ namespace Service
         /// <returns>ID da Doença</returns>
         public uint Create(Doenca doenca)
         {
-            if (string.IsNullOrWhiteSpace(doenca.Nome))
-                throw new ArgumentException("O nome da doença não pode ser vazio.");
             context.Doencas.Add(doenca);
             context.SaveChanges();
             return doenca.Id;
@@ -34,14 +32,13 @@ namespace Service
         /// <param name="doenca">Dados da Doença</param>
         public void Edit(Doenca doenca)
         {
-            if (doenca.Id == 0)
-                throw new ArgumentException("O ID da doença não pode ser zero.");
-            Doenca? entity = context.Doencas.Find(doenca.Id);
-            if (entity == null)
-                throw new KeyNotFoundException("Doença não encontrada.");
-            entity.Nome = doenca.Nome;
-            entity.IdEspecie = doenca.IdEspecie;
-            context.SaveChanges();
+            Doenca? doencaExistente = context.Doencas.Find(doenca.Id);
+            if (doencaExistente != null)
+            {
+                doencaExistente.Nome = doenca.Nome;
+                doencaExistente.IdEspecie = doenca.IdEspecie;
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -50,11 +47,12 @@ namespace Service
         /// <param name="id">ID da Doença</param>
         public void Delete(uint id)
         {
-            Doenca? entity = context.Doencas.Find(id);
-            if (entity == null)
-                throw new KeyNotFoundException("Doença não encontrada.");
-            context.Doencas.Remove(entity);
-            context.SaveChanges();
+            var doenca = context.Doencas.Find(id);
+            if (doenca != null)
+            {
+                context.Doencas.Remove(doenca);
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -83,8 +81,6 @@ namespace Service
         /// <returns>Lista de Doenças</returns>
         public IEnumerable<DoencaDTO> GetByNome(string nome)
         {
-            if (string.IsNullOrWhiteSpace(nome))
-                throw new ArgumentException("O nome da doença não pode ser vazio.");
             return context.Doencas
                 .AsNoTracking()
                 .Where(d => d.Nome.Contains(nome))
