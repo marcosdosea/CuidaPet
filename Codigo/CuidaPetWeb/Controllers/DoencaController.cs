@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTO;
+using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +29,6 @@ namespace CuidaPetWeb.Controllers
         public ActionResult Details(uint id)
         {
             var doenca = doencaService.Get(id);
-            if (doenca == null)
-            {
-                return NotFound();
-            }
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
             return View(doencaViewModel);
         }
@@ -50,7 +46,7 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var doenca = mapper.Map<DoencaDTO>(doencaViewModel);
+                var doenca = mapper.Map<Doenca>(doencaViewModel);
                 doencaService.Create(doenca);
                 return RedirectToAction(nameof(Index));
             }
@@ -61,10 +57,6 @@ namespace CuidaPetWeb.Controllers
         public ActionResult Edit(uint id)
         {
             var doenca = doencaService.Get(id);
-            if (doenca == null)
-            {
-                return NotFound();
-            }
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
             return View(doencaViewModel);
         }
@@ -76,7 +68,7 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var doenca = mapper.Map<DoencaDTO>(doencaViewModel);
+                var doenca = mapper.Map<Doenca>(doencaViewModel);
                 doencaService.Edit(doenca);
                 return RedirectToAction(nameof(Index));
             }
@@ -87,10 +79,6 @@ namespace CuidaPetWeb.Controllers
         public ActionResult Delete(uint id)
         {
             var doenca = doencaService.Get(id);
-            if (doenca == null)
-            {
-                return NotFound();
-            }
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
             return View(doencaViewModel);
         }
@@ -99,12 +87,8 @@ namespace CuidaPetWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, DoencaViewModel doencaViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                doencaService.Delete(id);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(doencaViewModel);
+            doencaService.Delete(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
