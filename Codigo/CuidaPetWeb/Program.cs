@@ -18,6 +18,7 @@ namespace CuidaPetWeb
 
             builder.Services.AddTransient<IProdutoService, ProdutoService>();
             builder.Services.AddTransient<IEspecieService, EspecieService>();
+            builder.Services.AddTransient<IRacaService, RacaService>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
