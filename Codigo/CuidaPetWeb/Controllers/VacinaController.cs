@@ -43,7 +43,7 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vacina = mapper.Map<Produto>(vacinaViewModel);
+                var vacina = mapper.Map<Vacina>(vacinaViewModel);
                 vacinaService.Create(vacina);
                 return RedirectToAction(nameof(Index));
             }
@@ -63,7 +63,7 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vacina = mapper.Map<Produto>(vacinaViewModel);
+                var vacina = mapper.Map<Vacina>(vacinaViewModel);
                 vacinaService.Edit(vacina);
                 return RedirectToAction(nameof(Index));
             }
