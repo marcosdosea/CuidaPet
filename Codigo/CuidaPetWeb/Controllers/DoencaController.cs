@@ -84,7 +84,7 @@ namespace CuidaPetWeb.Controllers
         }
 
         // POST: DoencaController/Delete/5
-        [HttpPost
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, DoencaViewModel doencaViewModel)
         {
