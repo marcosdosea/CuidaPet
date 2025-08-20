@@ -11,8 +11,8 @@ namespace CuidaPetWeb.Models
         [Display(Name = "Nome da Doença")]
 
         public string Nome { get; set; } = null!;
-        [Required(ErrorMessage = "A descrição da doença é obrigatória.")]
-        [Display(Name = "Descrição da Doença")]
+        [Required(ErrorMessage = "o ID da espécie é obrigatório.")]
+        [Display(Name = "ID da espécie")]
         public uint IdEspecie { get; set; }
     }
 }
