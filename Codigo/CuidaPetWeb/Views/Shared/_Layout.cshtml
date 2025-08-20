@@ -9,31 +9,35 @@
     <link rel="stylesheet" href="~/CuidaPetWeb.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CuidaPetWeb</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Especie" asp-action="Index">Espécies</a>
-                        </li>
-                    </ul>
-                </div>
+    <!-- Cabeçalho -->
+    <header class="bg-success d-flex justify-content-between align-items-center p-3">
+        <div>
+            <button class="btn btn-light rounded-circle" id="btnMenu">
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="me-2 text-white text-end">
+                <div class="fw-bold">Marcos B. Dósea</div>
+                <small>Administrador</small>
             </div>
+            <div class="bg-white rounded-circle p-2">
+                <i class="bi bi-person fs-4 text-success"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-flex">
+        <!-- Menu lateral -->
+        <nav id="sidebar" class="sidebar bg-light">
+            <button class="btn-close m-3" id="closeMenu"></button>
+            <ul class="list-unstyled p-3">
+                <li><a href="/Estabelecimentos" class="d-flex align-items-center mb-3"><i class="bi bi-building me-2"></i> Estabelecimentos</a></li>
+                <li><a href="/Racas" class="d-flex align-items-center mb-3"><i class="bi bi-paw me-2"></i> Raças</a></li>
+                <li><a href="/Vacinas" class="d-flex align-items-center mb-3"><i class="bi bi-syringe me-2"></i> Vacinas</a></li>
+                <li><a href="/Especie" class="d-flex align-items-center mb-3"><i class="bi bi-paw-fill me-2"></i> Espécies</a></li>
+                <li><a href="/Doenca" class="d-flex align-items-center"><i class="bi bi-thermometer-half me-2"></i> Doenças</a></li>
+            </ul>
         </nav>
     </header>
     <div class="container">

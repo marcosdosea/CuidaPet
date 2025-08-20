@@ -1,22 +1,113 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+/* Menu lateral */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background-color: #E0E0E0;
+    transition: 0.3s;
+    z-index: 1000;
+    padding-top: 60px;
+}
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .sidebar a:hover,
+        .sidebar .active-link {
+            background: #fff;
+            border-radius: 8px;
+            padding: 6px 12px;
+        }
+
+/* Botão adicionar */
+.btn-add {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    font-size: 24px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ícones ações */
+.icon-action {
+    font-size: 20px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.icon-view {
+    color: #007bff;
+}
+
+.icon-edit {
+    color: #28a745;
+}
+
+.icon-delete {
+    color: #dc3545;
+}
+
+/* Tabela */
+.table-custom {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+form input,
+form textarea {
+    border: 1px solid #ccc;
+    font-size: 1.1rem;
+    padding: 10px;
+}
+
+    form input:focus,
+    form textarea:focus {
+        border-color: #679C67;
+        box-shadow: 0 0 5px rgba(103, 156, 103, 0.5);
+    }
+
+.btn-success {
+    background-color: #679C67;
+    border-color: #679C67;
+}
+
+    .btn-success:hover {
+        background-color: #558755;
+        border-color: #558755;
+    }

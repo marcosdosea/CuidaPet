@@ -88,9 +88,9 @@ namespace CuidaPetWeb.Controllers
         }
 
         // POST: EspecieController/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(uint id)
+        public IActionResult Delete(uint id, EspecieViewModel especieViewModel)
         {
             especieService.Delete(id);
             return RedirectToAction(nameof(Index));

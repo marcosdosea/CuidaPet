@@ -152,7 +152,7 @@ namespace CuidaPetWeb.Controllers.Tests
         public void DeleteTest_Post_Valido()
         {
             // Act
-            var result = controller.DeleteConfirmed(1);
+            var result = controller.Delete(1, GetTargetEspecieModel());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -190,12 +190,12 @@ namespace CuidaPetWeb.Controllers.Tests
 
         private static IEnumerable<Especie> GetTestEspecies()
         {
-            return new List<Especie>
-            {
+            return
+            [
                 new Especie { Id = 1, Nome = "Cachorro"},
                 new Especie { Id = 2, Nome = "Gato"},
                 new Especie { Id = 3, Nome = "Peixe"}
-            };
+            ];
         }
     }
 }
