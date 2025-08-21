@@ -17,5 +17,9 @@ namespace Core.Service
             : base(mensagem, inner)
         {
         }
+
+        protected ServiceException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }
