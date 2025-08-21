@@ -7,8 +7,9 @@ namespace CuidaPetWeb.Models
         [Key]
         public uint Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O nome da espécie é obrigatório.")]
         [StringLength(100)]
         public string Nome { get; set; } = null!;
+
     }
 }
