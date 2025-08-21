@@ -39,11 +39,11 @@ namespace Service
                 throw new ServiceException("O período em dias não pode ser negativo.");
 
             var existingVacina = context.Vacinas.Find(vacina.Id);
-            if (existingVacina == null)
-                throw new ServiceException("Vacina não encontrada.");
-
-            context.Vacinas.Update(vacina);
-            context.SaveChanges();
+            if (existingVacina != null)
+            {
+                context.Vacinas.Update(vacina);
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace Service
         public void Delete(uint id)
         {
             var vacina = context.Vacinas.Find(id);
-            if (vacina == null)
-                throw new ServiceException("Vacina não encontrada.");
-
-            context.Vacinas.Remove(vacina);
-            context.SaveChanges();
+            if (vacina != null)
+            {
+                context.Vacinas.Remove(vacina);
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -68,10 +68,12 @@ namespace Service
         public Vacina? Get(uint id)
         {
             var vacina = context.Vacinas.Find(id);
-            if (vacina == null)
-                throw new ServiceException("Vacina não encontrada.");
+            if (vacina != null)
+            {
+                return vacina;
+            }
 
-            return vacina;
+            return null;
         }
 
         /// <summary>
