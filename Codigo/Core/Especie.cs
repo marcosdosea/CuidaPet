@@ -9,8 +9,6 @@ public partial class Especie
     [Required(ErrorMessage = "O nome da espécie é obrigatório.")]
     public string Nome { get; set; } = null!;
 
-    public string Descricao { get; set; } = null!;
-
     public virtual ICollection<Doenca> Doencas { get; set; } = new List<Doenca>();
 
     public virtual ICollection<Raca> Racas { get; set; } = new List<Raca>();

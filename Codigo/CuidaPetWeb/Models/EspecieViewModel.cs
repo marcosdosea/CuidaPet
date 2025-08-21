@@ -10,8 +10,5 @@ namespace CuidaPetWeb.Models
         [Required]
         [StringLength(100)]
         public string Nome { get; set; } = null!;
-
-        [StringLength(500)]
-        public string Descricao { get; set; } = null!;
     }
 }

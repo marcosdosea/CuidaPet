@@ -24,7 +24,7 @@ body {
 /* Menu lateral */
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 0px;
     left: -260px;
     width: 260px;
     height: 100%;
