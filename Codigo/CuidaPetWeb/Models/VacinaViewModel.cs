@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Models
 {
@@ -23,5 +25,8 @@ namespace CuidaPetWeb.Models
         [Display(Name = "Espécie")]
         [Required(ErrorMessage = "É obrigatório selecionar uma espécie.")]
         public uint IdEspecie { get; set; }
+
+        public IEnumerable<SelectListItem>? Doencas { get; set; }
+        public IEnumerable<SelectListItem>? Especies { get; set; }
     }
 }
