@@ -51,7 +51,7 @@ body {
             padding: 6px 12px;
         }
 
-/* Botão adicionar */
+/* Botï¿½o adicionar */
 .btn-add {
     background-color: #4CAF50;
     color: white;
@@ -64,7 +64,7 @@ body {
     justify-content: center;
 }
 
-/* Ícones ações */
+/* ï¿½cones aï¿½ï¿½es */
 .icon-action {
     font-size: 20px;
     margin-right: 8px;
@@ -111,3 +111,46 @@ form textarea {
         background-color: #558755;
         border-color: #558755;
     }
+
+
+/* Paleta de cores CuidaPet */
+.bg-gray-light {
+    background-color: #F0F0F0;
+}
+.bg-gray-medium {
+    background-color: #D0D0D0;
+}
+.bg-gray-dark {
+    background-color: #484848;
+}
+.bg-green-primary {
+    background-color: #6EA06C;
+}
+.bg-green-light {
+    background-color: #A9E4AF;
+}
+.bg-white-primary {
+    background-color: #F8F8F8;
+}
+.btn-gray {
+    background-color: #D0D0D0;
+}
+.btn-green-primary {
+    color: #4E7A4D;
+}
+.btn-green-primary:hover {
+    color: #1e3d14;
+}
+.text-primary {
+    color: #1A1A1A;
+}
+
+table th, table thead {
+    border: none !important;
+    border-style: none !important;
+}
+
+.table-custom {
+  border-radius: 0;
+  overflow: hidden;
+}
