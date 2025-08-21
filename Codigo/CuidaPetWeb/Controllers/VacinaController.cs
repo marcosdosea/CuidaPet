@@ -77,6 +77,7 @@ namespace CuidaPetWeb.Controllers
             return View(vacinaViewModel);
         }
 
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, VacinaViewModel vacinaViewModel)
         {
