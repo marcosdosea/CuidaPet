@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Models
 {
@@ -7,7 +9,7 @@ namespace CuidaPetWeb.Models
         [Key]
         public uint Id { get; set; }
 
-        [Display(Name = "Nome da Vacina")]
+        [Display(Name = "Nome")]
         [Required(ErrorMessage = "O campo Nome é obrigatório.")]
         [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres.")]
         public string Nome { get; set; } = string.Empty;
@@ -23,5 +25,8 @@ namespace CuidaPetWeb.Models
         [Display(Name = "Espécie")]
         [Required(ErrorMessage = "É obrigatório selecionar uma espécie.")]
         public uint IdEspecie { get; set; }
+
+        public IEnumerable<SelectListItem>? Doencas { get; set; }
+        public IEnumerable<SelectListItem>? Especies { get; set; }
     }
 }

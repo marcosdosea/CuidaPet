@@ -3,17 +3,22 @@ using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
     public class VacinaController : Controller
     {
         private readonly IVacinaService vacinaService;
+        private readonly IDoencaService doencaService;
+        private readonly IEspecieService especieService;
         private readonly IMapper mapper;
 
-        public VacinaController(IVacinaService vacinaService, IMapper mapper)
+        public VacinaController(IVacinaService vacinaService, IDoencaService doencaService, IEspecieService especieService, IMapper mapper)
         {
             this.vacinaService = vacinaService;
+            this.doencaService = doencaService;
+            this.especieService = especieService;
             this.mapper = mapper;
         }
 
@@ -34,9 +39,15 @@ namespace CuidaPetWeb.Controllers
 
         public ActionResult Create()
         {
+            var listaDeDoencas = doencaService.GetAll() ?? new List<Doenca>();
+            var listaDeEspecies = especieService.GetAll() ?? new List<Especie>();
+
+            ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
+            ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");
+            
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(VacinaViewModel vacinaViewModel)
