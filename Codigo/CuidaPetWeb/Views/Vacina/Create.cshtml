@@ -23,15 +23,16 @@
             </div>
             <div class="col-md-3">
                 <label asp-for="IdEspecie" class="form-label visually-hidden">Selecione Espécie Alvo</label>
-                <select asp-for="IdEspecie" asp-items="@Model.Especies"  class="form-select">
+                <select asp-for="IdEspecie" asp-items="ViewBag.Especies" class="form-select">
                     <option selected>Selecione Espécie Alvo</option>
                 </select>
                 <span asp-validation-for="IdEspecie" class="text-danger"></span>
             </div>
+            
             <div class="col-md-3">
                 <label asp-for="IdDoenca" class="form-label visually-hidden">Selecione a Doença</label>
-                <select asp-for="IdDoenca" asp-items="@Model.Doencas" class="form-select">
-                    <option selected>Selecione Doença</option>
+                <select asp-for="IdDoenca" asp-items="ViewBag.Doencas" class="form-select">
+                    <option value="">Selecione Doença</option>
                 </select>
                 <span asp-validation-for="IdDoenca" class="text-danger"></span>
             </div>

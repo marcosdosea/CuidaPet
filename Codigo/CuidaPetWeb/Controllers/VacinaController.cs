@@ -45,9 +45,9 @@ namespace CuidaPetWeb.Controllers
             ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
             ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");
             
-            return View(new VacinaViewModel());
+            return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(VacinaViewModel vacinaViewModel)
