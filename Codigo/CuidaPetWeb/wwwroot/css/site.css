@@ -142,7 +142,7 @@ form textarea {
     color: #1e3d14;
 }
 .text-primary {
-    color: #1A1A1A;
+    color: #1A1A1A !important;
 }
 
 table th, table thead {
