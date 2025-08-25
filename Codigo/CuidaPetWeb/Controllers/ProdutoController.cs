@@ -85,6 +85,7 @@ namespace CuidaPetWeb.Controllers
         }
 
         // POST: Produto/Delete/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, ProdutoViewModel produtoViewModel)
         {

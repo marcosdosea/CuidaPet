@@ -72,7 +72,9 @@ namespace Service
         /// <returns>Lista de Produtos</returns>
         public IEnumerable<Produto> GetAll()
         {
-            return context.Produtos.AsNoTracking();
+            return context.Produtos
+                .Include(p => p.IdCategoriaNavigation)
+                .AsNoTracking();
         }
 
         /// <summary>

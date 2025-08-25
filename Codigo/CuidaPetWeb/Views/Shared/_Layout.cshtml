@@ -4,7 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CuidaPetWeb</title>
+    <!-- Importar fonte Poppins do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CuidaPetWeb.styles.css" asp-append-version="true" />
 </head>
@@ -12,21 +21,15 @@
     <!-- Cabeçalho -->
     <header class="bg-green-primary d-flex justify-content-between align-items-center p-3">
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" id="btnMenu">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-                </svg>
-            </button>
-            <img src="~/assets/logo-header.png" alt="Logo da CuidaPet" width="60" height="60" asp-append-version="true">
+            <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center"
+                 style="width: 60px; height: 60px;">
+                <img src="~/assets/logo-header.png" alt="CuidaPet Logo" style="width: 60px; height: 60px;">
+            </div>
         </div>
         <div class="d-flex align-items-center gap-4">
-            <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center" 
-                style="width: 40px; height: 40px;">
-                
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                </svg>
+            <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center"
+                 style="width: 40px; height: 40px;">
+                <i class="bi bi-person-circle" style="font-size: 20px;"></i>
             </div>
             <div class="me-2 text-white">
                 <div class="fw-bold">Marcos B. Dósea</div>
@@ -35,81 +38,84 @@
         </div>
     </header>
 
-    <div class="d-flex">
-        <!-- Menu lateral -->
-        <nav id="sidebar" class="sidebar bg-gray-light">
-            <div class="d-flex justify-content-end px-3" style="cursor: pointer;" id="closeMenu">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
-                </svg>
+
+
+    <!-- Menu lateral -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <!-- Seta quando sidebar fechado -->
+                <button class="logo-arrow-btn" id="logoArrowBtn">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+                <span class="logo-text">CuidaPet</span>
             </div>
-            <ul class="list-unstyled p-3">
-                <li>
-                    <a href="/Home" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
-                            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
-                            <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
-                        </svg> Home
-                    </a>
-                </li>
-                <li>
-                    <a href="/Estabelecimento" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building-fill" viewBox="0 0 16 16">
-                            <path d="M3 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3v-3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V16h3a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1zm1 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5M4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5m2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5m2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
-                        </svg> Estabelecimento
-                    </a>
-                </li>
-                <li>
-                    <a href="/Produto" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.01-.003.268-.108a.75.75 0 0 1 .558 0l.269.108.01.003zM10.404 2 4.25 4.461 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339L8 5.961 5.596 5l6.154-2.461z" />
-                        </svg> Produto
-                    </a>
-                </li>
-                <li>
-                    <a href="/Raca" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-diamond-fill" viewBox="0 0 16 16">
-                            <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L4.047 3.339 8 7.293l3.954-3.954L9.049.435zm3.61 3.611L8.708 8l3.954 3.954 2.904-2.905c.58-.58.58-1.519 0-2.098l-2.904-2.905zm-.706 8.614L8 8.708l-3.954 3.954 2.905 2.904c.58.58 1.519.58 2.098 0l2.905-2.904zm-8.614-.706L7.292 8 3.339 4.046.435 6.951c-.58.58-.58 1.519 0 2.098z" />
-                        </svg> Raças
-                    </a>
-                </li>
-                <li>
-                    <a href="/Vacina" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
-                            <path d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
-                            <path d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
-                        </svg> Vacinas
-                    </a>
-                </li>
-                <li>
-                    <a href="/Especie" class="d-flex align-items-center mb-3 gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
-                        </svg> Espécies
-                    </a>
-                </li>
-                <li>
-                    <a href="/Doenca" class="d-flex align-items-center gap-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-half" viewBox="0 0 16 16">
-                            <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V6.5a.5.5 0 0 1 1 0v4.585a1.5 1.5 0 0 1 1 1.415" />
-                            <path d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1" />
-                        </svg> Doenças
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="container">
-        <main role="main" class="pb-3 pt-3">
-            @RenderBody()
-        </main>
+            <button class="close-btn" id="closeMenu">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+
+        <ul>
+            <li>
+                <a asp-area="" asp-controller="Produto" asp-action="Index">
+                    <i class="bi bi-tag-fill"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Funcionario" asp-action="Index">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Funcionários</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Estabelecimento" asp-action="Index">
+                    <i class="bi bi-building-fill"></i>
+                    <span>Estabelecimentos</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Raca" asp-action="Index">
+                    <i class="fa-solid fa-dog"></i>
+                    <span>Raças</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Vacina" asp-action="Index">
+                    <i class="fa-solid fa-syringe"></i>
+                    <span>Vacinas</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Especie" asp-action="Index">
+                    <i class="fa fa-paw"></i>
+                    <span>Espécies</span>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Doenca" asp-action="Index">
+                    <i class="bi bi-thermometer-half"></i>
+                    <span>Doenças</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="main-wrapper" id="mainWrapper">
+        <div class="container">
+            <main role="main" class="pb-3 pt-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2025 - CuidaPetWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - CuidaPetWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
