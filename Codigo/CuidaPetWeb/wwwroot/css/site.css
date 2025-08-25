@@ -388,3 +388,22 @@ table th, table thead {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
 }
+
+.sort-arrows {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 5px;
+    line-height: 1;
+}
+
+    .sort-arrows i {
+        opacity: 0.4;
+    }
+
+        .sort-arrows i.active {
+            opacity: 1;
+        }
+
+th[onclick]:hover {
+    background-color: rgba(0,0,0,0.05);
+}
