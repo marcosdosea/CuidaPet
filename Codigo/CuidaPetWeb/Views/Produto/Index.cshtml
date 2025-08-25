@@ -1,77 +1,240 @@
 ﻿@model IEnumerable<CuidaPetWeb.Models.ProdutoViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Produtos";
 }
 
-<h1>Produtos</h1>
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="Create">Novo Produto</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Preco)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrecoPromocao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCategoria)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdEstabelecimento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Preco)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecoPromocao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCategoria)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEstabelecimento)
-            </td>
-            <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Detalhes", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex gap-2">
+        <a asp-controller="Home" asp-action="Index" title="Voltar para Home" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
+
+        <a asp-action="Create" title="Adicionar novo produto" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-plus-circle-fill" style="font-size: 40px;"></i>
+        </a>
+    </div>
+</article>
+
+<section class="bg-gray-light pt-2 rounded">
+    <section class="input-group w-25 ms-auto mb-2 px-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar">
+        <button class="btn btn-outline-secondary" onclick="filterTable()">
+            <i class="bi bi-search" style="font-size: 16px;"></i>
+        </button>
+    </section>
+
+    <div class="table-responsive table-custom">
+        <table class="table align-middle mb-0" id="produtosTable">
+            <thead class="bg-gray-medium">
+                <tr>
+                    <th style="cursor: pointer;" onclick="sortTable(0, 'number')">
+                        Nº
+                        <span class="sort-arrows">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(1, 'text')">
+                        Nome
+                        <span class="sort-arrows">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(2, 'text')">
+                        Categoria
+                        <span class="sort-arrows">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(3, 'number')">
+                        Preço
+                        <span class="sort-arrows">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(4, 'status')">
+                        Status
+                        <span class="sort-arrows">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var produto in Model) {
+                    <tr>
+                        <td>@produto.Id</td>
+                        <td>@produto.Nome</td>
+                        <td>@produto.IdCategoria</td>
+                        <td>R$ @produto.Preco.ToString("F2")</td>
+                        <td>
+                            @if (produto.Status == "P")
+                            {
+                                <span class="badge" style="background-color: #8A6EE6; color: white;">Em Promoção</span>
+                            }
+                            else if (produto.Status == "D")
+                            {
+                                <span class="badge" style="background-color: #7BC67B; color: white;">Disponível</span>
+                            }
+                            else if (produto.Status == "I")
+                            {
+                                <span class="badge" style="background-color: #F87171; color: white;">Indisponível</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@produto.Status</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@produto.Id" class="text-decoration-none" title="Detalhes">
+                                <i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@produto.Id" class="text-decoration-none ms-2" title="Editar">
+                                <i class="bi bi-pencil-fill icon-action icon-edit" style="font-size: 16px; color: green;"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@produto.Id" class="text-decoration-none ms-2" title="Deletar">
+                                <i class="bi bi-trash-fill icon-action icon-delete" style="font-size: 16px; color: red;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<style>
+    .sort-arrows {
+        display: inline-flex;
+        flex-direction: column;
+        margin-left: 5px;
+        line-height: 1;
+    }
+    
+    .sort-arrows i {
+        opacity: 0.4;
+    }
+    
+    .sort-arrows i.active {
+        opacity: 1;
+    }
+    
+    th[onclick]:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+</style>
+
+<script>
+    let sortDirection = {};
+    let searchTimeout;
+    
+    // Cache de elementos DOM
+    const elements = {
+        table: null,
+        tbody: null,
+        searchInput: null,
+        init() {
+            this.table = document.getElementById('produtosTable');
+            this.tbody = this.table.querySelector('tbody');
+            this.searchInput = document.getElementById('searchInput');
+        }
+    };
+
+    function sortTable(columnIndex, dataType) {
+        const rows = Array.from(elements.tbody.querySelectorAll('tr'));
+        
+        // Determinar direção da ordenação
+        const currentDirection = sortDirection[columnIndex] || 'asc';
+        const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        sortDirection[columnIndex] = newDirection;
+        
+        // Resetar todas as setas
+        document.querySelectorAll('.sort-arrows i').forEach(icon => icon.classList.remove('active'));
+        
+        // Ativar seta correspondente
+        const currentHeader = elements.table.querySelector(`thead th:nth-child(${columnIndex + 1}) .sort-arrows`);
+        const arrowIndex = newDirection === 'asc' ? 0 : 1;
+        currentHeader.children[arrowIndex].classList.add('active');
+        
+        // Ordenar linhas
+        rows.sort((a, b) => {
+            let aValue = a.cells[columnIndex].textContent.trim();
+            let bValue = b.cells[columnIndex].textContent.trim();
+            
+            if (dataType === 'number') {
+                aValue = parseFloat(aValue.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+                bValue = parseFloat(bValue.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+                return newDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            } else if (dataType === 'status') {
+                const statusOrder = { 'Em Promoção': 1, 'Disponível': 2, 'Indisponível': 3 };
+                aValue = statusOrder[aValue] || 4;
+                bValue = statusOrder[bValue] || 4;
+                return newDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            } else {
+                return newDirection === 'asc' 
+                    ? aValue.localeCompare(bValue, 'pt-BR')
+                    : bValue.localeCompare(aValue, 'pt-BR');
+            }
+        });
+        
+        // Reorganizar tabela de forma mais eficiente usando DocumentFragment
+        const fragment = document.createDocumentFragment();
+        rows.forEach(row => fragment.appendChild(row));
+        elements.tbody.appendChild(fragment);
+    }
+
+    function filterTable() {
+        const filter = elements.searchInput.value.toLowerCase();
+        const rows = elements.tbody.querySelectorAll('tr');
+        
+        // Usar requestAnimationFrame para melhor performance
+        requestAnimationFrame(() => {
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let found = false;
+                
+                // Procurar em todas as células (exceto ações)
+                for (let i = 0; i < cells.length - 1; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(filter)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            });
+        });
+    }
+
+    // Função de debounce para busca em tempo real
+    function debouncedFilter() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterTable, 300); // 300ms de delay
+    }
+
+    // Inicialização quando DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        elements.init();
+        
+        // Permitir busca ao pressionar Enter
+        elements.searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                filterTable();
+            }
+        });
+
+        // Busca com debounce
+        elements.searchInput.addEventListener('input', debouncedFilter);
+    });
+</script>
