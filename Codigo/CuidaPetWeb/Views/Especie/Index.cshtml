@@ -1,74 +1,78 @@
 ﻿@model IEnumerable<CuidaPetWeb.Models.EspecieViewModel>
 
 @{
-	ViewData["Title"] = "Espécies";
+    ViewData["Title"] = "Espécies";
 }
 
 <article class="d-flex justify-content-between align-items-center mb-3">
-	<h2 class="fw-bold">@ViewData["Title"]</h2>
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
 
-	<a asp-action="Create" title="Adicionar Espécie" class="btn-green-primary">
-		<svg class="ms-auto" xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-			<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-		</svg>
-	</a>
+    <div class="d-flex gap-2">
+        <a asp-controller="Home" asp-action="Index" title="Voltar para Home" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
+
+        <a asp-action="Create" title="Adicionar Espécie" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-plus-circle-fill" style="font-size: 40px;"></i>
+        </a>
+    </div>
 </article>
-<section class="bg-gray-light pt-2 rounded">
-	<section class="input-group w-25 ms-auto mb-2 px-2">
-		<input type="text" class="form-control" placeholder="Pesquisar">
-		<button class="btn btn-outline-secondary">
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-				<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-			</svg>
-		</button>
-	</section>
 
-	<div class="table-responsive table-custom">
-		<table class="table align-middle mb-0">
-			<thead class="bg-gray-medium">
-				<tr>
-					<th>
-						Nº
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
-							<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
-						</svg>
-					</th>
-					<th>
-						Espécie
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
-							<path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5" />
-						</svg>
-					</th>
-					<th>Ações</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var especie in Model)
-				{
-					<tr>
-						<td>@especie.Id</td>
-						<td>@especie.Nome</td>
-						<td>
-							<a asp-action="Details" asp-route-id="@especie.Id" class="text-decoration-none" title="Detalhes">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-eye-fill icon-action icon-view" viewBox="0 0 16 16">
-									<path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-									<path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-								</svg>
-							</a>
-							<a asp-action="Edit" asp-route-id="@especie.Id" class="text-decoration-none ms-2" title="Editar">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-pencil-fill icon-action icon-edit" viewBox="0 0 16 16">
-									<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-								</svg>
-							</a>
-							<a asp-action="Delete" asp-route-id="@especie.Id" class="text-decoration-none ms-2" title="Deletar">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-trash-fill icon-action icon-delete" viewBox="0 0 16 16">
-									<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-								</svg>
-							</a>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
+<section class="bg-gray-light pt-2 rounded">
+    <section class="input-group w-25 ms-auto mb-2 px-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar">
+        <button class="btn btn-outline-secondary" onclick="filterTable()">
+            <i class="bi bi-search" style="font-size: 16px;"></i>
+        </button>
+    </section>
+
+    <div class="table-responsive table-custom d-flex">
+        <table class="table align-middle mb-0" id="table">
+            <thead class="bg-gray-medium">
+                <tr>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(0, 'number')">
+                        Nº
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(1, 'text')">
+                        Espécie
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>                    
+                    <th class="align-middle">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var especie in Model)
+                {
+                    <tr>
+                        <td>@especie.Id</td>
+                        <td>@especie.Nome</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@especie.Id" class="text-decoration-none" title="Detalhes">
+                                <i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@especie.Id" class="text-decoration-none ms-2" title="Editar">
+                                <i class="bi bi-pencil-fill icon-action icon-edit" style="font-size: 16px; color: green;"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@especie.Id" class="text-decoration-none ms-2" title="Deletar">
+                                <i class="bi bi-trash-fill icon-action icon-delete" style="font-size: 16px; color: red;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/sortTable.js"></script>
+}
