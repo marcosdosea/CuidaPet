@@ -19,17 +19,21 @@ namespace CuidaPetWeb.Controllers.Tests
     public class VacinaControllerTests
     {
         private VacinaController ?controller = null;
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
 
         [TestInitialize]
         public void Initialize()
         {
             // Arrange
             var mockService = new Mock<IVacinaService>();
+            var mockDoencaService = new Mock<IDoencaService>();
+            var mockEspecieService = new Mock<IEspecieService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new VacinaProfile())).CreateMapper();
 
-            mockService.Setup(service => service.GetAll())
+            mockService.Setup(service => service.GetAll(page, pageSize))
                 .Returns(GetTestVacinas());
             mockService.Setup(service => service.Get(1))
                 .Returns(GetTargetVacina());
@@ -40,7 +44,12 @@ namespace CuidaPetWeb.Controllers.Tests
             mockService.Setup(service => service.Delete(It.IsAny<uint>()))
                 .Verifiable();
 
-            controller = new VacinaController(mockService.Object, mapper);
+            controller = new VacinaController(
+                mockService.Object,
+                mockDoencaService.Object,
+                mockEspecieService.Object,
+                mapper
+            );
         }
 
         [TestMethod()]

@@ -12,6 +12,8 @@ namespace CuidaPetWeb.Controllers.Tests
     public class EspecieControllerTests
     {
         private static EspecieController controller = null!;
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
 
         [TestInitialize]
         public void Initialize()
@@ -22,7 +24,7 @@ namespace CuidaPetWeb.Controllers.Tests
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new EspecieProfile())).CreateMapper();
 
-            mockService.Setup(service => service.GetAll())
+            mockService.Setup(service => service.GetAll(page, pageSize))
                 .Returns(GetTestEspecies());
             mockService.Setup(service => service.Get(1))
                 .Returns(GetTargetEspecie());
