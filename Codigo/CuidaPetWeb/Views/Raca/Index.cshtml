@@ -1,91 +1,130 @@
 ﻿@model IEnumerable<CuidaPetWeb.Models.RacaViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Raças";
 }
 
-<h1>Lista de raças</h1>
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="Create">Criar nova raça</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdEspecie)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEspecie)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex gap-2">
+        <a asp-controller="Home" asp-action="Index" title="Voltar para Home" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
 
-<div class="d-flex justify-content-between p-2">
-    <div class="p-2">
-        <span class="fw-bold">Total de @ViewData["title"]: </span> @ViewBag.TotalItems
+        <a asp-action="Create" title="Adicionar Raça" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-plus-circle-fill" style="font-size: 40px;"></i>
+        </a>
     </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            @{
-                int totalItems = ViewBag.TotalItems;
-                int pageSize = ViewBag.PageSize;
-                int currentPage = ViewBag.Page;
-                int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+</article>
 
-                int maxPagesToShow = 5;
-                int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
-                int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+<section class="bg-gray-light pt-2 rounded">
+    <section class="input-group w-25 ms-auto mb-2 px-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar">
+        <button class="btn btn-outline-secondary" onclick="filterTable()">
+            <i class="bi bi-search" style="font-size: 16px;"></i>
+        </button>
+    </section>
 
-                if (endPage - startPage < maxPagesToShow - 1)
+    <div class="table-responsive table-custom">
+        <table class="table align-middle mb-0" id="table">
+            <thead class="bg-gray-medium">
+                <tr>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(0, 'number')">
+                        Nº
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(1, 'text')">
+                        Raça
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(2, 'number')">
+                        Espécie (ID)
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th class="align-middle">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var raca in Model)
                 {
-                    startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+                    <tr>
+                        <td>@raca.Id</td>
+                        <td>@raca.Nome</td>
+                        <td>@raca.IdEspecie</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@raca.Id" class="text-decoration-none" title="Detalhes">
+                                <i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@raca.Id" class="text-decoration-none ms-2" title="Editar">
+                                <i class="bi bi-pencil-fill icon-action icon-edit" style="font-size: 16px; color: green;"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@raca.Id" class="text-decoration-none ms-2" title="Deletar">
+                                <i class="bi bi-trash-fill icon-action icon-delete" style="font-size: 16px; color: red;"></i>
+                            </a>
+                        </td>
+                    </tr>
                 }
-            }
+            </tbody>
+        </table>
 
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+        <div class="d-flex justify-content-between p-2">
+            <div class="p-2">
+                <span class="fw-bold">Total de @ViewData["title"]: </span> @ViewBag.TotalItems
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @{
+                        int TotalItems = ViewBag.TotalItems;
+                        int pageSize = ViewBag.PageSize;
+                        int currentPage = ViewBag.Page;
+                        int totalPages = (int)Math.Ceiling((double)TotalItems / pageSize);
 
-            @for (int i = startPage; i <= endPage; i++)
-            {
-                <li class="page-item @(i == currentPage ? "active" : "")">
-                    <a class="page-link text-primary" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize">@i</a>
-                </li>
-            }
+                        int maxPagesToShow = 5;
+                        int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
+                        int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
 
-            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
+                        if (endPage - startPage < maxPagesToShow - 1)
+                        {
+                            startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+                        }
+                    }
+
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link text-primary" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/sortTable.js" defer></script>
+}
