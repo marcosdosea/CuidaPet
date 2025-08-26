@@ -22,10 +22,15 @@ namespace CuidaPetWeb.Controllers
             this.mapper = mapper;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int pageSize = 10)
         {
-            var vacinas = vacinaService.GetAll();
+            var vacinas = vacinaService.GetAll(page, pageSize);
             var vacinaViewModels = mapper.Map<IEnumerable<VacinaViewModel>>(vacinas);
+
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = vacinaService.getCount();
+
             return View(vacinaViewModels);
         }
 
@@ -39,8 +44,10 @@ namespace CuidaPetWeb.Controllers
 
         public ActionResult Create()
         {
-            var listaDeDoencas = doencaService.GetAll() ?? new List<Doenca>();
-            var listaDeEspecies = especieService.GetAll() ?? new List<Especie>();
+            int page = 1;
+            int pageSize = 20;
+            var listaDeDoencas = doencaService.GetAll(page, pageSize) ?? new List<Doenca>();
+            var listaDeEspecies = especieService.GetAll(page, pageSize) ?? new List<Especie>();
 
             ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
             ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");

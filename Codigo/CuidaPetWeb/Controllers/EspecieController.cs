@@ -19,10 +19,15 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: EspecieController
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            var especies = especieService.GetAll();
+            var especies = especieService.GetAll(page, pageSize);
             var especiesViewModel = mapper.Map<IEnumerable<EspecieViewModel>>(especies);
+            
+            ViewBag.TotalItems = especieService.getCount();
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+
             return View(especiesViewModel);
         }
 

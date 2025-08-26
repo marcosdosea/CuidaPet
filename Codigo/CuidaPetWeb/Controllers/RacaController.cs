@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -18,10 +19,15 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: Raca
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int pageSize = 10)
         {
-            var racas = racaService.GetAll();
+            var racas = racaService.GetAll(page, pageSize);
             var racaViewModels = mapper.Map<IEnumerable<RacaViewModel>>(racas);
+
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = racaService.getCount();
+            
             return View(racaViewModels);
         }
 

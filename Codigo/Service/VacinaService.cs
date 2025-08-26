@@ -80,9 +80,13 @@ namespace Service
         /// Buscar todas as Vacinas na base de dados
         /// </summary>
         /// <returns>Lista de Vacinas</returns>
-        public IEnumerable<Vacina> GetAll()
+        public IEnumerable<Vacina> GetAll(int page, int pageSize)
         {
-            return context.Vacinas.AsNoTracking();
+            return context.Vacinas
+            .AsNoTracking()
+            .OrderBy(v => v.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
         }
 
         /// <summary>
@@ -140,6 +144,11 @@ namespace Service
                     Doenca = p.IdDoencaNavigation,
                     Especie = p.IdEspecieNavigation
                 }).ToList();
+        }
+
+        public int getCount()
+        {
+            return context.Vacinas.Count();
         }
     }
 }

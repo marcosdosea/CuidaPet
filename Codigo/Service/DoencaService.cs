@@ -69,9 +69,13 @@ namespace Service
         /// Buscar todos as doenças na base de dados
         /// </summary>
         /// <returns>Lista de Doenças</returns>
-        public IEnumerable<Doenca> GetAll()
+        public IEnumerable<Doenca> GetAll(int page, int pageSize)
         {
-            return context.Doencas.AsNoTracking();
+            return context.Doencas
+                .AsNoTracking()
+                .OrderBy(d => d.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
         }
 
         /// <summary>
@@ -91,6 +95,11 @@ namespace Service
                     Especie = d.IdEspecieNavigation != null ? d.IdEspecieNavigation.Nome : string.Empty
                 })
                 .ToList();
+        }
+
+        public int getCount()
+        {
+            return context.Doencas.Count();
         }
     }
 }

@@ -8,7 +8,8 @@ namespace Core.Service
         void Edit(Especie especie);
         void Delete(uint id);
         Especie? Get(uint id);
-        IEnumerable<Especie> GetAll();
+        IEnumerable<Especie> GetAll(int page, int pageSize);
         IEnumerable<EspecieDto> GetByNome(string nome);
+        int getCount();
     }
 }

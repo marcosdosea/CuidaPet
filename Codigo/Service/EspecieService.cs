@@ -76,7 +76,7 @@ namespace Service
         /// Buscar todas as espécies na base de dados
         /// </summary>
         /// <returns>Lista de espécies</returns>
-        public IEnumerable<Especie> GetAll()
+        public IEnumerable<Especie> GetAll(int page, int pageSize)
         {
             return context.Especies
                 .AsNoTracking()
@@ -85,7 +85,9 @@ namespace Service
                     Id = e.Id,
                     Nome = e.Nome
                 })
-                .ToList();
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
         }
 
         /// <summary>
@@ -104,6 +106,11 @@ namespace Service
                     Nome = e.Nome
                 })
                 .ToList();
+        }
+
+        public int getCount()
+        {
+            return context.Especies.Count();
         }
     }
 }

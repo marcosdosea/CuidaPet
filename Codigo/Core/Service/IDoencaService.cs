@@ -8,8 +8,9 @@ namespace Core.Service
         void Edit(Doenca doenca);
         void Delete(uint id);
         Doenca? Get(uint id);
-        IEnumerable<Doenca> GetAll();
+        IEnumerable<Doenca> GetAll(int page, int pageSize);
         IEnumerable<DoencaDTO> GetByNome(string nome);
+        int getCount();
 
     }
 }

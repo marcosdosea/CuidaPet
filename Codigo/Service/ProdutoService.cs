@@ -70,12 +70,16 @@ namespace Service
         /// Buscar todos os produtos na base de dados
         /// </summary>
         /// <returns>Lista de Produtos</returns>
-        public IEnumerable<Produto> GetAll()
+        public IEnumerable<Produto> GetAll(int page = 1, int pageSize = 10)
         {
             return context.Produtos
                 .Include(p => p.IdCategoriaNavigation)
-                .AsNoTracking();
+                .AsNoTracking()
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
         }
+
 
         /// <summary>
         /// Buscar produtos pelo nome
@@ -185,6 +189,10 @@ namespace Service
                     Categoria = p.IdCategoriaNavigation != null ? p.IdCategoriaNavigation.Nome : string.Empty,
                     Estabelecimento = p.IdEstabelecimentoNavigation != null ? p.IdEstabelecimentoNavigation.Nome : string.Empty
                 }).ToList();
+        }
+        public int getCount()
+        {
+            return context.Produtos.Count();
         }
     }
 }

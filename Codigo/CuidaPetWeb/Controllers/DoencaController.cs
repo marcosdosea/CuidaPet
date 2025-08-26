@@ -18,10 +18,13 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: DoencaController
-        public ActionResult Index()
+        public ActionResult Index(int page, int pageSize)
         {
-            var doencas = doencaService.GetAll();
+            var doencas = doencaService.GetAll(page, pageSize);
             var doencaViewModels = mapper.Map<IEnumerable<DoencaViewModel>>(doencas);
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = doencaService.getCount();
             return View(doencaViewModels);
         }
 

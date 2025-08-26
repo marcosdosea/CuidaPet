@@ -8,11 +8,12 @@ namespace Core.Service
         void Edit(Produto produto);
         void Delete(uint id);
         Produto? Get(uint id);
-        IEnumerable<Produto> GetAll();
+        IEnumerable<Produto> GetAll(int page, int pageSize);
         IEnumerable<ProdutoDTO> GetByNome(string nome);
         IEnumerable<ProdutoDTO> GetByEstabelecimento(uint idEstabelecimento);
         IEnumerable<ProdutoDTO> GetByNomeAndEstabelecimento(string nome, uint idEstabelecimento);
         IEnumerable<ProdutoDTO> GetByCategoria(uint idCategoria);
         IEnumerable<ProdutoDTO> GetProdutosPromocao();
+        int getCount();
     }
 }
