@@ -23,7 +23,7 @@ namespace CuidaPetWeb.Controllers
             var produtos = produtoService.GetAll(page, pageSize);
             var produtoViewModels = mapper.Map<IEnumerable<ProdutoViewModel>>(produtos);
 
-            ViewBag.TotalProdutos = produtoService.getCount();
+            ViewBag.TotalItens = produtoService.getCount();
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
 
