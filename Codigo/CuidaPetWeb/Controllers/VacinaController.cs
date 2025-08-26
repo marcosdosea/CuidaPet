@@ -29,7 +29,7 @@ namespace CuidaPetWeb.Controllers
 
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalItems = vacinaService.getCount();
+            ViewBag.TotalItems = vacinaService.GetCount();
 
             return View(vacinaViewModels);
         }

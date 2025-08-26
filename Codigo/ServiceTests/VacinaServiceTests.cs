@@ -10,6 +10,8 @@ namespace Service.Tests
     {
         private CuidaPetContext context = null!;
         private IVacinaService vacinaService = null!;
+        private int page = 1;
+        private int pageSize = 10;
 
         [TestInitialize]
         public void Initialize()
@@ -84,10 +86,10 @@ namespace Service.Tests
                 IdDoenca = 3,
                 IdEspecie = 1
             });
-
+            
             // Assert
             Assert.AreEqual((uint)4, novaVacinaId);
-            Assert.AreEqual(4, vacinaService.GetAll().Count());
+            Assert.AreEqual(4, vacinaService.GetAll(page, pageSize).Count());
             var vacina = vacinaService.Get(4);
             Assert.IsNotNull(vacina);
             Assert.AreEqual("Giárdia Canina - 1ª Dose", vacina.Nome);
@@ -103,7 +105,7 @@ namespace Service.Tests
             vacinaService.Delete(2);
 
             // Assert
-            Assert.AreEqual(2, vacinaService.GetAll().Count());
+            Assert.AreEqual(2, vacinaService.GetAll(page, pageSize).Count());
             var vacina = vacinaService.Get(2);
             Assert.IsNull(vacina);
         }
@@ -147,7 +149,7 @@ namespace Service.Tests
         public void GetAllTest()
         {
             // Act
-            var listaVacinas = vacinaService.GetAll();
+            var listaVacinas = vacinaService.GetAll(page, pageSize);
 
             // Assert
             Assert.IsInstanceOfType(listaVacinas, typeof(IEnumerable<Vacina>));
@@ -164,7 +166,7 @@ namespace Service.Tests
             var vacinas = vacinaService.GetByNome("Antirrábica");
 
             //Assert
-            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDTO>));
+            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
             var vacina = vacinas.First();
@@ -180,7 +182,7 @@ namespace Service.Tests
             var vacinas = vacinaService.GetByDoenca(3);
 
             //Assert
-            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDTO>));
+            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
             Assert.IsTrue(vacinas.Any(p => p.Nome == "Quádrupla Felina"));
@@ -193,7 +195,7 @@ namespace Service.Tests
             var vacinas = vacinaService.GetByEspecie(2);
 
             //Assert
-            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDTO>));
+            Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
             var vacina = vacinas.First();

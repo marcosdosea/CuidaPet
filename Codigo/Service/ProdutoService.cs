@@ -190,7 +190,7 @@ namespace Service
                     Estabelecimento = p.IdEstabelecimentoNavigation != null ? p.IdEstabelecimentoNavigation.Nome : string.Empty
                 }).ToList();
         }
-        public int getCount()
+        public int GetCount()
         {
             return context.Produtos.Count();
         }

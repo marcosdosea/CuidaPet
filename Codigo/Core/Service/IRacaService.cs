@@ -7,7 +7,7 @@
         uint Create(Raca raca);
         void Edit(Raca raca);
         void Delete(uint id);
-        int getCount();
+        int GetCount();
     }
 }
 

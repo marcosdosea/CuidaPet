@@ -9,9 +9,9 @@ namespace Core.Service
         void Delete(uint id);
         Vacina? Get(uint id);
         IEnumerable<Vacina> GetAll(int page, int pageSize);
-        IEnumerable<VacinaDTO> GetByNome(string nome);
-        IEnumerable<VacinaDTO> GetByDoenca(uint idDoenca);
-        IEnumerable<VacinaDTO> GetByEspecie(uint idEspecie);
-        int getCount();
+        IEnumerable<VacinaDto> GetByNome(string nome);
+        IEnumerable<VacinaDto> GetByDoenca(uint idDoenca);
+        IEnumerable<VacinaDto> GetByEspecie(uint idEspecie);
+        int GetCount();
     }
 }

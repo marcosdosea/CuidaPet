@@ -10,7 +10,7 @@ namespace Core.Service
         Doenca? Get(uint id);
         IEnumerable<Doenca> GetAll(int page, int pageSize);
         IEnumerable<DoencaDTO> GetByNome(string nome);
-        int getCount();
+        int GetCount();
 
     }
 }

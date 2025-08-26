@@ -73,7 +73,7 @@ namespace Service
                 .Take(pageSize);
         }
 
-        public int getCount()
+        public int GetCount()
         {
             return context.Racas.Count();
         }
