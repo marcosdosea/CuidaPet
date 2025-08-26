@@ -73,7 +73,7 @@ namespace Service
         {
             return context.Doencas
                 .AsNoTracking()
-                .OrderBy(id => id.Id)
+                .OrderBy(d => d.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }

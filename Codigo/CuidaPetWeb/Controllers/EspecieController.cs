@@ -24,7 +24,7 @@ namespace CuidaPetWeb.Controllers
             var especies = especieService.GetAll(page, pageSize);
             var especiesViewModel = mapper.Map<IEnumerable<EspecieViewModel>>(especies);
             
-            ViewBag.totalItens = especieService.getCount();
+            ViewBag.TotalItems = especieService.getCount();
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
 

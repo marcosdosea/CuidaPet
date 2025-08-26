@@ -113,15 +113,15 @@
         
         <div class="d-flex justify-content-between p-2">
             <div class="p-2">
-                <span class="fw-bold">Total de @ViewData["title"]: </span> @ViewBag.TotalItens
+                <span class="fw-bold">Total de @ViewData["title"]: </span> @ViewBag.TotalItems
             </div>
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     @{
-                        int totalItens = ViewBag.TotalItens;
+                        int TotalItems = ViewBag.TotalItems;
                         int pageSize = ViewBag.PageSize;
                         int currentPage = ViewBag.Page;
-                        int totalPages = (int)Math.Ceiling((double)totalItens / pageSize);
+                        int totalPages = (int)Math.Ceiling((double)TotalItems / pageSize);
 
                         int maxPagesToShow = 5;
                         int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);

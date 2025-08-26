@@ -24,7 +24,7 @@ namespace CuidaPetWeb.Controllers
             var doencaViewModels = mapper.Map<IEnumerable<DoencaViewModel>>(doencas);
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalItens = doencaService.getCount();
+            ViewBag.TotalItems = doencaService.getCount();
             return View(doencaViewModels);
         }
 
