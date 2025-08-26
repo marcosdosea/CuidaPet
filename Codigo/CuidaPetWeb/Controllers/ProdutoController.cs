@@ -18,10 +18,15 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: Produto
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int pageSize = 10)
         {
-            var produtos = produtoService.GetAll();
+            var produtos = produtoService.GetAll(page, pageSize);
             var produtoViewModels = mapper.Map<IEnumerable<ProdutoViewModel>>(produtos);
+
+            ViewBag.TotalProdutos = produtoService.getCount();
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+
             return View(produtoViewModels);
         }
 

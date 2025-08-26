@@ -370,6 +370,13 @@ form textarea {
     color: #484848 !important;
 }
 
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #9ac099;
+    border-color: #9ac099;
+}
+
 table th, table thead {
     border: none !important;
     border-style: none !important;
