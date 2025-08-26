@@ -108,7 +108,7 @@ namespace Service
                 .ToList();
         }
 
-        public int getCount()
+        public int GetCount()
         {
             return context.Especies.Count();
         }

@@ -12,6 +12,6 @@ namespace Core.Service
         IEnumerable<VacinaDto> GetByNome(string nome);
         IEnumerable<VacinaDto> GetByDoenca(uint idDoenca);
         IEnumerable<VacinaDto> GetByEspecie(uint idEspecie);
-        int getCount();
+        int GetCount();
     }
 }

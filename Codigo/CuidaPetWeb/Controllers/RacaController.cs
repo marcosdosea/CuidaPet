@@ -26,7 +26,7 @@ namespace CuidaPetWeb.Controllers
 
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalItems = racaService.getCount();
+            ViewBag.TotalItems = racaService.GetCount();
             
             return View(racaViewModels);
         }

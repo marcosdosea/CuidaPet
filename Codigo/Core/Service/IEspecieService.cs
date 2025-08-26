@@ -10,6 +10,6 @@ namespace Core.Service
         Especie? Get(uint id);
         IEnumerable<Especie> GetAll(int page, int pageSize);
         IEnumerable<EspecieDto> GetByNome(string nome);
-        int getCount();
+        int GetCount();
     }
 }

@@ -14,6 +14,6 @@ namespace Core.Service
         IEnumerable<ProdutoDTO> GetByNomeAndEstabelecimento(string nome, uint idEstabelecimento);
         IEnumerable<ProdutoDTO> GetByCategoria(uint idCategoria);
         IEnumerable<ProdutoDTO> GetProdutosPromocao();
-        int getCount();
+        int GetCount();
     }
 }
