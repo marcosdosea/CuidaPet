@@ -63,13 +63,20 @@ namespace Service
         /// Buscar todas as raças na base de dados
         /// </summary>
         /// <returns>Lista de Raças</returns>
-        public IEnumerable<Raca> GetAll()
+        public IEnumerable<Raca> GetAll(int page, int pageSize)
         {
             return context.Racas
                 .Include(r => r.IdEspecieNavigation)
-                .AsNoTracking();
+                .OrderBy(r => r.Id)
+                .AsNoTracking()
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
         }
 
+        public int getCount()
+        {
+            return context.Racas.Count();
+        }
     }
 }
 
