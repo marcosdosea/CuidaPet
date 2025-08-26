@@ -94,11 +94,11 @@ namespace Service
         /// </summary>
         /// <param name="nome">Nome da Vacina</param>
         /// <returns>Lista de vacinas</returns>
-        public IEnumerable<VacinaDTO> GetByNome(string nome)
+        public IEnumerable<VacinaDto> GetByNome(string nome)
         {
             return context.Vacinas
                 .Where(p => p.Nome.Contains(nome, StringComparison.OrdinalIgnoreCase))
-                .Select(p => new VacinaDTO
+                .Select(p => new VacinaDto
                 {
                     Id = p.Id,
                     Nome = p.Nome,
@@ -113,11 +113,11 @@ namespace Service
         /// </summary>
         /// <param name="idDoenca">ID da doença</param>
         /// <returns>Lista de vacinas</returns>
-        public IEnumerable<VacinaDTO> GetByDoenca(uint idDoenca)
+        public IEnumerable<VacinaDto> GetByDoenca(uint idDoenca)
         {
             return context.Vacinas
                 .Where(p => p.IdDoenca == idDoenca)
-                .Select(p => new VacinaDTO
+                .Select(p => new VacinaDto
                 {
                     Id = p.Id,
                     Nome = p.Nome,
@@ -132,11 +132,11 @@ namespace Service
         /// </summary>
         /// <param name="idEspecie">ID da espécie</param>
         /// <returns>Lista de vacinas</returns>
-        public IEnumerable<VacinaDTO> GetByEspecie(uint idEspecie)
+        public IEnumerable<VacinaDto> GetByEspecie(uint idEspecie)
         {
             return context.Vacinas
                 .Where(p => p.IdEspecie == idEspecie)
-                .Select(p => new VacinaDTO
+                .Select(p => new VacinaDto
                 {
                     Id = p.Id,
                     Nome = p.Nome,

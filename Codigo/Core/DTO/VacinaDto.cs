@@ -1,5 +1,5 @@
 ﻿namespace Core.DTO;
-public class VacinaDTO
+public class VacinaDto
 {
     public uint Id { get; set; }
     public string Nome { get; set; } = null!;
