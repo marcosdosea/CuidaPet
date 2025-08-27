@@ -10,6 +10,8 @@ namespace Service.Tests
     {
         private CuidaPetContext context = null!;
         private IEspecieService especieService = null!;
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
 
         [TestInitialize]
         public void Initialize()
@@ -48,7 +50,7 @@ namespace Service.Tests
 
             // Assert
             Assert.AreEqual((uint)4, novaEspecie);
-            Assert.AreEqual(4, especieService.GetAll().Count());
+            Assert.AreEqual(4, especieService.GetAll(page, pageSize).Count());
             var especie = especieService.Get(4);
             Assert.IsNotNull(especie);
             Assert.IsTrue(4 == especie.Id);
@@ -62,7 +64,7 @@ namespace Service.Tests
             especieService.Delete(2);
 
             // Assert
-            Assert.AreEqual(2, especieService.GetAll().Count());
+            Assert.AreEqual(2, especieService.GetAll(page, pageSize).Count());
             var especie = especieService.Get(2);
             Assert.IsNull(especie);
         }
@@ -99,7 +101,7 @@ namespace Service.Tests
         public void GetAllTest()
         {
             // Act
-            var listaEspecies = especieService.GetAll();
+            var listaEspecies = especieService.GetAll(page, pageSize);
 
             // Assert
             Assert.IsInstanceOfType(listaEspecies, typeof(IEnumerable<Especie>));
