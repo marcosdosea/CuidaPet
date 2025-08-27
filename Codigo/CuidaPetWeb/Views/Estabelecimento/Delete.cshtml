@@ -1,0 +1,99 @@
+﻿@model CuidaPetWeb.Models.EstabelecimentoViewModel
+
+@{
+    ViewData["Title"] = "Deletar Estabelecimento";
+}
+
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
+
+    <div class="d-flex gap-2">
+        <a asp-action="Index" title="Voltar para Lista" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
+    </div>
+</article>
+
+<section class="bg-gray-light p-4 rounded">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-warning" role="alert">
+                <h5 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmação de Exclusão
+                </h5>
+                <p class="mb-0">Você tem certeza que deseja deletar este estabelecimento? Esta ação não pode ser desfeita.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-gray-medium">
+                    <h5 class="card-title mb-0">@ViewData["title"] a ser deletado #@Model.Id</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nome)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Telefone)</dt>
+                        <dd class="col-sm-9">@Model.Telefone</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Cnpj)</dt>
+                        <dd class="col-sm-9">@Model.Cnpj</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Tipo)</dt>
+                        <dd class="col-sm-9">
+                             @if (Model.Tipo == "P")
+                            {
+                                <span>PetShop</span>
+                            }
+                            else if (Model.Tipo == "C")
+                            {
+                                <span>Clínica</span>
+                            }
+                            else if (Model.Tipo == "A")
+                            {
+                                <span>Clínica e PetShop</span>
+                            }
+                            else
+                            {
+                                <span>@Model.Tipo</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Cidade)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Cidade)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Estado)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Bairro)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Bairro)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Logradouro)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Logradouro)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Numero)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Numero)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Complemento)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Complemento)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdGerente)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.IdGerente)</dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Delete" class="d-inline">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash-fill me-2"></i>Confirmar Exclusão
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
