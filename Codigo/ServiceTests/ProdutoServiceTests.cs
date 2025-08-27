@@ -11,6 +11,9 @@ namespace Service.Tests
         private CuidaPetContext context = null!;
         private IProdutoService produtoService = null!;
 
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -70,7 +73,7 @@ namespace Service.Tests
 
             // Assert
             Assert.AreEqual((uint)4, novoProdutoId);
-            Assert.AreEqual(4, produtoService.GetAll().Count());
+            Assert.AreEqual(4, produtoService.GetAll(page, pageSize).Count());
             var produto = produtoService.Get(4);
             Assert.IsNotNull(produto);
             Assert.AreEqual("Shampoo Pet", produto.Nome);
@@ -85,7 +88,7 @@ namespace Service.Tests
             produtoService.Delete(2);
 
             // Assert
-            Assert.AreEqual(2, produtoService.GetAll().Count());
+            Assert.AreEqual(2, produtoService.GetAll(page, pageSize).Count());
             var produto = produtoService.Get(2);
             Assert.IsNull(produto);
         }
@@ -128,7 +131,7 @@ namespace Service.Tests
         public void GetAllTest()
         {
             // Act
-            var listaProdutos = produtoService.GetAll();
+            var listaProdutos = produtoService.GetAll(page, pageSize);
 
             // Assert
             Assert.IsInstanceOfType(listaProdutos, typeof(IEnumerable<Produto>));

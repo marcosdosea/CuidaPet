@@ -11,6 +11,9 @@ namespace Service.Tests
         private CuidaPetContext context = null!;
         private IDoencaService doencaService = null!;
 
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -52,7 +55,7 @@ namespace Service.Tests
             });
 
             Assert.AreEqual((uint)4, novaDoencaId);
-            Assert.AreEqual(4, doencaService.GetAll().Count());
+            Assert.AreEqual(4, doencaService.GetAll(page, pageSize).Count());
             var doenca = doencaService.Get(4);
             Assert.IsNotNull(doenca);
             Assert.AreEqual("Dermatofitose", doenca.Nome);
@@ -64,7 +67,7 @@ namespace Service.Tests
         {
             doencaService.Delete(2);
 
-            Assert.AreEqual(2, doencaService.GetAll().Count());
+            Assert.AreEqual(2, doencaService.GetAll(page, pageSize).Count());
             var doenca = doencaService.Get(2);
             Assert.IsNull(doenca);
         }
@@ -97,7 +100,7 @@ namespace Service.Tests
         [TestMethod()]
         public void GetAllTest()
         {
-            var listaDoencas = doencaService.GetAll();
+            var listaDoencas = doencaService.GetAll(page, pageSize);
 
             Assert.IsInstanceOfType(listaDoencas, typeof(IEnumerable<Doenca>));
             Assert.IsNotNull(listaDoencas);

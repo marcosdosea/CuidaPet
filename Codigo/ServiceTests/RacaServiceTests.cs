@@ -10,6 +10,9 @@ namespace Service.Tests
         private CuidaPetContext context = null!;
         private IRacaService racaService = null!;
 
+        private readonly int page = 1;
+        private readonly int pageSize = 10;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -55,7 +58,7 @@ namespace Service.Tests
             var novoId = racaService.Create(novaRaca);
 
             Assert.AreEqual((uint)4, novoId);
-            Assert.AreEqual(4, racaService.GetAll().Count());
+            Assert.AreEqual(4, racaService.GetAll(page, pageSize).Count());
             var raca = racaService.Get(4);
             Assert.IsNotNull(raca);
             Assert.AreEqual("Siamês", raca.Nome);
@@ -80,7 +83,7 @@ namespace Service.Tests
         {
             racaService.Delete(2);
 
-            Assert.AreEqual(2, racaService.GetAll().Count());
+            Assert.AreEqual(2, racaService.GetAll(page, pageSize).Count());
             var raca = racaService.Get(2);
             Assert.IsNull(raca);
         }
@@ -98,7 +101,7 @@ namespace Service.Tests
         [TestMethod()]
         public void GetAllTest()
         {
-            var listaRacas = racaService.GetAll();
+            var listaRacas = racaService.GetAll(page, pageSize);
 
             Assert.IsInstanceOfType(listaRacas, typeof(IEnumerable<Raca>));
             Assert.IsNotNull(listaRacas);
