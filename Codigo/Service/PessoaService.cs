@@ -36,28 +36,14 @@ namespace Service
 
             if (entity != null)
             {
-                entity.Nome = pessoa.Nome;
-                entity.Email = pessoa.Email;
-                entity.Senha = pessoa.Senha;
-                entity.Telefone = pessoa.Telefone;
-                entity.Tipo = pessoa.Tipo;
-                entity.Status = pessoa.Status;
-                entity.Logradouro = pessoa.Logradouro;
-                entity.Numero = pessoa.Numero;
-                entity.Complemento = pessoa.Complemento;
-                entity.Bairro = pessoa.Bairro;
-                entity.Cidade = pessoa.Cidade;
-                entity.Estado = pessoa.Estado;
+                context.Pessoas.Update(pessoa);
+                context.SaveChanges();
             }
-
-            context.SaveChanges();
         }
 
         public Pessoa? Get(uint id)
         {
-            return context.Pessoas
-                .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
+            return context.Pessoas.Find(id);
         }
 
         public IEnumerable<Pessoa> GetAll(int page, int pageSize)
