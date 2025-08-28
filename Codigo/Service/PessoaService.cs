@@ -62,7 +62,9 @@ namespace Service
             return context.Pessoas.Count(p => p.Tipo == "T" && p.Status == "A");
         }
 
-        // TODO: CPF
-        // public string GetCpf(uint idPessoa);
+        public Pessoa? GetByCpf(string cpf)
+        {
+            return context.Pessoas.FirstOrDefault(p => p.Cpf == cpf);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Util;
 
 namespace CuidaPetWeb.Models
 {
@@ -10,6 +11,10 @@ namespace CuidaPetWeb.Models
         [Required(ErrorMessage = "Por favor, informe um nome")]
         [Display(Name = "Nome")]
         public string Nome { get; set; } = null!;
+        [Required(ErrorMessage = "Por favor, informe um CPF")]
+        [Display(Name = "CPF")]
+        [CPF]
+        public string Cpf { get; set; } = null!;
         [Required(ErrorMessage = "Por favor, informe um email")]
         [Display(Name = "Email")]
         public string Email { get; set; } = null!;
