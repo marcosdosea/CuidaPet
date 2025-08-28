@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuidaPetWebTests", "CuidaPe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceTests", "ServiceTests\ServiceTests.csproj", "{141DA0F6-82F6-4807-A08A-38BC2BC4EDAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{2B009F23-3B6A-460D-88A7-066D8038CD9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{141DA0F6-82F6-4807-A08A-38BC2BC4EDAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{141DA0F6-82F6-4807-A08A-38BC2BC4EDAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{141DA0F6-82F6-4807-A08A-38BC2BC4EDAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B009F23-3B6A-460D-88A7-066D8038CD9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B009F23-3B6A-460D-88A7-066D8038CD9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B009F23-3B6A-460D-88A7-066D8038CD9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B009F23-3B6A-460D-88A7-066D8038CD9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
