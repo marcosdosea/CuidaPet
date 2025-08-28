@@ -21,13 +21,11 @@ namespace CuidaPetWeb.Models
         /// <summary>
         /// T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)
         /// </summary>
-        [Required]
         public string Tipo { get; set; } = "T";
         /// <summary>
         /// A (Ativo), I (Inativo)
         /// </summary>
-        [Required]
-        public string Status { get; set; } = null!;
+        public string Status { get; set; } = "A";
         [Required(ErrorMessage = "Por favor, informe seu endereço")]
         [Display(Name = "Endereço")]
         public string Logradouro { get; set; } = null!;

@@ -81,26 +81,23 @@
 				@foreach (var tutor in Model)
 				{
 					<tr>
-						@if (tutor.Tipo == "T")
-						{
-							<td>@tutor.Id</td>
-							<td>@tutor.Nome</td>
-							<td>@tutor.Email</td>
-							<td>@tutor.Logradouro, @tutor.Numero</td>
-							<td>@tutor.Cidade</td>
-							<td>@tutor.Estado</td>
-							<td>
-								<a asp-action="Details" asp-route-id="@tutor.Id" class="text-decoration-none" title="Detalhes">
-									<i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>
-								</a>
-								<a asp-action="Edit" asp-route-id="@tutor.Id" class="text-decoration-none ms-2" title="Editar">
-									<i class="bi bi-pencil-fill icon-action icon-edit" style="font-size: 16px; color: green;"></i>
-								</a>
-								<a asp-action="Delete" asp-route-id="@tutor.Id" class="text-decoration-none ms-2" title="Deletar">
-									<i class="bi bi-trash-fill icon-action icon-delete" style="font-size: 16px; color: red;"></i>
-								</a>
-							</td>
-						}
+						<td>@tutor.Id</td>
+						<td>@tutor.Nome</td>
+						<td>@tutor.Email</td>
+						<td>@tutor.Logradouro, @tutor.Numero</td>
+						<td>@tutor.Cidade</td>
+						<td>@tutor.Estado</td>
+						<td>
+							<a asp-action="Details" asp-route-id="@tutor.Id" class="text-decoration-none" title="Detalhes">
+								<i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>
+							</a>
+							<a asp-action="Edit" asp-route-id="@tutor.Id" class="text-decoration-none ms-2" title="Editar">
+								<i class="bi bi-pencil-fill icon-action icon-edit" style="font-size: 16px; color: green;"></i>
+							</a>
+							<a asp-action="Delete" asp-route-id="@tutor.Id" class="text-decoration-none ms-2" title="Deletar">
+								<i class="bi bi-trash-fill icon-action icon-delete" style="font-size: 16px; color: red;"></i>
+							</a>
+						</td>
 					</tr>
 				}
 			</tbody>

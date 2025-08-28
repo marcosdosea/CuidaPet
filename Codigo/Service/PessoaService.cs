@@ -50,6 +50,7 @@ namespace Service
         {
             return context.Pessoas
                 .AsNoTracking()
+                .Where(p => p.Tipo == "T" && p.Status == "A")
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -58,7 +59,7 @@ namespace Service
 
         public int GetCount()
         {
-            return context.Pessoas.Count();
+            return context.Pessoas.Count(p => p.Tipo == "T" && p.Status == "A");
         }
 
         // TODO: CPF
