@@ -1,16 +1,21 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Pessoa
 {
     public uint Id { get; set; }
 
+    public string Cpf { get; set; } = null!;
+
     public string Nome { get; set; } = null!;
 
     public string Senha { get; set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
 
-    public string? Telefone { get; set; }
+    public string Telefone { get; set; } = null!;
 
     /// <summary>
     /// T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)

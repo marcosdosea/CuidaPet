@@ -12,11 +12,6 @@ public class FuncionarioViewModel
     //TODO - CRMV só deve ser obrigatório para veterinários
     public string Crmv { get; set; } = null!;
 
-    [CPF]
-    [Required(ErrorMessage = "O CPF é obrigatório")]
-    [Display(Name = "CPF")]
-    public string Cpf { get; set; } = null!;
-
     [Required(ErrorMessage = "O ID da Pessoa é obrigatório")]
     [Display(Name = "Pessoa")]
     public uint IdPessoa { get; set; }

@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Agendamento
 {
@@ -13,7 +16,7 @@ public partial class Agendamento
     /// <summary>
     /// S (Solicitado), A (Aprovado), C (Cancelado), R (Realizado)
     /// </summary>
-    public string? Status { get; set; }
+    public string Status { get; set; } = null!;
 
     public uint IdPet { get; set; }
 

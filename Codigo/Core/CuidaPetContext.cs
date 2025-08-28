@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
@@ -55,6 +57,10 @@ public partial class CuidaPetContext : DbContext
 
     public virtual DbSet<Vacinacao> Vacinacaos { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=cuidapetdb");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agendamento>(entity =>
@@ -83,7 +89,6 @@ public partial class CuidaPetContext : DbContext
             entity.Property(e => e.IdPet).HasColumnName("idPet");
             entity.Property(e => e.IdTutor).HasColumnName("idTutor");
             entity.Property(e => e.Status)
-                .HasDefaultValueSql("'S'")
                 .HasComment("S (Solicitado), A (Aprovado), C (Cancelado), R (Realizado)")
                 .HasColumnType("enum('S','A','C','R')")
                 .HasColumnName("status");
@@ -272,8 +277,6 @@ public partial class CuidaPetContext : DbContext
 
             entity.ToTable("funcionario");
 
-            entity.HasIndex(e => e.Cpf, "cpf_UNIQUE").IsUnique();
-
             entity.HasIndex(e => e.Crmv, "crmv").IsUnique();
 
             entity.HasIndex(e => e.IdEstabelecimento, "fk_Funcionario_Estabelecimento1_idx");
@@ -281,10 +284,6 @@ public partial class CuidaPetContext : DbContext
             entity.HasIndex(e => e.IdPessoa, "idUsuario").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cpf)
-                .HasMaxLength(11)
-                .IsFixedLength()
-                .HasColumnName("cpf");
             entity.Property(e => e.Crmv)
                 .HasMaxLength(7)
                 .HasColumnName("crmv");
@@ -439,7 +438,11 @@ public partial class CuidaPetContext : DbContext
 
             entity.ToTable("pessoa");
 
+            entity.HasIndex(e => e.Cpf, "cpf_UNIQUE").IsUnique();
+
             entity.HasIndex(e => e.Email, "email").IsUnique();
+
+            entity.HasIndex(e => e.Telefone, "telefone_UNIQUE").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Bairro)
@@ -451,6 +454,10 @@ public partial class CuidaPetContext : DbContext
             entity.Property(e => e.Complemento)
                 .HasMaxLength(50)
                 .HasColumnName("complemento");
+            entity.Property(e => e.Cpf)
+                .HasMaxLength(11)
+                .IsFixedLength()
+                .HasColumnName("cpf");
             entity.Property(e => e.Email)
                 .HasMaxLength(30)
                 .HasColumnName("email");
