@@ -186,5 +186,59 @@ namespace Service.Tests
 
             Assert.AreEqual(2, quantidade);
         }
+
+        [TestMethod]
+        public void GetByCpfTest_Existente_DeveRetornarPessoa()
+        {
+            // Act
+            var pessoa = pessoaService.GetByCpf("12345678900");
+
+            // Assert
+            Assert.IsNotNull(pessoa);
+            Assert.AreEqual<uint>(1, pessoa!.Id);
+            Assert.AreEqual("João Silva", pessoa.Nome);
+            Assert.IsInstanceOfType(pessoa, typeof(Pessoa));
+        }
+
+        [TestMethod]
+        public void GetByCpfTest_Inexistente_DeveRetornarNull()
+        {
+            // Act
+            var pessoa = pessoaService.GetByCpf("00000000000");
+
+            // Assert
+            Assert.IsNull(pessoa);
+        }
+
+        [TestMethod]
+        public void GetByCpfTest_PessoaInativa_DeveRetornarPessoa()
+        {            
+            context.Pessoas.Add(new Pessoa
+            {
+                Id = 10,
+                Nome = "Inativo",
+                Senha = "123",
+                Email = "inativo@email.com",
+                Telefone = "11900000000",
+                Cpf = "55544433322",
+                Tipo = "T",
+                Status = "I", // Inativa
+                Logradouro = "Rua X",
+                Numero = "1",
+                Bairro = "Bairro X",
+                Cidade = "Cidade X",
+                Estado = "SP"
+            });
+            context.SaveChanges();
+
+            // Act
+            var pessoa = pessoaService.GetByCpf("55544433322");
+
+            // Assert
+            Assert.IsNotNull(pessoa);
+            Assert.AreEqual("I", pessoa!.Status);
+            Assert.AreEqual("Inativo", pessoa.Nome);
+            Assert.IsInstanceOfType(pessoa, typeof(Pessoa));
+        }
     }
 }
