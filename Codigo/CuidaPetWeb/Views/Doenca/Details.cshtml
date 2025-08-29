@@ -6,12 +6,10 @@
 
 <article class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="fw-bold">@ViewData["Title"]</h2>
+
     <div class="d-flex gap-2">
         <a asp-action="Index" title="Voltar para Lista" class="btn-green-primary d-flex align-items-center">
             <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
-        </a>
-        <a asp-action="Edit" asp-route-id="@Model.Id" title="Editar" class="btn btn-warning d-flex align-items-center">
-            <i class="bi bi-pencil-fill" style="font-size: 24px;"></i>
         </a>
     </div>
 </article>
@@ -25,12 +23,25 @@
                 </div>
                 <div class="card-body">
                     <dl class="row">
-                        <dt class="col-sm-3">Nome</dt>
-                        <dd class="col-sm-9">@Model.Nome</dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nome)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome)</dd>
 
-                        <dt class="col-sm-3">Espécie</dt>
-                        <dd class="col-sm-9">@Model.IdEspecie</dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdEspecie)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.IdEspecie)</dd>
                     </dl>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil-fill me-2"></i>Editar
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash-fill me-2"></i>Deletar
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-list me-2"></i>Voltar para Lista
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
