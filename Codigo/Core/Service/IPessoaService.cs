@@ -14,7 +14,6 @@ namespace Core.Service
         Pessoa? Get(uint id);
         IEnumerable<Pessoa> GetAll(int page, int pageSize);
         int GetCount();
-        // TODO: CPF
-        // string GetCpf(uint idPessoa);
+        Pessoa? GetByCpf(string cpf);
     }
 }

@@ -38,34 +38,41 @@
 						</span>
 					</th>
 					<th style="cursor: pointer;" onclick="sortTable(1, 'text')">
-						Nome
+						CPF
 						<span class="sort-arrows align-middle">
 							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
 							<i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
 						</span>
 					</th>
 					<th style="cursor: pointer;" onclick="sortTable(2, 'text')">
-						Email
+						Nome
 						<span class="sort-arrows align-middle">
 							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
 							<i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
 						</span>
 					</th>
 					<th style="cursor: pointer;" onclick="sortTable(3, 'text')">
+						Email
+						<span class="sort-arrows align-middle">
+							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+							<i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+						</span>
+					</th>
+					<th style="cursor: pointer;" onclick="sortTable(4, 'text')">
 						Endereço
 						<span class="sort-arrows align-middle">
 							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
 							<i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
 						</span>
 					</th>
-					<th style="cursor: pointer;" onclick="sortTable(4, 'text')">
+					<th style="cursor: pointer;" onclick="sortTable(5, 'text')">
 						Cidade
 						<span class="sort-arrows align-middle">
 							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
 							<i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
 						</span>
 					</th>
-					<th style="cursor: pointer;" onclick="sortTable(4, 'text')">
+					<th style="cursor: pointer;" onclick="sortTable(6, 'text')">
 						Estado
 						<span class="sort-arrows align-middle">
 							<i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
@@ -82,6 +89,7 @@
 				{
 					<tr>
 						<td>@tutor.Id</td>
+						<td>@tutor.Cpf</td>
 						<td>@tutor.Nome</td>
 						<td>@tutor.Email</td>
 						<td>@tutor.Logradouro, @tutor.Numero</td>

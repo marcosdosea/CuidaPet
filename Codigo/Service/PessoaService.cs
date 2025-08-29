@@ -22,19 +22,17 @@ namespace Service
 
         public void Delete(uint id)
         {
-            var entity = context.Pessoas.Find(id);
-            if (entity != null)
+            var pessoa = context.Pessoas.Find(id);
+            if (pessoa != null)
             {
-                entity.Status = "I"; // Inativo
+                pessoa.Status = "I"; // Inativo
                 context.SaveChanges();
             }
         }
 
         public void Edit(Pessoa pessoa)
         {
-            var entity = context.Pessoas.Find(pessoa.Id);
-
-            if (entity != null)
+            if (pessoa != null)
             {
                 context.Pessoas.Update(pessoa);
                 context.SaveChanges();
@@ -62,7 +60,9 @@ namespace Service
             return context.Pessoas.Count(p => p.Tipo == "T" && p.Status == "A");
         }
 
-        // TODO: CPF
-        // public string GetCpf(uint idPessoa);
+        public Pessoa? GetByCpf(string cpf)
+        {
+            return context.Pessoas.FirstOrDefault(p => p.Cpf == cpf);
+        }
     }
 }
