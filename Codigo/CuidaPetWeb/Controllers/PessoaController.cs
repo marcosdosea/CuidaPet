@@ -23,7 +23,7 @@ namespace CuidaPetWeb.Controllers
             var pessoas = pessoaService.GetAll(page, pageSize);
             var viewModel = mapper.Map<IEnumerable<PessoaViewModel>>(pessoas);
 
-            ViewBag.TotalCount = pessoaService.GetCount();
+            ViewBag.TotalItems = pessoaService.GetCount();
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
 
@@ -70,7 +70,7 @@ namespace CuidaPetWeb.Controllers
         // POST: PessoaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(uint id, PessoaViewModel viewModel)
+        public ActionResult Edit(PessoaViewModel viewModel)
         {
             if (ModelState.IsValid)
             {

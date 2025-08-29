@@ -22,19 +22,17 @@ namespace Service
 
         public void Delete(uint id)
         {
-            var entity = context.Pessoas.Find(id);
-            if (entity != null)
+            var pessoa = context.Pessoas.Find(id);
+            if (pessoa != null)
             {
-                entity.Status = "I"; // Inativo
+                pessoa.Status = "I"; // Inativo
                 context.SaveChanges();
             }
         }
 
         public void Edit(Pessoa pessoa)
         {
-            var entity = context.Pessoas.Find(pessoa.Id);
-
-            if (entity != null)
+            if (pessoa != null)
             {
                 context.Pessoas.Update(pessoa);
                 context.SaveChanges();
