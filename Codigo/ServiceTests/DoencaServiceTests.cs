@@ -1,6 +1,6 @@
 ﻿using Core;
-using Core.Service;
 using Core.DTO;
+using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace Service.Tests

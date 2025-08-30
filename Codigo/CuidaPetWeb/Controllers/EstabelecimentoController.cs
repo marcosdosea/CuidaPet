@@ -39,10 +39,10 @@ namespace CuidaPetWeb.Controllers
         }
 
         public ActionResult Create()
-        {   
+        {
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(EstabelecimentoViewModel estabelecimentoViewModel)

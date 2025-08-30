@@ -1,61 +1,187 @@
 ﻿@model CuidaPetWeb.Models.FuncionarioViewModel
 
 @{
-    ViewData["Title"] = "Novo Funcionário";
+    ViewData["Title"] = "Create";
 }
+<div asp-validation-summary="All" class="alert alert-danger"></div>
+<style>
+    .readonly-style[readonly] {
+        background-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+</style>
 
-<article class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="fw-bold">@ViewData["Title"]</h2>
+<h1>Novo Funcionário</h1>
 
-    <div class="d-flex gap-2">
-        <a asp-action="Index" title="Voltar para Lista" class="btn-green-primary d-flex align-items-center">
-            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
-        </a>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" autocomplete="off">
+            <input asp-for="IdPessoa" type="hidden" id="idPessoaInput" value="0" />
+            <input asp-for="Status" type="hidden" value="A" />
+            <div class="form-group">
+                <label asp-for="Cpf" class="control-label"></label>
+                <input asp-for="Cpf" class="form-control" id="cpfInput" />
+                <span asp-validation-for="Cpf" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control readonly-style" id="nomeInput" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control readonly-style" id="emailInput" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Senha" class="control-label"></label>
+                <input asp-for="Senha" class="form-control readonly-style" id="senhaInput" />
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefone" class="control-label"></label>
+                <input asp-for="Telefone" class="form-control readonly-style" id="telefoneInput" />
+                <span asp-validation-for="Telefone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Logradouro" class="control-label"></label>
+                <input asp-for="Logradouro" class="form-control readonly-style" id="logradouroInput" />
+                <span asp-validation-for="Logradouro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" class="form-control readonly-style" id="numeroInput" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Complemento" class="control-label"></label>
+                <input asp-for="Complemento" class="form-control readonly-style" id="complementoInput" />
+                <span asp-validation-for="Complemento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bairro" class="control-label"></label>
+                <input asp-for="Bairro" class="form-control readonly-style" id="bairroInput" />
+                <span asp-validation-for="Bairro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cidade" class="control-label"></label>
+                <input asp-for="Cidade" class="form-control readonly-style" id="cidadeInput" />
+                <span asp-validation-for="Cidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <input asp-for="Estado" class="form-control readonly-style" id="estadoInput" />
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <select asp-for="Tipo" class="form-control" id="tipoSelect">
+                    <option value="A">Atendente</option>
+                    <option value="V">Veterinário</option>
+                </select>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="crmvGroup" style="display:none;">
+                <label asp-for="Crmv" class="control-label"></label>
+                <input asp-for="Crmv" class="form-control" id="crmvInput" />
+                <span asp-validation-for="Crmv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEstabelecimento" class="control-label"></label>
+                <input asp-for="IdEstabelecimento" class="form-control" />
+                <span asp-validation-for="IdEstabelecimento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Criar" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-</article>
+</div>
 
-<section class="bg-gray-light p-4 rounded">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Crmv" class="form-label"></label>
-                        <input asp-for="Crmv" class="form-control" />
-                        <span asp-validation-for="Crmv" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="IdPessoa" class="form-label"></label>
-                        <input asp-for="IdPessoa" class="form-control" type="number" />
-                        <span asp-validation-for="IdPessoa" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="IdEstabelecimento" class="form-label"></label>
-                        <input asp-for="IdEstabelecimento" class="form-control" type="number" />
-                        <span asp-validation-for="IdEstabelecimento" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle me-2"></i>Salvar
-                    </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-x-circle me-2"></i>Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
+<div>
+    <a asp-action="Index">Voltar</a>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        function toggleCrmv() {
+            var tipo = document.getElementById('tipoSelect').value;
+            var crmvGroup = document.getElementById('crmvGroup');
+            var crmvInput = document.getElementById('crmvInput');
+            if (tipo === 'V') {
+                crmvGroup.style.display = '';
+                crmvInput.setAttribute('required', 'required');
+                crmvInput.setAttribute('data-val', 'true');
+                crmvInput.setAttribute('data-val-required', 'O campo CRMV é obrigatório para veterinários.');
+            } else {
+                crmvGroup.style.display = 'none';
+                crmvInput.removeAttribute('required');
+                crmvInput.value = '';
+                crmvInput.removeAttribute('data-val-required');
+
+                var span = crmvInput.nextElementSibling;
+                if (span && span.classList.contains('field-validation-error')) {
+                    span.innerText = '';
+                }
+            }
+        }
+        document.getElementById('tipoSelect').addEventListener('change', toggleCrmv);
+        toggleCrmv();
+
+        function setPessoaFieldsDisabled(disabled) {
+            var fields = [
+                'nomeInput', 'emailInput', 'senhaInput', 'telefoneInput',
+                'logradouroInput', 'numeroInput', 'complementoInput',
+                'bairroInput', 'cidadeInput', 'estadoInput'
+            ];
+            fields.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.readOnly = disabled;
+                    if (disabled) {
+                        el.classList.add('readonly-style');
+                    } else {
+                        el.classList.remove('readonly-style');
+                    }
+                }
+            });
+        }
+
+        document.getElementById('cpfInput').addEventListener('blur', function() {
+            var cpf = this.value.replace(/\D/g, '');
+            if (cpf.length === 11) {
+                fetch('/Funcionario/GetPessoaByCpf?cpf=' + cpf)
+                    .then(response => {
+                        if (!response.ok) return null;
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.id) {
+                            document.getElementById('idPessoaInput').value = data.id;
+                            document.getElementById('nomeInput').value = data.nome;
+                            document.getElementById('emailInput').value = data.email || '';
+                            document.getElementById('senhaInput').value = data.senha;
+                            document.getElementById('telefoneInput').value = data.telefone;
+                            document.getElementById('logradouroInput').value = data.logradouro;
+                            document.getElementById('numeroInput').value = data.numero;
+                            document.getElementById('complementoInput').value = data.complemento || '';
+                            document.getElementById('bairroInput').value = data.bairro;
+                            document.getElementById('cidadeInput').value = data.cidade;
+                            document.getElementById('estadoInput').value = data.estado;
+                            setPessoaFieldsDisabled(true);
+                        } else {
+                            document.getElementById('idPessoaInput').value = '0';
+                            setPessoaFieldsDisabled(false);
+                        }
+                    });
+            } else {
+                setPessoaFieldsDisabled(false);
+            }
+        });
+    </script>
 }

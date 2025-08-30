@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Core;
+﻿namespace Core;
 
 public partial class Funcionario
 {
     public uint Id { get; set; }
 
-    public string Crmv { get; set; } = null!;
+    public string? Crmv { get; set; }
 
     public uint IdPessoa { get; set; }
 

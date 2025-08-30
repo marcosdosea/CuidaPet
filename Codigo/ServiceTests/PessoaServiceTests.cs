@@ -212,7 +212,7 @@ namespace Service.Tests
 
         [TestMethod]
         public void GetByCpfTest_PessoaInativa_DeveRetornarPessoa()
-        {            
+        {
             context.Pessoas.Add(new Pessoa
             {
                 Id = 10,

@@ -13,7 +13,7 @@ namespace CuidaPetWeb.Controllers.Tests
     {
         private static ProdutoController controller = null!;
         private readonly int page = 1;
-        private readonly int pageSize = 10; 
+        private readonly int pageSize = 10;
 
         [TestInitialize]
         public void Initialize()
