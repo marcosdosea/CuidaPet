@@ -15,12 +15,12 @@ namespace CuidaPetWeb.Models
         [Display(Name = "CPF")]
         [CPF]
         public string Cpf { get; set; } = null!;
-        [Required(ErrorMessage = "Por favor, informe um email")]
         [Display(Name = "Email")]
         public string Email { get; set; } = null!;
         [Required(ErrorMessage = "A senha é obrigatória")]
         [Display(Name = "Senha")]
         public string Senha { get; set; } = null!;
+        [Required(ErrorMessage = "Por favor, informe um telefone")]
         [Display(Name = "Telefone")]
         public string? Telefone { get; set; }
         /// <summary>

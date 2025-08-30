@@ -21,7 +21,7 @@ namespace Service
         /// <returns>ID do Produto</returns>
         public uint Create(Produto produto)
         {
-            if(produto.PrecoPromocao > produto.Preco)
+            if (produto.PrecoPromocao > produto.Preco)
                 throw new ServiceException("O preço promocional não pode ser maior que o preço normal.");
 
             context.Produtos.Add(produto);
@@ -35,7 +35,7 @@ namespace Service
         /// <param name="produto">Dados do Produto</param>
         public void Edit(Produto produto)
         {
-            if(produto.PrecoPromocao > produto.Preco)
+            if (produto.PrecoPromocao > produto.Preco)
                 throw new ServiceException("O preço promocional não pode ser maior que o preço normal.");
 
             context.Produtos.Update(produto);

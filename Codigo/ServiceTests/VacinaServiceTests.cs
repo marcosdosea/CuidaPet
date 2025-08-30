@@ -1,6 +1,6 @@
 ﻿using Core;
-using Core.Service;
 using Core.DTO;
+using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace Service.Tests
@@ -79,14 +79,15 @@ namespace Service.Tests
         public void CreateTest()
         {
             // Act
-            var novaVacinaId = vacinaService.Create(new() {
+            var novaVacinaId = vacinaService.Create(new()
+            {
                 Id = 4,
                 Nome = "Giárdia Canina - 1ª Dose",
                 PeriodoEmDias = 21,
                 IdDoenca = 3,
                 IdEspecie = 1
             });
-            
+
             // Assert
             Assert.AreEqual((uint)4, novaVacinaId);
             Assert.AreEqual(4, vacinaService.GetAll(page, pageSize).Count());

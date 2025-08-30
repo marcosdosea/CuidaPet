@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Service;
-using CuidaPetWeb.Controllers;
 using CuidaPetWeb.Mappers;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,7 @@ namespace CuidaPetWeb.Controllers.Tests
     [TestClass()]
     public class EstabelecimentoControllerTests
     {
-        private EstabelecimentoController ?controller = null;
+        private EstabelecimentoController? controller = null;
         private readonly int page = 1;
         private readonly int pageSize = 10;
 

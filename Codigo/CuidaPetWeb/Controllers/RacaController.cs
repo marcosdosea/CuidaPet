@@ -3,7 +3,6 @@ using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -27,7 +26,7 @@ namespace CuidaPetWeb.Controllers
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = racaService.GetCount();
-            
+
             return View(racaViewModels);
         }
 

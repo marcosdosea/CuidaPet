@@ -8,7 +8,6 @@ public class FuncionarioProfile : Profile
 {
     public FuncionarioProfile()
     {
-        CreateMap<FuncionarioViewModel, Funcionario>().ReverseMap();
+        CreateMap<Funcionario, FuncionarioViewModel>().ReverseMap();
     }
-
 }

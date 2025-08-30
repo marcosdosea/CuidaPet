@@ -241,7 +241,7 @@ DROP TABLE IF EXISTS `funcionario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `funcionario` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `crmv` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `crmv` varchar(7) COLLATE utf8mb4_unicode_ci,
   `idPessoa` int unsigned NOT NULL,
   `idEstabelecimento` int unsigned NOT NULL,
   PRIMARY KEY (`id`),

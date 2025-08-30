@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core;
-using Core.DTO;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ namespace CuidaPetWeb.Controllers
         {
             var especies = especieService.GetAll(page, pageSize);
             var especiesViewModel = mapper.Map<IEnumerable<EspecieViewModel>>(especies);
-            
+
             ViewBag.TotalItems = especieService.GetCount();
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;

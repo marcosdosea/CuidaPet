@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Service;
-using CuidaPetWeb.Controllers;
 using CuidaPetWeb.Mappers;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CuidaPetWeb.Controllers.Tests
 {
     [TestClass()]
     public class VacinaControllerTests
     {
-        private VacinaController ?controller = null;
+        private VacinaController? controller = null;
         private readonly int page = 1;
         private readonly int pageSize = 10;
 

@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Core;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace CuidaPetWeb.Models
 {

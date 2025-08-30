@@ -52,7 +52,7 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pessoa = mapper.Map<Pessoa>(viewModel);                
+                var pessoa = mapper.Map<Pessoa>(viewModel);
                 pessoaService.Create(pessoa);
                 return RedirectToAction(nameof(Index));
             }
@@ -93,7 +93,7 @@ namespace CuidaPetWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, PessoaViewModel viewModel)
-        {            
+        {
             pessoaService.Delete(id);
             return RedirectToAction(nameof(Index));
         }

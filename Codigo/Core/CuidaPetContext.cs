@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
@@ -56,6 +54,7 @@ public partial class CuidaPetContext : DbContext
     public virtual DbSet<Vacina> Vacinas { get; set; }
 
     public virtual DbSet<Vacinacao> Vacinacaos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agendamento>(entity =>

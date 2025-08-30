@@ -7,8 +7,9 @@ namespace CuidaPetWeb.Mappers
     public class PessoaProfile : Profile
     {
         public PessoaProfile()
-        {            
+        {
             CreateMap<PessoaViewModel, Pessoa>().ReverseMap();
+            CreateMap<FuncionarioViewModel, Pessoa>().ReverseMap();
         }
     }
 }
