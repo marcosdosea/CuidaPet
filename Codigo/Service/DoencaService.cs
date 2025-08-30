@@ -72,8 +72,9 @@ namespace Service
         public IEnumerable<Doenca> GetAll(int page, int pageSize)
         {
             return context.Doencas
-                .AsNoTracking()
+                .Include(d => d.IdEspecieNavigation)
                 .OrderBy(d => d.Id)
+                .AsNoTracking()
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }
@@ -83,16 +84,16 @@ namespace Service
         /// </summary>
         /// <param name="nome">Nome da Doença</param>
         /// <returns>Lista de Doenças</returns>
-        public IEnumerable<DoencaDTO> GetByNome(string nome)
+        public IEnumerable<Doenca> GetByNome(string nome)
         {
             return context.Doencas
                 .AsNoTracking()
                 .Where(d => d.Nome.Contains(nome))
-                .Select(d => new DoencaDTO
+                .Select(d => new Doenca
                 {
                     Id = d.Id,
                     Nome = d.Nome,
-                    Especie = d.IdEspecieNavigation != null ? d.IdEspecieNavigation.Nome : string.Empty
+                    IdEspecie = d.IdEspecie
                 })
                 .ToList();
         }
