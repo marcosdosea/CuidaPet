@@ -181,7 +181,7 @@ namespace Service
 
             var tutor = context.Pessoapets
                 .Include(pp => pp.IdPessoaNavigation)
-                .Where(pp => pp.IdPet == idPet && pp.IdPessoaNavigation.Tipo == "T")
+                .Where(pp => pp.IdPet == idPet)
                 .Select(pp => pp.IdPessoaNavigation)
                 .FirstOrDefault();
 
