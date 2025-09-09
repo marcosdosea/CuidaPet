@@ -8,6 +8,7 @@ using Moq;
 
 namespace CuidaPetWeb.Controllers.Tests
 {
+    [TestClass()]
     public class DoencaControllerTests
     {
         private static DoencaController controller = null!;
