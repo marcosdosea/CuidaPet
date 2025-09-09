@@ -3,6 +3,8 @@ using Core.Service;
 using CuidaPetWebFilter;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using CuidaPetWeb.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 namespace CuidaPetWeb
 {
     public class Program
@@ -33,6 +35,33 @@ namespace CuidaPetWeb
             builder.Services.AddDbContext<CuidaPetContext>(
                 options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")!));
 
+            builder.Services.AddDbContext<IdentityContext>(options =>
+                options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDatabase")!));
+
+            builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
+            { 
+                //SignIn Settings
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.SignIn.RequireConfirmedAccount = false;
+
+                //Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+
+                //User settings
+                options.User.RequireUniqueEmail = false;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+                //Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            }).AddEntityFrameworkStores<IdentityContext>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -48,7 +77,10 @@ namespace CuidaPetWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",

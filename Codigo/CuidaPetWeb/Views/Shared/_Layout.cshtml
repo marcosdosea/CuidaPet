@@ -24,98 +24,93 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-4">
-            <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center"
-                 style="width: 40px; height: 40px;">
-                <i class="bi bi-person-circle" style="font-size: 20px;"></i>
-            </div>
-            <div class="me-2 text-white">
-                <div class="fw-bold">Marcos B. Dósea</div>
-                <small>Administrador</small>
-            </div>
+            <partial name="_LoginPartial" />
         </div>
     </header>
 
 
 
     <!-- Menu lateral -->
-    <nav id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <!-- Seta quando sidebar fechado -->
-                <button class="logo-arrow-btn" id="logoArrowBtn">
-                    <i class="bi bi-arrow-right"></i>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <!-- Seta quando sidebar fechado -->
+                    <button class="logo-arrow-btn" id="logoArrowBtn">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <span class="logo-text">CuidaPet</span>
+                </div>
+                <button class="close-btn" id="closeMenu">
+                    <i class="bi bi-x"></i>
                 </button>
-                <span class="logo-text">CuidaPet</span>
             </div>
-            <button class="close-btn" id="closeMenu">
-                <i class="bi bi-x"></i>
-            </button>
-        </div>
 
-        <ul>
-            <li>
-                <a asp-area="" asp-controller="Produto" asp-action="Index">
-                    <i class="bi bi-tag-fill"></i>
-                    <span>Produtos</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Funcionario" asp-action="Index">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Funcionários</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Estabelecimento" asp-action="Index">
-                    <i class="bi bi-building-fill"></i>
-                    <span>Estabelecimentos</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Raca" asp-action="Index">
-                    <i class="fa-solid fa-dog"></i>
-                    <span>Raças</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Vacina" asp-action="Index">
-                    <i class="fa-solid fa-syringe"></i>
-                    <span>Vacinas</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Especie" asp-action="Index">
-                    <i class="fa fa-paw"></i>
-                    <span>Espécies</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Doenca" asp-action="Index">
-                    <i class="bi bi-thermometer-half"></i>
-                    <span>Doenças</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Pessoa" asp-action="Index">
-                    <i class="bi bi-person-fill"></i>
-                    <span>Tutor</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Pet" asp-action="Index">
-                    <i class="fa-solid fa-cat"></i>
-                    <span>Meus Pets</span>
-                </a>
-            </li>
-            <li>
-                <a asp-area="" asp-controller="Especialidade" asp-action="Index">
-                    <i class="fa-solid fa-stethoscope"></i>
-                    <span>Especialidades</span>
-				</a>
-            </li>
-        </ul>
-    </nav>
-
+            <ul>
+                <li>
+                    <a asp-area="" asp-controller="Produto" asp-action="Index">
+                        <i class="bi bi-tag-fill"></i>
+                        <span>Produtos</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Funcionario" asp-action="Index">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Funcionários</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Estabelecimento" asp-action="Index">
+                        <i class="bi bi-building-fill"></i>
+                        <span>Estabelecimentos</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Raca" asp-action="Index">
+                        <i class="fa-solid fa-dog"></i>
+                        <span>Raças</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Vacina" asp-action="Index">
+                        <i class="fa-solid fa-syringe"></i>
+                        <span>Vacinas</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Especie" asp-action="Index">
+                        <i class="fa fa-paw"></i>
+                        <span>Espécies</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Doenca" asp-action="Index">
+                        <i class="bi bi-thermometer-half"></i>
+                        <span>Doenças</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Pessoa" asp-action="Index">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Tutor</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Pet" asp-action="Index">
+                        <i class="fa-solid fa-cat"></i>
+                        <span>Meus Pets</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Especialidade" asp-action="Index">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        <span>Especialidades</span>
+				    </a>
+                </li>
+            </ul>
+        </nav>
+    }
     <!-- Conteúdo principal -->
     <div class="main-wrapper" id="mainWrapper">
         <div class="container">
