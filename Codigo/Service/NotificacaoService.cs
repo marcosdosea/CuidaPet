@@ -39,6 +39,14 @@ namespace Service
             var entity = context.Notificacaos.Find(id);
             if (entity == null) return;
 
+            // Remove relacionamentos pessoa-notificação primeiro
+            var pessoaNotificacoes = context.Pessoanotificacaos
+                .Where(pn => pn.IdNotificacao == id)
+                .ToList();
+            
+            context.Pessoanotificacaos.RemoveRange(pessoaNotificacoes);
+
+            // Remove a notificação
             context.Notificacaos.Remove(entity);
             context.SaveChanges();
         }
