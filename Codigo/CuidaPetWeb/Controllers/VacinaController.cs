@@ -2,11 +2,13 @@
 using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
+    [Authorize]
     public class VacinaController : Controller
     {
         private readonly IVacinaService vacinaService;
