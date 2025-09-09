@@ -1,92 +1,115 @@
 ﻿@model CuidaPetWeb.Models.FuncionarioViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Funcionário";
 }
 
-<h1>Edit</h1>
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
 
-<h4>Funcionário</h4>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <input asp-for="Id" type="hidden" />
-            <input asp-for="IdPessoa" type="hidden" />
-
-            <div class="form-group">
-                <label asp-for="Cpf" class="control-label"></label>
-                <input asp-for="Cpf" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Senha" class="control-label"></label>
-                <input asp-for="Senha" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefone" class="control-label"></label>
-                <input asp-for="Telefone" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Logradouro" class="control-label"></label>
-                <input asp-for="Logradouro" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Complemento" class="control-label"></label>
-                <input asp-for="Complemento" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Bairro" class="control-label"></label>
-                <input asp-for="Bairro" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Cidade" class="control-label"></label>
-                <input asp-for="Cidade" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" readonly />
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
-                <select asp-for="Tipo" class="form-control" id="tipoSelect">
-                    <option value="A">Atendente</option>
-                    <option value="V">Veterinário</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="crmvGroup" style="display:none;">
-                <label asp-for="Crmv" class="control-label"></label>
-                <input asp-for="Crmv" class="form-control" id="crmvInput" />
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdEstabelecimento" class="control-label"></label>
-                <input asp-for="IdEstabelecimento" class="form-control" readonly />
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" title="Voltar para Lista" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
     </div>
-</div>
+</article>
 
-<div>
-    <a asp-action="Index">Voltar</a>
-</div>
+<section class="bg-gray-light p-4 rounded">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-gray-medium">
+                    <h5 class="card-title mb-0">Editar Funcionário #@Model.Id</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input asp-for="Id" type="hidden" />
+                        <input asp-for="IdPessoa" type="hidden" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Cpf" class="control-label fw-bold"></label>
+                                    <input asp-for="Cpf" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nome" class="control-label fw-bold"></label>
+                                    <input asp-for="Nome" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="control-label fw-bold"></label>
+                                    <input asp-for="Email" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Senha" class="control-label fw-bold"></label>
+                                    <input asp-for="Senha" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Telefone" class="control-label fw-bold"></label>
+                                    <input asp-for="Telefone" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Tipo" class="control-label fw-bold"></label>
+                                    <select asp-for="Tipo" class="form-control" id="tipoSelect">
+                                        <option value="A">Atendente</option>
+                                        <option value="V">Veterinário</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3" id="crmvGroup" style="display:none;">
+                                    <label asp-for="Crmv" class="control-label fw-bold"></label>
+                                    <input asp-for="Crmv" class="form-control" id="crmvInput" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="IdEstabelecimento" class="control-label fw-bold"></label>
+                                    <input asp-for="IdEstabelecimento" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold mb-3">Endereço</h6>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Logradouro" class="control-label fw-bold"></label>
+                                    <input asp-for="Logradouro" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Numero" class="control-label fw-bold"></label>
+                                    <input asp-for="Numero" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Complemento" class="control-label fw-bold"></label>
+                                    <input asp-for="Complemento" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Bairro" class="control-label fw-bold"></label>
+                                    <input asp-for="Bairro" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Cidade" class="control-label fw-bold"></label>
+                                    <input asp-for="Cidade" class="form-control" readonly />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Estado" class="control-label fw-bold"></label>
+                                    <input asp-for="Estado" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-3">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Salvar
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                                <i class="bi bi-eye me-2"></i>Ver Detalhes
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     @{
