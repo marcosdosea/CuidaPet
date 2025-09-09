@@ -52,9 +52,9 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dto = mapper.Map<Notificacao>(viewModel);
-                dto.DataEnvio = DateTime.Now; // Define a data atual
-                notificacaoService.Create(dto);
+                var notificacao = mapper.Map<Notificacao>(viewModel);
+                notificacao.DataEnvio = DateTime.Now; // Define a data atual
+                notificacaoService.Create(notificacao);
                 return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
