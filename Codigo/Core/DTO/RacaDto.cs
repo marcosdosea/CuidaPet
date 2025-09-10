@@ -1,6 +1,6 @@
 ﻿namespace Core.DTO
 {
-    public class Raca
+    public class RacaDto
     {
         public uint Id { get; set; }
         public string Nome { get; set; } = null!;

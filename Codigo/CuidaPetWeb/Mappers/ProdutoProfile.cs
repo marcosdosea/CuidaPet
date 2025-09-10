@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.DTO;
 using CuidaPetWeb.Models;
 
 namespace CuidaPetWeb.Mappers
@@ -8,7 +9,12 @@ namespace CuidaPetWeb.Mappers
     {
         public ProdutoProfile()
         {
-            CreateMap<ProdutoViewModel, Produto>().ReverseMap();
+            CreateMap<Produto, ProdutoViewModel>()
+                .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.IdCategoriaNavigation != null ? src.IdCategoriaNavigation.Nome : string.Empty));
+
+            CreateMap<ProdutoDTO, ProdutoViewModel>()
+                .ForMember(dest => dest.IdCategoria, opt => opt.Ignore())
+                .ForMember(dest => dest.IdEstabelecimento, opt => opt.Ignore());
         }
     }
 }

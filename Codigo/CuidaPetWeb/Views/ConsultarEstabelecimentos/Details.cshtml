@@ -1,0 +1,62 @@
+﻿@model CuidaPetWeb.Models.DetalhesEstabelecimentoViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Estabelecimento";
+}
+
+<article class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
+    <a asp-action="Index" class="btn btn-secondary d-flex align-items-center" title="Voltar para Lista" style="min-width: 120px;">
+        <i class="bi bi-arrow-left-circle-fill me-2" style="font-size: 24px;"></i>
+        Voltar
+    </a>
+</article>
+
+<section class="bg-gray-light p-4 rounded mb-4">
+    <h4 class="mb-3">Informações do Estabelecimento</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Nome</dt>
+        <dd class="col-sm-9">@Model.Nome</dd>
+
+        <dt class="col-sm-3">Bairro</dt>
+        <dd class="col-sm-9">@Model.Bairro</dd>
+
+        <dt class="col-sm-3">Logradouro</dt>
+        <dd class="col-sm-9">@Model.Logradouro</dd>
+
+        <dt class="col-sm-3">Telefone</dt>
+        <dd class="col-sm-9">@Model.Telefone</dd>
+    </dl>
+</section>
+
+<section class="bg-gray-light p-4 rounded">
+    <h4 class="mb-3">Produtos do Estabelecimento</h4>
+    @if (Model.Produtos != null && Model.Produtos.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var produto in Model.Produtos)
+                {
+                    <tr>
+                        <td>@produto.Nome</td>
+                        <td>R$ @produto.Preco.ToString("F2")</td>
+                        <td>@produto.Descricao</td>
+                        <td>@produto.Categoria</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <span>Nenhum produto cadastrado para este estabelecimento.</span>
+    }
+</section>
