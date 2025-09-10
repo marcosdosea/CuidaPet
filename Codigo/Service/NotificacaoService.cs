@@ -43,7 +43,7 @@ namespace Service
             var pessoaNotificacoes = context.Pessoanotificacaos
                 .Where(pn => pn.IdNotificacao == id)
                 .ToList();
-            
+
             context.Pessoanotificacaos.RemoveRange(pessoaNotificacoes);
 
             // Remove a notificação
@@ -108,6 +108,25 @@ namespace Service
                 .Where(pn => pn.IdPessoa == idPessoa)
                 .OrderByDescending(pn => pn.IdNotificacaoNavigation.DataEnvio)
                 .Select(pn => pn.IdNotificacaoNavigation)
+                .ToList();
+        }
+
+        public List<object> ObterNotificacoesComStatusPorPessoa(uint idPessoa)
+        {
+            return context.Pessoanotificacaos
+                .AsNoTracking()
+                .Include(pn => pn.IdNotificacaoNavigation)
+                .Where(pn => pn.IdPessoa == idPessoa)
+                .OrderByDescending(pn => pn.IdNotificacaoNavigation.DataEnvio)
+                .Select(pn => new
+                {
+                    Id = pn.IdNotificacaoNavigation.Id,
+                    Titulo = pn.IdNotificacaoNavigation.Titulo,
+                    Descricao = pn.IdNotificacaoNavigation.Descricao,
+                    DataEnvio = pn.IdNotificacaoNavigation.DataEnvio,
+                    StatusLida = pn.StatusLida
+                })
+                .Cast<object>()
                 .ToList();
         }
 
