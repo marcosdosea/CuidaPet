@@ -14,6 +14,7 @@
         void EnviarNotificacao(string titulo, string mensagem, uint idPessoa);
         List<Notificacao> ObterNotificacoesPorPessoa(uint idPessoa);
         void MarcarComoLida(uint idNotificacao, uint idPessoa);
+        List<Notificacao> ObterNotificacoesComStatusPorPessoa(uint idPessoa);
 
         // Casos de uso específicos
         void NotificarAprovacaoPedido(uint idPedido);
