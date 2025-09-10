@@ -2,10 +2,12 @@
 using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CuidaPetWeb.Controllers
 {
+    [Authorize]
     public class FuncionarioController : Controller
     {
         private readonly IFuncionarioService funcionarioService;
@@ -27,7 +29,7 @@ namespace CuidaPetWeb.Controllers
             var funcionarioViewModels = mapper.Map<IEnumerable<FuncionarioViewModel>>(funcionarios);
 
             funcionarioViewModels = funcionarioViewModels
-                .Where(f => f.Tipo == "V" || f.Tipo == "T")
+                .Where(f => f.Tipo == "V" || f.Tipo == "A")
                 .ToList();
 
             ViewBag.Page = page;
@@ -81,7 +83,6 @@ namespace CuidaPetWeb.Controllers
                 }
                 else
                 {
-                    // Cria Pessoa e depois o Funcionário
                     var pessoa = mapper.Map<Pessoa>(funcionarioViewModel);
                     pessoa.Tipo = funcionarioViewModel.Tipo;
                     var idPessoa = pessoaService.Create(pessoa);
@@ -101,25 +102,6 @@ namespace CuidaPetWeb.Controllers
         {
             var funcionario = funcionarioService.Get(id);
             var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
-
-            var pessoa = pessoaService.Get(funcionario.IdPessoa);
-            if (pessoa != null)
-            {
-                funcionarioViewModel.Nome = pessoa.Nome;
-                funcionarioViewModel.Email = pessoa.Email ?? "";
-                funcionarioViewModel.Senha = pessoa.Senha;
-                funcionarioViewModel.Telefone = pessoa.Telefone;
-                funcionarioViewModel.Logradouro = pessoa.Logradouro;
-                funcionarioViewModel.Numero = pessoa.Numero;
-                funcionarioViewModel.Complemento = pessoa.Complemento;
-                funcionarioViewModel.Bairro = pessoa.Bairro;
-                funcionarioViewModel.Cidade = pessoa.Cidade;
-                funcionarioViewModel.Estado = pessoa.Estado;
-                funcionarioViewModel.Cpf = pessoa.Cpf;
-                funcionarioViewModel.Status = pessoa.Status;
-                funcionarioViewModel.Tipo = pessoa.Tipo;
-            }
-
             return View(funcionarioViewModel);
         }
 

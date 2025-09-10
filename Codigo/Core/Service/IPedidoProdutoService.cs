@@ -35,5 +35,17 @@ namespace Core.Service
 
         // Buscar detalhes do pedido para exibição
         PedidoProdutoDto? GetDetalhes(uint id);
+
+        // Buscar todos os itens de um pedido específico
+        IEnumerable<PedidoProdutoDto> GetItensByPedidoId(uint pedidoId);
+
+        // Recusar pedido: deletar itens e desativar pedido
+        void RecusarPedido(uint pedidoProdutoId);
+
+        // Buscar pedidos com filtros e ordenação
+        IEnumerable<PedidoProdutoDto> GetPedidosAtivos(int page, int pageSize, string? sortBy = null, bool descending = false);
+
+        // Contar total de pedidos ativos
+        int GetCountPedidosAtivos();
     }
 }

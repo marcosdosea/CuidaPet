@@ -3,6 +3,8 @@ using Core.Service;
 using CuidaPetWebFilter;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using CuidaPetWeb.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 namespace CuidaPetWeb
 {
     public class Program
@@ -26,12 +28,40 @@ namespace CuidaPetWeb
             builder.Services.AddTransient<IPetService, PetService>();
             builder.Services.AddTransient<IPessoaService, PessoaService>();
             builder.Services.AddTransient<IEspecialidadeService, EspecialidadeService>();
-
+            builder.Services.AddTransient<INotificacaoService, NotificacaoService>();
+            builder.Services.AddTransient<IPedidoProdutoService, PedidoProdutoService>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDbContext<CuidaPetContext>(
                 options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")!));
+
+            builder.Services.AddDbContext<IdentityContext>(options =>
+                options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDatabase")!));
+
+            builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
+            { 
+                //SignIn Settings
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.SignIn.RequireConfirmedAccount = false;
+
+                //Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+
+                //User settings
+                options.User.RequireUniqueEmail = false;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+                //Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            }).AddEntityFrameworkStores<IdentityContext>();
 
             var app = builder.Build();
 
@@ -48,7 +78,10 @@ namespace CuidaPetWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",

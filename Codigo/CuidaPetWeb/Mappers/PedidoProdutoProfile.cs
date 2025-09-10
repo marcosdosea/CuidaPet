@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core;
+using Core.DTO;
 using CuidaPetWeb.Models;
 
 namespace CuidaPetWeb.Mappers
@@ -8,7 +8,7 @@ namespace CuidaPetWeb.Mappers
     {
         public PedidoProdutoProfile()
         {
-            CreateMap<PedidoProdutoViewModel, Pedidoproduto>().ReverseMap();
+            CreateMap<PedidoProdutoDto, PedidoProdutoViewModel>().ReverseMap();
         }
     }
 }

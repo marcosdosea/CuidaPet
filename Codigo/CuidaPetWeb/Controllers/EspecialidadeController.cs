@@ -2,10 +2,12 @@
 using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CuidaPetWeb.Controllers
 {
+    [Authorize]
     public class EspecialidadeController : Controller
     {
         private readonly IEspecialidadeService especialidadeService;

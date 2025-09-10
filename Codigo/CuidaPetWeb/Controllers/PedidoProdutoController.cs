@@ -17,22 +17,76 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: PedidoProdutoController
-        public ActionResult Index(int page = 1, int pageSize = 10)
+        public ActionResult Index(int page = 1, int pageSize = 10, string? sortBy = null, bool descending = false)
         {
-            var pedidos = pedidoProdutoService.GetAll(page, pageSize);
-            var pedidosViewModel = mapper.Map<IEnumerable<PedidoProdutoViewModel>>(pedidos);
+            // Usar o método que já retorna DTOs ordenados
+            var pedidosDto = pedidoProdutoService.GetPedidosAtivos(page, pageSize, sortBy, descending);
+
+            // Mapeamento manual
+            var pedidosViewModel = pedidosDto.Select(dto => new PedidoProdutoViewModel
+            {
+                Id = dto.Id,
+                RealizadoEm = dto.RealizadoEm,
+                Status = dto.Status,
+                ProdutoNome = dto.ProdutoNome,
+                Quantidade = dto.Quantidade,
+                PrecoTotal = dto.PrecoTotal,
+                TutorNome = dto.TutorNome,
+                TutorTelefone = dto.TutorTelefone
+            }).ToList();
+
+            // Contar total para paginação
+            var totalItems = pedidoProdutoService.GetCountPedidosAtivos();
+
+            ViewBag.TotalItems = totalItems;
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalItems = pedidos.Count();
+            ViewBag.SortBy = sortBy;
+            ViewBag.Descending = descending;
+            
             return View(pedidosViewModel);
         }
 
         // GET: PedidoProdutoController/Details/5
         public ActionResult Details(uint id)
         {
-            var pedido = pedidoProdutoService.Get(id);
-            var pedidoViewModel = mapper.Map<PedidoProdutoViewModel>(pedido);
+            var pedidoDto = pedidoProdutoService.GetDetalhes(id);
+            if (pedidoDto == null)
+            {
+                return NotFound();
+            }
+            
+            // Mapeamento manual
+            var pedidoViewModel = new PedidoProdutoViewModel
+            {
+                Id = pedidoDto.Id,
+                RealizadoEm = pedidoDto.RealizadoEm,
+                Status = pedidoDto.Status,
+                ProdutoNome = pedidoDto.ProdutoNome,
+                Quantidade = pedidoDto.Quantidade,
+                PrecoTotal = pedidoDto.PrecoTotal,
+                TutorNome = pedidoDto.TutorNome,
+                TutorTelefone = pedidoDto.TutorTelefone
+            };
+            
             return View(pedidoViewModel);
+        }
+
+        // GET: Buscar itens de um pedido via AJAX
+        [HttpGet]
+        public JsonResult GetItensPedido(uint pedidoId)
+        {
+            var itens = pedidoProdutoService.GetItensByPedidoId(pedidoId);
+            var itensViewModel = itens.Select(item => new
+            {
+                id = item.Id,
+                produtoNome = item.ProdutoNome,
+                quantidade = item.Quantidade,
+                precoUnitario = item.PrecoUnitario.ToString("F2"),
+                precoTotal = item.PrecoTotal.ToString("F2")
+            }).ToList();
+
+            return Json(itensViewModel);
         }
 
         // POST: PedidoProdutoController/Aceitar/5
@@ -40,7 +94,7 @@ namespace CuidaPetWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Aceitar(uint id)
         {
-            pedidoProdutoService.AlterarStatus(id, "Concluída");
+            pedidoProdutoService.AlterarStatus(id, "F"); // F = Finalizado
             return RedirectToAction(nameof(Index));
         }
 
@@ -49,7 +103,8 @@ namespace CuidaPetWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Recusar(uint id)
         {
-            pedidoProdutoService.AlterarStatus(id, "Cancelada");
+            // Deletar os itens do pedido e desativar o pedido
+            pedidoProdutoService.RecusarPedido(id);
             return RedirectToAction(nameof(Index));
         }
     }
