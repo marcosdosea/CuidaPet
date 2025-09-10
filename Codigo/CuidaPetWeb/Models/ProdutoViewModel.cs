@@ -38,5 +38,7 @@ namespace CuidaPetWeb.Models
         [Required(ErrorMessage = "O estabelecimento do produto é obrigatório.")]
         [Display(Name = "Estabelecimento do Produto")]
         public uint IdEstabelecimento { get; set; }
+
+        public string Categoria { get; set; } = string.Empty;
     }
 }
