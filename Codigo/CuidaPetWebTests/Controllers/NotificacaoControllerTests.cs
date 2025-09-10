@@ -39,6 +39,10 @@ namespace CuidaPetWeb.Controllers.Tests
                 .Returns(GetNotificacoesPorPessoa());
             mockService.Setup(s => s.MarcarComoLida(It.IsAny<uint>(), It.IsAny<uint>()))
                 .Verifiable();
+            mockService.Setup(s => s.ObterNotificacoesComStatusPorPessoa(1))
+                .Returns(GetNotificacoesComStatus());
+            mockService.Setup(s => s.ObterNotificacoesComStatusPorPessoa(999))
+                .Returns(new List<object>());
 
             controller = new NotificacaoController(mockService.Object, mapper);
         }
@@ -179,6 +183,181 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.AreEqual<uint>(1, (uint)redirect.RouteValues["idPessoa"]);
         }
 
+        [TestMethod]
+        public void GetNotificacoesTest_Sucesso()
+        {
+            // Act
+            var result = controller.GetNotificacoes(1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            // Verifica se a resposta tem a estrutura esperada
+            var response = jsonResult.Value;
+            var successProperty = response.GetType().GetProperty("success");
+            var dataProperty = response.GetType().GetProperty("data");
+
+            Assert.IsNotNull(successProperty);
+            Assert.IsNotNull(dataProperty);
+
+            var success = (bool)successProperty.GetValue(response);
+            var data = dataProperty.GetValue(response);
+
+            Assert.IsTrue(success);
+            Assert.IsNotNull(data);
+        }
+
+        [TestMethod]
+        public void GetNotificacoesTest_SemNotificacoes()
+        {
+            // Act
+            var result = controller.GetNotificacoes(999); // ID que retorna lista vazia
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            var response = jsonResult.Value;
+            var successProperty = response.GetType().GetProperty("success");
+            var dataProperty = response.GetType().GetProperty("data");
+
+            var success = (bool)successProperty.GetValue(response);
+            var data = (List<object>)dataProperty.GetValue(response);
+
+            Assert.IsTrue(success);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        public void GetNotificacoesTest_ExcecaoDoServico()
+        {
+            // Arrange
+            var mockServiceWithException = new Mock<INotificacaoService>();
+            mockServiceWithException.Setup(s => s.ObterNotificacoesComStatusPorPessoa(It.IsAny<uint>()))
+                .Throws(new Exception("Erro simulado"));
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new NotificacaoProfile())).CreateMapper();
+
+            var controllerWithException = new NotificacaoController(mockServiceWithException.Object, mapper);
+
+            // Act
+            var result = controllerWithException.GetNotificacoes(1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            var response = jsonResult.Value;
+            var successProperty = response.GetType().GetProperty("success");
+            var messageProperty = response.GetType().GetProperty("message");
+
+            var success = (bool)successProperty.GetValue(response);
+            var message = (string)messageProperty.GetValue(response);
+
+            Assert.IsFalse(success);
+            Assert.AreEqual("Erro simulado", message);
+        }
+
+        [TestMethod]
+        public void MarcarComoLidaAjaxTest_Sucesso()
+        {
+            // Act
+            var result = controller.MarcarComoLidaAjax(1, 1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            var response = jsonResult.Value;
+            var successProperty = response.GetType().GetProperty("success");
+
+            Assert.IsNotNull(successProperty);
+            var success = (bool)successProperty.GetValue(response);
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        public void MarcarComoLidaAjaxTest_ExcecaoDoServico()
+        {
+            // Arrange
+            var mockServiceWithException = new Mock<INotificacaoService>();
+            mockServiceWithException.Setup(s => s.MarcarComoLida(It.IsAny<uint>(), It.IsAny<uint>()))
+                .Throws(new Exception("Erro ao marcar como lida"));
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new NotificacaoProfile())).CreateMapper();
+
+            var controllerWithException = new NotificacaoController(mockServiceWithException.Object, mapper);
+
+            // Act
+            var result = controllerWithException.MarcarComoLidaAjax(1, 1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            var response = jsonResult.Value;
+            var successProperty = response.GetType().GetProperty("success");
+            var messageProperty = response.GetType().GetProperty("message");
+
+            var success = (bool)successProperty.GetValue(response);
+            var message = (string)messageProperty.GetValue(response);
+
+            Assert.IsFalse(success);
+            Assert.AreEqual("Erro ao marcar como lida", message);
+        }
+
+        [TestMethod]
+        public void MarcarComoLidaAjaxTest_ParametrosValidos()
+        {
+            // Arrange
+            uint idNotificacao = 5;
+            uint idPessoa = 3;
+
+            // Act
+            var result = controller.MarcarComoLidaAjax(idNotificacao, idPessoa);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+        }
+
+        [TestMethod]
+        public void GetNotificacoesTest_VerificaEstruturaDados()
+        {
+            // Act
+            var result = controller.GetNotificacoes(1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+
+            var response = jsonResult.Value;
+            var dataProperty = response.GetType().GetProperty("data");
+            var data = (List<object>)dataProperty.GetValue(response);
+
+            Assert.IsTrue(data.Count > 0);
+
+            var firstItem = data.First();
+            var properties = firstItem.GetType().GetProperties();
+
+            var expectedProperties = new[] { "Id", "Titulo", "Descricao", "DataEnvio", "StatusLida" };
+            foreach (var expectedProp in expectedProperties)
+            {
+                Assert.IsTrue(properties.Any(p => p.Name == expectedProp),
+                    $"Propriedade {expectedProp} não encontrada");
+            }
+        }
+
         private static IEnumerable<Notificacao> GetTestNotificacoes()
         {
             return new List<Notificacao>
@@ -252,6 +431,34 @@ namespace CuidaPetWeb.Controllers.Tests
                     Titulo = "Consulta Agendada",
                     Descricao = "Sua consulta foi agendada com sucesso.",
                     DataEnvio = DateTime.Now.AddDays(-1)
+                }
+            };
+        }
+
+        private static List<object> GetNotificacoesComStatus()
+        {
+            return new List<object>
+            {
+                new {
+                    Id = 1u,
+                    Titulo = "Bem-vindo",
+                    Descricao = "Seja bem-vindo ao CuidaPet!",
+                    DataEnvio = DateTime.Now.AddDays(-2),
+                    StatusLida = (sbyte)0
+                },
+                new {
+                    Id = 2u,
+                    Titulo = "Consulta Agendada",
+                    Descricao = "Sua consulta foi agendada com sucesso.",
+                    DataEnvio = DateTime.Now.AddDays(-1),
+                    StatusLida = (sbyte)1
+                },
+                new {
+                    Id = 3u,
+                    Titulo = "Vacina Vencendo",
+                    Descricao = "A vacina do seu pet vence em 5 dias.",
+                    DataEnvio = DateTime.Now,
+                    StatusLida = (sbyte)0
                 }
             };
         }
