@@ -1,0 +1,256 @@
+﻿@model IEnumerable<CuidaPetWeb.Models.PedidoProdutoViewModel>
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
+    <div class="d-flex gap-2"></div>
+</article>
+
+<section class="bg-gray-light pt-2 rounded">
+    <section class="input-group w-25 ms-auto mb-2 px-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar">
+        <button class="btn btn-outline-secondary" onclick="filterTable()">
+            <i class="bi bi-search" style="font-size: 16px;"></i>
+        </button>
+    </section>
+
+    <div class="table-responsive table-custom">
+        <table class="table align-middle mb-0" id="table">
+            <thead class="bg-gray-medium">
+                <tr>
+                    <th style="cursor: pointer;" onclick="sortTable(0, 'number')">
+                        Nº Pedido
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(1, 'text')">
+                        Tutor
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th>
+                        Itens
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(3, 'date')">
+                        Data e Hora
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(4, 'status')">
+                        Status
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pedido in Model)
+                {
+                    <tr>
+                        <td>@pedido.Id</td>
+                        <td>@pedido.TutorNome</td>
+                        <td>
+                            <button type="button" class="btn btn-dark btn-sm" onclick="carregarItensPedido(@pedido.Id)" data-bs-toggle="modal" data-bs-target="#modalItens">
+                                <i class="bi bi-info-circle-fill me-1"></i>Detalhes
+                            </button>
+                        </td>
+                        <td>@pedido.RealizadoEm.ToString("dd/MM/yyyy - HH:mm")</td>
+                        <td>
+                            @if (pedido.Status == "A")
+                            {
+                                <span class="badge" style="background-color: #FFE066; color: #333;">Pendente</span>
+                            }
+                            else if (pedido.Status == "F")
+                            {
+                                <span class="badge" style="background-color: #7BC67B; color: #333;">Concluída</span>
+                            }
+                            else if (pedido.Status == "C")
+                            {
+                                <span class="badge" style="background-color: #F87171; color: #333;">Cancelada</span>
+                            }
+                        </td>
+                        <td>
+                            @if (pedido.Status == "A")
+                            {
+                                <form asp-action="Aceitar" asp-route-id="@pedido.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm" title="Aceitar">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
+                                <form asp-action="Recusar" asp-route-id="@pedido.Id" method="post" class="d-inline ms-1" onsubmit="return confirmarRecusa()">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Recusar">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </form>
+                            }
+                            @if (!string.IsNullOrEmpty(pedido.TutorTelefone))
+                            {
+                                <a href="https://wa.me/@pedido.TutorTelefone" target="_blank" class="btn btn-success btn-sm ms-1" title="Entrar em contato">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Seção de paginação e contador de total -->
+        <div class="d-flex justify-content-between p-2">
+            <div class="p-2">
+                <span class="fw-bold">Total de @ViewData["Title"]: </span> @ViewBag.TotalItems
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @{
+                        int TotalItems = ViewBag.TotalItems ?? Model.Count();
+                        int pageSize = ViewBag.PageSize ?? 10;
+                        int currentPage = ViewBag.Page ?? 1;
+                        int totalPages = (int)Math.Ceiling((double)TotalItems / pageSize);
+
+                        int maxPagesToShow = 5;
+                        int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
+                        int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+
+                        if (endPage - startPage < maxPagesToShow - 1)
+                        {
+                            startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+                        }
+                    }
+
+                    @if (totalPages > 1)
+                    {
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link text-primary" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Modal para exibir itens do pedido -->
+<div class="modal fade" id="modalItens" tabindex="-1" aria-labelledby="modalItensLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalItensLabel">Itens do Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loading" class="text-center" style="display: none;">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="tabelaItens">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Preço Unit.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabelaItens">
+                            <!-- Itens serão carregados via AJAX -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="3">Total Geral:</td>
+                                <td id="totalGeral">R$ 0,00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sortTable.js" defer></script>
+    <script>
+        function carregarItensPedido(pedidoId) {
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('tabelaItens').style.display = 'none';
+            
+            // Limpar tabela
+            document.getElementById('corpoTabelaItens').innerHTML = '';
+            document.getElementById('totalGeral').textContent = 'R$ 0,00';
+            
+            // Fazer requisição AJAX
+            fetch(`/PedidoProduto/GetItensPedido?pedidoId=${pedidoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+                    let totalGeral = 0;
+                    
+                    data.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.produtoNome}</td>
+                                <td>${item.quantidade}</td>
+                                <td>R$ ${item.precoUnitario}</td>
+                                <td>R$ ${item.precoTotal}</td>
+                            </tr>
+                        `;
+                        totalGeral += parseFloat(item.precoTotal.replace(',', '.'));
+                    });
+                    
+                    document.getElementById('corpoTabelaItens').innerHTML = html;
+                    document.getElementById('totalGeral').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+                    
+                    // Ocultar loading e mostrar tabela
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('tabelaItens').style.display = 'table';
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar itens:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('corpoTabelaItens').innerHTML = '<tr><td colspan="4" class="text-center text-danger">Erro ao carregar itens do pedido</td></tr>';
+                    document.getElementById('tabelaItens').style.display = 'table';
+                });
+        }
+
+        function confirmarRecusa() {
+            return confirm('Tem certeza que deseja recusar este pedido? Esta ação irá deletar todos os itens do pedido e não poderá ser desfeita.');
+        }
+    </script>
+}
