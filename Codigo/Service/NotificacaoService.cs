@@ -111,7 +111,7 @@ namespace Service
                 .ToList();
         }
 
-        public List<object> ObterNotificacoesComStatusPorPessoa(uint idPessoa)
+        public List<Notificacao> ObterNotificacoesComStatusPorPessoa(uint idPessoa)
         {
             return context.Pessoanotificacaos
                 .AsNoTracking()
@@ -126,7 +126,7 @@ namespace Service
                     DataEnvio = pn.IdNotificacaoNavigation.DataEnvio,
                     StatusLida = pn.StatusLida
                 })
-                .Cast<object>()
+                .Cast<Notificacao>()
                 .ToList();
         }
 
