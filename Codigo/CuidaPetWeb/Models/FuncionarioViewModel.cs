@@ -17,12 +17,15 @@ public class FuncionarioViewModel
     [Display(Name = "Estabelecimento")]
     public uint IdEstabelecimento { get; set; }
     [Required(ErrorMessage = "Por favor, informe um nome")]
+    [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres")]
     [Display(Name = "Nome")]
     public string Nome { get; set; } = null!;
     [Required(ErrorMessage = "Por favor, informe um CPF")]
+    [StringLength(11, ErrorMessage = "O CPF deve ter no máximo 11 caracteres")]
     [Display(Name = "CPF")]
     [CPF]
     public string Cpf { get; set; } = null!;
+    [EmailAddress(ErrorMessage = "Por favor, informe um email válido")]
     [Display(Name = "Email")]
     public string Email { get; set; } = null!;
     [Required(ErrorMessage = "A senha é obrigatória")]
@@ -48,6 +51,7 @@ public class FuncionarioViewModel
     [Display(Name = "Cidade")]
     public string Cidade { get; set; } = null!;
     [Required(ErrorMessage = "Por favor, informe seu Estado")]
+    [StringLength(2, ErrorMessage = "O estado deve ter 2 caracteres", MinimumLength = 2)]
     [Display(Name = "UF")]
     public string Estado { get; set; } = null!;
 }

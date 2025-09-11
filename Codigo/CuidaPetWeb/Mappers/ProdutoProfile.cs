@@ -12,6 +12,8 @@ namespace CuidaPetWeb.Mappers
             CreateMap<Produto, ProdutoViewModel>()
                 .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.IdCategoriaNavigation != null ? src.IdCategoriaNavigation.Nome : string.Empty));
 
+            CreateMap<ProdutoViewModel, Produto>();
+
             CreateMap<ProdutoDTO, ProdutoViewModel>()
                 .ForMember(dest => dest.IdCategoria, opt => opt.Ignore())
                 .ForMember(dest => dest.IdEstabelecimento, opt => opt.Ignore());

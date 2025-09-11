@@ -100,9 +100,9 @@ namespace CuidaPetWeb.Controllers
         // GET: FuncionarioController/Edit/5
         public ActionResult Edit(uint id)
         {
-            var funcionario = funcionarioService.Get(id);
-            var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
-            return View(funcionarioViewModel);
+                var funcionario = funcionarioService.Get(id);
+                var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+                return View(funcionarioViewModel);
         }
 
         // POST: FuncionarioController/Edit/5

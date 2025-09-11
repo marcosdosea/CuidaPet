@@ -3,7 +3,7 @@
     public class ConsultarItensViewModel
     {
         public string? TermoPesquisa { get; set; }
-        public bool MostrarItens { get; set; } = true; // true = itens, false = petshops
+        public bool MostrarItens { get; set; } = true;
 
         public List<EstabelecimentoComProdutosViewModel> Estabelecimentos { get; set; } = new();
     }
