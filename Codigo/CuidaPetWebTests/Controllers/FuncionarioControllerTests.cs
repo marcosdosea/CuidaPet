@@ -27,7 +27,6 @@ namespace CuidaPetWeb.Controllers.Tests
                 cfg.AddProfile(new FuncionarioProfile());
                 cfg.AddProfile(new PessoaProfile());
 
-                // Mapeamento customizado para garantir que Tipo seja mapeado corretamente
                 cfg.CreateMap<Funcionario, FuncionarioViewModel>()
                   .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => src.IdPessoaNavigation.Tipo))
                   .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.IdPessoaNavigation.Nome))
@@ -61,9 +60,9 @@ namespace CuidaPetWeb.Controllers.Tests
 
             mockPessoaService.Setup(service => service.Get(1))
                 .Returns(GetTargetPessoa());
-            mockPessoaService.Setup(service => service.GetByCpf("12345678901"))
+            mockPessoaService.Setup(service => service.GetByCpf("72461849617"))
                 .Returns(GetTargetPessoa());
-            mockPessoaService.Setup(service => service.GetByCpf("98765432100"))
+            mockPessoaService.Setup(service => service.GetByCpf("77242505534"))
                 .Returns((Pessoa?)null);
             mockPessoaService.Setup(service => service.Create(It.IsAny<Pessoa>()))
                 .Returns(5);
@@ -85,8 +84,8 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(IEnumerable<FuncionarioViewModel>));
 
             var listaFuncionarios = (IEnumerable<FuncionarioViewModel>)viewResult.ViewData.Model;
-            // Deve retornar apenas funcionários com tipo "V" ou "T" (filtro no controller)
-            Assert.AreEqual(3, listaFuncionarios.Count());
+            // Deve retornar apenas funcionários com tipo "V" ou "A"
+            Assert.AreEqual(2, listaFuncionarios.Count());
         }
 
         [TestMethod()]
@@ -187,7 +186,7 @@ namespace CuidaPetWeb.Controllers.Tests
             FuncionarioViewModel funcionarioModel = (FuncionarioViewModel)viewResult.ViewData.Model;
             Assert.AreEqual<uint>(1, funcionarioModel.Id);
             Assert.AreEqual("João Silva", funcionarioModel.Nome);
-            Assert.AreEqual("12345678901", funcionarioModel.Cpf);
+            Assert.AreEqual("72461849617", funcionarioModel.Cpf);
         }
 
         [TestMethod()]
@@ -251,7 +250,7 @@ namespace CuidaPetWeb.Controllers.Tests
         public void GetPessoaByCpfTest_PessoaExistente()
         {
             // Act
-            var result = controller?.GetPessoaByCpf("12345678901");
+            var result = controller?.GetPessoaByCpf("72461849617");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(JsonResult));
@@ -267,7 +266,7 @@ namespace CuidaPetWeb.Controllers.Tests
         public void GetPessoaByCpfTest_PessoaNaoExistente()
         {
             // Act
-            var result = controller?.GetPessoaByCpf("00000000000");
+            var result = controller?.GetPessoaByCpf("71188509934");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(JsonResult));
@@ -284,10 +283,10 @@ namespace CuidaPetWeb.Controllers.Tests
                 IdPessoa = 1,
                 IdEstabelecimento = 1,
                 Nome = "João Silva",
-                Cpf = "12345678901", // CPF existente
+                Cpf = "72461849617", // CPF existente
                 Email = "joao@email.com",
                 Senha = "123456",
-                Telefone = "11999999999",
+                Telefone = "45783411000",
                 Tipo = "T",
                 Status = "A",
                 Logradouro = "Rua A",
@@ -308,10 +307,10 @@ namespace CuidaPetWeb.Controllers.Tests
                 IdPessoa = 5,
                 IdEstabelecimento = 1,
                 Nome = "Maria Santos",
-                Cpf = "98765432100", // CPF não existente
+                Cpf = "77242505534", // CPF não existente
                 Email = "maria@email.com",
                 Senha = "123456",
-                Telefone = "11888888888",
+                Telefone = "84342979900",
                 Tipo = "T",
                 Status = "A",
                 Logradouro = "Rua B",
@@ -332,10 +331,10 @@ namespace CuidaPetWeb.Controllers.Tests
                 IdPessoa = 6,
                 IdEstabelecimento = 1,
                 Nome = "Dr. Carlos",
-                Cpf = "11111111111",
+                Cpf = "28364392549",
                 Email = "carlos@email.com",
                 Senha = "123456",
-                Telefone = "11777777777",
+                Telefone = "01351917340",
                 Tipo = "V",
                 Status = "A",
                 Logradouro = "Rua C",
@@ -354,7 +353,8 @@ namespace CuidaPetWeb.Controllers.Tests
                 Id = 1,
                 Crmv = "CRMV123",
                 IdPessoa = 1,
-                IdEstabelecimento = 1
+                IdEstabelecimento = 1,
+                IdPessoaNavigation = GetTargetPessoa()
             };
         }
 
@@ -364,10 +364,10 @@ namespace CuidaPetWeb.Controllers.Tests
             {
                 Id = 1,
                 Nome = "João Silva",
-                Cpf = "12345678901",
+                Cpf = "72461849617",
                 Email = "joao@email.com",
                 Senha = "123456",
-                Telefone = "11999999999",
+                Telefone = "45783411000",
                 Tipo = "V",
                 Status = "A",
                 Logradouro = "Rua A",
@@ -388,10 +388,10 @@ namespace CuidaPetWeb.Controllers.Tests
                 IdPessoa = 1,
                 IdEstabelecimento = 1,
                 Nome = "João Silva",
-                Cpf = "12345678901",
+                Cpf = "72461849617",
                 Email = "joao@email.com",
                 Senha = "123456",
-                Telefone = "11999999999",
+                Telefone = "45783411000",
                 Tipo = "V",
                 Status = "A",
                 Logradouro = "Rua A",
@@ -414,12 +414,12 @@ namespace CuidaPetWeb.Controllers.Tests
                     IdEstabelecimento = 1,
                     IdPessoaNavigation = new Pessoa {
                         Id = 1,
-                        Tipo = "V",
+                        Tipo = "V", // Veterinário
                         Nome = "João Silva",
-                        Cpf = "12345678901",
+                        Cpf = "72461849617",
                         Email = "joao@email.com",
                         Senha = "123456",
-                        Telefone = "11999999999",
+                        Telefone = "45783411000",
                         Status = "A",
                         Logradouro = "Rua A",
                         Numero = "123",
@@ -435,14 +435,14 @@ namespace CuidaPetWeb.Controllers.Tests
                     IdEstabelecimento = 1,
                     IdPessoaNavigation = new Pessoa {
                         Id = 2,
-                        Tipo = "T",
-                        Nome = "Maria Santos",
-                        Cpf = "98765432100",
-                        Email = "maria@email.com",
-                        Senha = "123456",
-                        Telefone = "11888888888",
+                        Tipo = "A", // Atendente
+                        Nome = "Ana Souza",
+                        Cpf = "77242505534",
+                        Email = "ana@email.com",
+                        Senha = "654321",
+                        Telefone = "84342979900",
                         Status = "A",
-                        Logradouro = "Rua B",
+                        Logradouro = "Rua D",
                         Numero = "456",
                         Bairro = "Vila Nova",
                         Cidade = "São Paulo",
@@ -456,12 +456,12 @@ namespace CuidaPetWeb.Controllers.Tests
                     IdEstabelecimento = 1,
                     IdPessoaNavigation = new Pessoa {
                         Id = 3,
-                        Tipo = "G",
+                        Tipo = "G", // Gerente (não deve aparecer)
                         Nome = "Carlos Gerente",
-                        Cpf = "11111111111",
+                        Cpf = "28364392549",
                         Email = "carlos@email.com",
                         Senha = "123456",
-                        Telefone = "11777777777",
+                        Telefone = "01351917340",
                         Status = "A",
                         Logradouro = "Rua C",
                         Numero = "789",

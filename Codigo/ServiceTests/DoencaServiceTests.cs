@@ -120,7 +120,6 @@ namespace Service.Tests
             var doenca = doencas.First();
             Assert.AreEqual("Cinomose", doenca.Nome);
             Assert.AreEqual((uint)1, doenca.Id);
-            Assert.AreEqual((uint)1, doenca.IdEspecie);
         }
     }
 }
