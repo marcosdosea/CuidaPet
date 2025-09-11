@@ -69,6 +69,29 @@ class MobileNavigation {
         }
     }
 
+    // Força recálculo do layout das tabelas
+    recalculateTableLayout() {
+        const tables = document.querySelectorAll('.table-responsive');
+        tables.forEach(table => {
+            // Force repaint
+            const display = table.style.display;
+            table.style.display = 'none';
+            table.offsetHeight; // Trigger reflow
+            table.style.display = display;
+        });
+    }
+
+    // Adiciona classe de transição temporariamente
+    addTransitionClass() {
+        if (this.mainWrapper) {
+            this.mainWrapper.classList.add('transitioning');
+            setTimeout(() => {
+                this.mainWrapper.classList.remove('transitioning');
+                this.recalculateTableLayout();
+            }, 300);
+        }
+    }
+
     toggleSidebar() {
         if (this.isMobile) {
             // No mobile, apenas abre/fecha
@@ -79,6 +102,7 @@ class MobileNavigation {
             }
         } else {
             // No desktop, alterna entre open e mini
+            this.addTransitionClass();
             if (this.sidebar.classList.contains('mini')) {
                 this.openSidebar();
             } else {
@@ -90,6 +114,7 @@ class MobileNavigation {
     toggleSidebarMini() {
         if (this.isMobile) return;
 
+        this.addTransitionClass();
         if (this.sidebar.classList.contains('mini')) {
             this.openSidebar();
         } else {
@@ -159,6 +184,7 @@ class MobileNavigation {
                     this.openSidebar();
                 }
             }
+            this.recalculateTableLayout();
         }
     }
 }
@@ -324,7 +350,7 @@ class NotificationManager {
     }
 }
 
-// Table responsiveness helper
+// Table responsiveness helper - MELHORADO
 class TableManager {
     constructor() {
         this.tables = document.querySelectorAll('.table-responsive');
@@ -332,23 +358,62 @@ class TableManager {
     }
 
     init() {
-        // Garante que as tabelas não causem overflow horizontal
-        this.tables.forEach(table => {
-            table.style.width = '100%';
-            table.style.maxWidth = '100%';
-        });
+        // Configuração inicial das tabelas
+        this.setupTables();
 
         // Monitora mudanças de tamanho
         window.addEventListener('resize', () => this.handleResize());
+
+        // Observer para detectar quando as tabelas são adicionadas dinamicamente
+        this.setupMutationObserver();
+    }
+
+    setupTables() {
+        this.tables = document.querySelectorAll('.table-responsive');
+        this.tables.forEach(tableContainer => {
+            tableContainer.style.width = '100%';
+            tableContainer.style.overflowX = 'auto';
+
+            const table = tableContainer.querySelector('.table');
+            if (table) {
+                table.style.minWidth = window.innerWidth <= 768 ? '600px' : '800px';
+            }
+        });
     }
 
     handleResize() {
+        // Reconfigurar tabelas no resize
+        this.setupTables();
+
+        // Force recalculation
         this.tables.forEach(table => {
-            // Force recalculation of table layout
             const originalDisplay = table.style.display;
             table.style.display = 'none';
             table.offsetHeight; // Trigger reflow
             table.style.display = originalDisplay;
+        });
+    }
+
+    setupMutationObserver() {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) { // Element node
+                            const newTables = node.querySelectorAll ? node.querySelectorAll('.table-responsive') : [];
+                            if (newTables.length > 0) {
+                                this.tables = document.querySelectorAll('.table-responsive');
+                                this.setupTables();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     }
 }
