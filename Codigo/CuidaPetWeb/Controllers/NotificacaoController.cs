@@ -116,5 +116,35 @@ namespace CuidaPetWeb.Controllers
             notificacaoService.MarcarComoLida(idNotificacao, idPessoa);
             return RedirectToAction(nameof(MinhasNotificacoes), new { idPessoa });
         }
+
+        // API endpoint para obter notificações via AJAX com status de leitura
+        [HttpGet]
+        public IActionResult GetNotificacoes(uint idPessoa)
+        {
+            try
+            {
+                var notificacoes = notificacaoService.ObterNotificacoesComStatusPorPessoa(idPessoa);
+                return Json(new { success = true, data = notificacoes });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // API endpoint para marcar notificação como lida via AJAX
+        [HttpPost]
+        public IActionResult MarcarComoLidaAjax(uint idNotificacao, uint idPessoa)
+        {
+            try
+            {
+                notificacaoService.MarcarComoLida(idNotificacao, idPessoa);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

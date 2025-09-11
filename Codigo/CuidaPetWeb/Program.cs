@@ -30,6 +30,9 @@ namespace CuidaPetWeb
             builder.Services.AddTransient<IEspecialidadeService, EspecialidadeService>();
             builder.Services.AddTransient<INotificacaoService, NotificacaoService>();
             builder.Services.AddTransient<IAgendamentoService, AgendamentoService>();
+            builder.Services.AddTransient<IVacinacaoService, VacinacaoService>();
+            builder.Services.AddTransient<IPedidoProdutoService, PedidoProdutoService>();
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDbContext<CuidaPetContext>(
