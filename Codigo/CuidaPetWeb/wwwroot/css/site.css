@@ -137,7 +137,7 @@ html {
     font-weight: 600;
 }
 
-/* SIDEBAR - Corrigido para evitar scroll horizontal */
+/* SIDEBAR - Corrigido para evitar problemas de layout */
 .sidebar {
     position: fixed;
     top: 80px;
@@ -317,7 +317,7 @@ html {
     font-size: 18px;
 }
 
-/* LAYOUT PRINCIPAL - Corrigido para funcionar sem scroll horizontal */
+/* LAYOUT PRINCIPAL - CORRIGIDO PARA FUNCIONAR CORRETAMENTE */
 .main-wrapper {
     margin-top: 80px;
     margin-left: 0;
@@ -326,10 +326,10 @@ html {
     flex-direction: column;
     transition: margin-left 0.3s ease;
     position: relative;
-    width: 100%;
+    /* Removido width: 100% que estava causando problemas */
 }
 
-    /* Estados do layout principal baseados na sidebar */
+    /* Estados do layout principal baseados na sidebar - CORRIGIDO */
     .main-wrapper.sidebar-open {
         margin-left: 280px;
     }
@@ -341,16 +341,16 @@ html {
 .main-container {
     flex: 1;
     padding: 0;
+    /* Largura dinâmica baseada no container pai */
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+    min-width: 0; /* Permite que o container seja menor que seu conteúdo */
 }
 
 .main-content {
     padding: 1rem;
     min-height: calc(100vh - 80px - 80px);
     width: 100%;
-    max-width: 100%;
+    /* Removido max-width que estava limitando o conteúdo */
     box-sizing: border-box;
 }
 
@@ -373,12 +373,12 @@ html {
         visibility: visible;
     }
 
-/* TABELAS - Ajustadas para funcionar corretamente */
+/* TABELAS - CORRIGIDO PARA FUNCIONAR EM TODOS OS CENÁRIOS */
 .table-responsive {
     width: 100%;
-    max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    /* Removido max-width que estava causando problemas */
 }
 
 .table-custom {
@@ -390,8 +390,16 @@ html {
 .table {
     width: 100%;
     margin-bottom: 0;
+    min-width: 800px; /* Largura mínima para garantir que as ações sejam visíveis */
     table-layout: auto;
 }
+
+    /* Garante que as colunas de ações tenham largura adequada */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 150px;
+        white-space: nowrap;
+    }
 
 /* Ajustes específicos para mobile */
 @media (max-width: 768px) {
@@ -419,6 +427,11 @@ html {
     .sidebar-overlay {
         display: block;
     }
+
+    /* Em mobile, permite scroll horizontal nas tabelas se necessário */
+    .table {
+        min-width: 600px;
+    }
 }
 
 /* Ajustes para desktop */
@@ -435,10 +448,19 @@ html {
         padding: 1.5rem;
     }
 
-    /* Garante que a sidebar não causa overflow */
+    /* Garante que a sidebar não interfira no layout das tabelas */
     .sidebar.active,
     .sidebar.mini {
         position: fixed;
+    }
+
+    /* Garantindo que as tabelas tenham espaço adequado em desktop */
+    .main-wrapper.sidebar-open .table-responsive {
+        width: 100%;
+    }
+
+    .main-wrapper.sidebar-mini .table-responsive {
+        width: 100%;
     }
 }
 
@@ -786,4 +808,21 @@ body.loading {
     .main-content {
         padding: 1rem;
     }
+}
+
+/* Ajustes específicos para garantir que as tabelas funcionem em todos os cenários */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Força recálculo do layout quando a sidebar muda */
+.main-wrapper.transitioning .table-responsive {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.main-wrapper:not(.transitioning) .table-responsive {
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
