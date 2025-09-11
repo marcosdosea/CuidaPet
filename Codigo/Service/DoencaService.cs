@@ -84,16 +84,14 @@ namespace Service
         /// </summary>
         /// <param name="nome">Nome da Doença</param>
         /// <returns>Lista de Doenças</returns>
-        public IEnumerable<Doenca> GetByNome(string nome)
+        public IEnumerable<DoencaDTO> GetByNome(string nome)
         {
             return context.Doencas
-                .AsNoTracking()
                 .Where(d => d.Nome.Contains(nome))
-                .Select(d => new Doenca
+                .Select(d => new DoencaDTO
                 {
                     Id = d.Id,
-                    Nome = d.Nome,
-                    IdEspecie = d.IdEspecie
+                    Nome = d.Nome
                 })
                 .ToList();
         }

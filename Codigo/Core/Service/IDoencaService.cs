@@ -9,7 +9,7 @@ namespace Core.Service
         void Delete(uint id);
         Doenca? Get(uint id);
         IEnumerable<Doenca> GetAll(int page, int pageSize);
-        IEnumerable<Doenca> GetByNome(string nome);
+        IEnumerable<DoencaDTO> GetByNome(string nome);
         int GetCount();
 
     }
