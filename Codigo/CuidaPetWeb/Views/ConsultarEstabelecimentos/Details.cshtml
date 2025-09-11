@@ -4,59 +4,361 @@
     ViewData["Title"] = "Detalhes do Estabelecimento";
 }
 
-<article class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">@ViewData["Title"]</h2>
-    <a asp-action="Index" class="btn btn-secondary d-flex align-items-center" title="Voltar para Lista" style="min-width: 120px;">
-        <i class="bi bi-arrow-left-circle-fill me-2" style="font-size: 24px;"></i>
-        Voltar
-    </a>
-</article>
+<div class="detail-header">
+    <button class="btn-back" onclick="history.back()">
+        <i class="bi bi-arrow-left"></i>
+    </button>
+    <h1 class="detail-title">@Model.Nome</h1>
+</div>
 
-<section class="bg-gray-light p-4 rounded mb-4">
-    <h4 class="mb-3">Informações do Estabelecimento</h4>
-    <dl class="row">
-        <dt class="col-sm-3">Nome</dt>
-        <dd class="col-sm-9">@Model.Nome</dd>
+<div class="establishment-info-card">
+    <div class="establishment-logo-large">
+        <div class="logo-circle-large">
+            <span>@Model.Nome.Substring(0, 2).ToUpper()</span>
+        </div>
+    </div>
 
-        <dt class="col-sm-3">Bairro</dt>
-        <dd class="col-sm-9">@Model.Bairro</dd>
+    <div class="establishment-details">
+        <h2 class="establishment-name">@Model.Nome</h2>
+        <div class="establishment-location">
+            <i class="bi bi-geo-alt"></i>
+            <span>@Model.Bairro</span>
+        </div>
+        <div class="establishment-address">
+            <span>@Model.Logradouro</span>
+        </div>
+        <div class="establishment-phone">
+            <i class="bi bi-telephone"></i>
+            <span>@Model.Telefone</span>
+        </div>
+    </div>
+</div>
 
-        <dt class="col-sm-3">Logradouro</dt>
-        <dd class="col-sm-9">@Model.Logradouro</dd>
+<div class="products-section">
+    <h3 class="section-title">Produtos</h3>
 
-        <dt class="col-sm-3">Telefone</dt>
-        <dd class="col-sm-9">@Model.Telefone</dd>
-    </dl>
-</section>
-
-<section class="bg-gray-light p-4 rounded">
-    <h4 class="mb-3">Produtos do Estabelecimento</h4>
     @if (Model.Produtos != null && Model.Produtos.Any())
     {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Preço</th>
-                    <th>Descrição</th>
-                    <th>Categoria</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var produto in Model.Produtos)
-                {
-                    <tr>
-                        <td>@produto.Nome</td>
-                        <td>R$ @produto.Preco.ToString("F2")</td>
-                        <td>@produto.Descricao</td>
-                        <td>@produto.Categoria</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="products-list">
+            @foreach (var produto in Model.Produtos)
+            {
+                <div class="product-item">
+                    <div class="product-image">
+                        <img src="~/assets/placeholder-product.png" alt="@produto.Nome" />
+                    </div>
+                    <div class="product-details">
+                        <h4 class="product-name">@produto.Nome</h4>
+                        <p class="product-description">@produto.Descricao</p>
+                        <div class="product-price-section">
+                            <span class="price-old">R$@((produto.Preco * 1.2m).ToString("F2"))</span>
+                            <span class="price-current">R$@produto.Preco.ToString("F2")</span>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-quantity minus" data-product-id="@produto.Id">
+                            <i class="bi bi-dash-circle"></i>
+                        </button>
+                        <span class="quantity">0</span>
+                        <button class="btn-quantity plus" data-product-id="@produto.Id">
+                            <i class="bi bi-plus-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
     }
     else
     {
-        <span>Nenhum produto cadastrado para este estabelecimento.</span>
+        <div class="empty-products">
+            <i class="bi bi-box"></i>
+            <p>Nenhum produto disponível</p>
+        </div>
     }
-</section>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-back {
+            background: #6EA06C;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-back:hover {
+                background: #5a8a58;
+            }
+
+        .detail-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+            padding-right: 52px;
+        }
+
+        .establishment-info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 0 1rem 1.5rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .establishment-logo-large .logo-circle-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff7b00, #ff9500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem auto;
+        }
+
+        .establishment-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .establishment-location,
+        .establishment-address,
+        .establishment-phone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+        }
+
+            .establishment-location i,
+            .establishment-phone i {
+                color: #6EA06C;
+            }
+
+        .products-section {
+            padding: 0 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8f9fa;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .product-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin: 0 0 8px 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price-section .price-old {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-decoration: line-through;
+            display: block;
+            line-height: 1;
+        }
+
+        .product-price-section .price-current {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-quantity {
+            background: none;
+            border: none;
+            color: #6EA06C;
+            font-size: 1.5rem;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .btn-quantity:active {
+                transform: scale(0.9);
+            }
+
+        .quantity {
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .empty-products {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+            .empty-products i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+        @@media (min-width: 768px) {
+            .detail-header
+
+        {
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .establishment-info-card {
+            max-width: 600px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .products-section {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .product-item {
+            padding: 1.5rem;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+        }
+
+        .product-actions {
+            flex-direction: row;
+            gap: 12px;
+        }
+
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-quantity').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const quantitySpan = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantitySpan.textContent);
+
+                if (this.classList.contains('plus')) {
+                    quantity++;
+                } else if (this.classList.contains('minus') && quantity > 0) {
+                    quantity--;
+                }
+
+                quantitySpan.textContent = quantity;
+
+                const productId = this.dataset.productId;
+                console.log(`Produto ${productId}: quantidade ${quantity}`);
+            });
+        });
+
+        document.querySelectorAll('.btn-quantity').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+}

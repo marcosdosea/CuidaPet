@@ -4,92 +4,508 @@
     ViewData["Title"] = "Itens";
 }
 
-<article class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="fw-bold">@ViewData["Title"]</h2>
-    <div class="d-flex gap-2 align-items-center">
-        <form asp-action="Index" method="get" class="d-flex">
-            <input type="text" name="termoPesquisa" value="@Model.TermoPesquisa" class="form-control" placeholder="Pesquisar produto..." />
-            <button type="submit" class="btn btn-outline-secondary ms-2">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
-        <div class="form-check form-switch ms-4">
-            <input class="form-check-input" type="checkbox" id="toggleItens" checked disabled>
-            <label class="form-check-label" for="toggleItens">Itens</label>
-            <a asp-action="Petshops" class="btn btn-link ms-2">Petshops</a>
+<!-- Cabeçalho mobile responsivo -->
+<div class="mobile-header d-block d-md-none">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn" onclick="toggleSidebar()">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+        <div class="notification-bell">
+            <i class="bi bi-bell fs-4"></i>
         </div>
     </div>
-</article>
+</div>
 
-<section>
+<!-- Barra de pesquisa e filtros -->
+<div class="search-container">
+    <form asp-action="Index" method="get" class="search-form">
+        <div class="search-input-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" name="termoPesquisa" value="@Model.TermoPesquisa"
+                   class="search-input" placeholder="Pesquise aqui" />
+            <button type="button" class="search-clear-btn" onclick="clearSearch()">
+                <i class="bi bi-x-circle-fill"></i>
+            </button>
+        </div>
+    </form>
+
+    <!-- Toggle de filtros -->
+    <div class="filter-toggle">
+        <button class="filter-btn" data-filter="petshops">PetShops</button>
+        <button class="filter-btn active" data-filter="itens">Itens</button>
+    </div>
+</div>
+
+<!-- Container principal -->
+<div class="products-container">
     @if (Model.Estabelecimentos != null && Model.Estabelecimentos.Any())
     {
         @foreach (var est in Model.Estabelecimentos)
         {
-            <div class="mb-4">
-                <h5 class="fw-bold">@est.Nome</h5>
-                <div class="d-flex flex-row gap-3">
+            <!-- Card do estabelecimento -->
+            <div class="establishment-card">
+                <div class="establishment-header">
+                    <div class="establishment-logo">
+                        <div class="logo-circle">
+                            <span>@est.Nome.Substring(0, 2).ToUpper()</span>
+                        </div>
+                    </div>
+                    <div class="establishment-info">
+                        <h3 class="establishment-name">@est.Nome</h3>
+                        <div class="establishment-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4,6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de produtos -->
+                <div class="products-grid">
                     @foreach (var produto in est.Produtos)
                     {
-                        <div class="card" style="min-width: 220px;">
-                            <div class="card-body">
-                                <h6 class="card-title">@produto.Nome</h6>
-                                <p class="card-text mb-1"><strong>Preço:</strong> R$ @produto.Preco.ToString("F2")</p>
-                                <p class="card-text mb-1"><strong>Categoria:</strong> @produto.Categoria</p>
-                                <p class="card-text"><strong>Descrição:</strong> @produto.Descricao</p>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="~/assets/placeholder-product.png" alt="@produto.Nome" />
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-name">@produto.Nome</h4>
+                                <div class="product-price">
+                                    <span class="price-old">R$@((produto.Preco * 1.2m).ToString("F2"))</span>
+                                    <span class="price-current">R$@produto.Preco.ToString("F2")</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-quantity minus">
+                                        <i class="bi bi-dash-circle"></i>
+                                    </button>
+                                    <span class="quantity">0</span>
+                                    <button class="btn-quantity plus">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     }
                 </div>
             </div>
         }
-
-        <div class="d-flex justify-content-between p-2">
-            <div class="p-2">
-                <span class="fw-bold">Total de Estabelecimentos: </span> @ViewBag.TotalItems
-            </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    @{
-                        int TotalItems = ViewBag.TotalItems;
-                        int pageSize = ViewBag.PageSize;
-                        int currentPage = ViewBag.Page;
-                        int totalPages = (int)Math.Ceiling((double)TotalItems / pageSize);
-
-                        int maxPagesToShow = 5;
-                        int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
-                        int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
-
-                        if (endPage - startPage < maxPagesToShow - 1)
-                        {
-                            startPage = Math.Max(1, endPage - maxPagesToShow + 1);
-                        }
-                    }
-
-                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                        <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-
-                    @for (int i = startPage; i <= endPage; i++)
-                    {
-                        <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link text-primary" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize">@i</a>
-                        </li>
-                    }
-
-                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                        <a class="page-link text-primary" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     }
     else
     {
-        <div class="alert alert-info">Nenhum estabelecimento ou produto encontrado.</div>
+        <div class="empty-state">
+            <i class="bi bi-search"></i>
+            <p>Nenhum produto encontrado</p>
+        </div>
     }
-</section>
+</div>
+
+<!-- Paginação responsiva -->
+@if (Model.Estabelecimentos != null && Model.Estabelecimentos.Any())
+{
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span>Total: @ViewBag.TotalItems estabelecimentos</span>
+        </div>
+        <nav class="pagination-nav">
+            @{
+                int TotalItems = ViewBag.TotalItems;
+                int pageSize = ViewBag.PageSize;
+                int currentPage = ViewBag.Page;
+                int totalPages = (int)Math.Ceiling((double)TotalItems / pageSize);
+            }
+
+            @if (totalPages > 1)
+            {
+                <a class="page-btn @(currentPage == 1 ? "disabled" : "")"
+                   asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+                <span class="page-info">@currentPage de @totalPages</span>
+
+                <a class="page-btn @(currentPage == totalPages ? "disabled" : "")"
+                   asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            }
+        </nav>
+    </div>
+}
+
+@section Styles {
+    <style>
+        /* Estilos para mobile-first design */
+        .mobile-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-form {
+            margin-bottom: 1rem;
+        }
+
+        .search-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: #6EA06C;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(110, 160, 108, 0.1);
+            }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            padding: 0;
+            display: none;
+        }
+
+        .search-input:not(:placeholder-shown) + .search-clear-btn {
+            display: block;
+        }
+
+        .filter-toggle {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 4px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+            .filter-btn.active {
+                background: #6EA06C;
+                color: white;
+            }
+
+        .products-container {
+            padding: 0 1rem;
+        }
+
+        .establishment-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .establishment-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .establishment-logo .logo-circle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff7b00, #ff9500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .establishment-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+
+        .establishment-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #ffc107;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .product-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+            .product-card:hover {
+                transform: translateY(-2px);
+            }
+
+        .product-image {
+            aspect-ratio: 1;
+            overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .product-info {
+            padding: 0.75rem;
+        }
+
+        .product-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            margin-bottom: 0.75rem;
+        }
+
+        .price-old {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-decoration: line-through;
+            display: block;
+        }
+
+        .price-current {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border-radius: 20px;
+            padding: 4px;
+        }
+
+        .btn-quantity {
+            background: none;
+            border: none;
+            color: #6EA06C;
+            font-size: 1.2rem;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #6EA06C;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+            .page-btn:hover:not(.disabled) {
+                background: #5a8a58;
+                color: white;
+            }
+
+            .page-btn.disabled {
+                background: #e9ecef;
+                color: #6c757d;
+                pointer-events: none;
+            }
+
+        .page-info {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Responsividade tablet e desktop */
+        @@media (min-width: 768px) {
+            .mobile-header
+
+        {
+            display: none;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .search-form {
+            margin-bottom: 0;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .filter-toggle {
+            flex-shrink: 0;
+            width: auto;
+        }
+
+        .products-container {
+            padding: 0;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 0.95rem;
+        }
+
+        }
+
+        @@media (min-width: 1200px) {
+            .products-grid
+
+        {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function clearSearch() {
+            document.querySelector('.search-input').value = '';
+            document.querySelector('.search-form').submit();
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                if (this.dataset.filter === 'petshops') {
+                    window.location.href = '@Url.Action("Index", "ConsultarEstabelecimentos")';
+                }
+            });
+        });
+
+        // Funcionalidade de quantidade
+        document.querySelectorAll('.btn-quantity').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const quantitySpan = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantitySpan.textContent);
+
+                if (this.classList.contains('plus')) {
+                    quantity++;
+                } else if (this.classList.contains('minus') && quantity > 0) {
+                    quantity--;
+                }
+
+                quantitySpan.textContent = quantity;
+            });
+        });
+    </script>
+}
