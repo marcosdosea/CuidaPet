@@ -29,6 +29,7 @@ namespace CuidaPetWeb
             builder.Services.AddTransient<IPessoaService, PessoaService>();
             builder.Services.AddTransient<IEspecialidadeService, EspecialidadeService>();
             builder.Services.AddTransient<INotificacaoService, NotificacaoService>();
+            builder.Services.AddTransient<IAgendamentoService, AgendamentoService>();
             builder.Services.AddTransient<IVacinacaoService, VacinacaoService>();
             builder.Services.AddTransient<IPedidoProdutoService, PedidoProdutoService>();
 
