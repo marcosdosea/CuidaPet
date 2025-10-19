@@ -20,5 +20,10 @@ namespace CuidaPetWeb.Models
         [Required(ErrorMessage = "A data de envio da notificação é obrigatória.")]
         [DisplayName("Data de envio da notificação")]
         public DateTime DataEnvio { get; set; }
+
+        [DisplayName("Status")]
+        public sbyte? StatusLida { get; set; }
+
+        public bool EstaLida => StatusLida.HasValue && StatusLida.Value == 1;
     }
 }
