@@ -17,17 +17,30 @@ namespace CuidaPetWeb.Controllers
             this.mapper = mapper;
         }
 
-        // GET: NotificacaoController
-        public IActionResult Index(int page = 1, int pageSize = 10)
+        // GET: NotificacaoController - Página de notificações do usuário
+        public IActionResult Index()
         {
-            var notificacoes = notificacaoService.GetAll(page, pageSize);
-            var viewModel = mapper.Map<IEnumerable<NotificacaoViewModel>>(notificacoes);
 
-            ViewBag.TotalCount = notificacaoService.GetCount();
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
+            // TODO: Obter ID do usuário logado via Identity
+            const uint TESTE_ID_PESSOA = 1;
+
+            var notificacoesDto = notificacaoService.ObterNotificacoesComStatusPorPessoa(TESTE_ID_PESSOA);
+
+            var viewModel = notificacoesDto.Select(dto => new NotificacaoViewModel
+            {
+                Id = dto.Id,
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
+                DataEnvio = dto.DataEnvio,
+                StatusLida = (sbyte)(dto.Lida ? 1 : 0)
+            }).ToList();
+
+            ViewBag.TotalNotificacoes = viewModel.Count;
+            ViewBag.NotificacoesNaoLidas = viewModel.Count(n => !n.EstaLida);
 
             return View(viewModel);
+
+
         }
 
         // GET: NotificacaoController/Details/5
@@ -53,7 +66,7 @@ namespace CuidaPetWeb.Controllers
             if (ModelState.IsValid)
             {
                 var notificacao = mapper.Map<Notificacao>(viewModel);
-                notificacao.DataEnvio = DateTime.Now; // Define a data atual
+                notificacao.DataEnvio = DateTime.Now;
                 notificacaoService.Create(notificacao);
                 return RedirectToAction(nameof(Index));
             }
@@ -101,45 +114,29 @@ namespace CuidaPetWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Método específico para listar notificações de um usuário
-        public IActionResult MinhasNotificacoes(uint idPessoa)
-        {
-            var notificacoes = notificacaoService.ObterNotificacoesPorPessoa(idPessoa);
-            var viewModel = mapper.Map<IEnumerable<NotificacaoViewModel>>(notificacoes);
-            return View(viewModel);
-        }
-
-        // Método para marcar notificação como lida
+        // POST: Marcar notificação como lida
         [HttpPost]
-        public IActionResult MarcarComoLida(uint idNotificacao, uint idPessoa)
+        [ValidateAntiForgeryToken]
+        public IActionResult MarcarComoLida(uint idNotificacao)
         {
-            notificacaoService.MarcarComoLida(idNotificacao, idPessoa);
-            return RedirectToAction(nameof(MinhasNotificacoes), new { idPessoa });
+            // TODO: Obter ID do usuário logado via Identity
+            const uint TESTE_ID_PESSOA = 1;
+
+            notificacaoService.MarcarComoLida(idNotificacao, TESTE_ID_PESSOA);
+            return RedirectToAction(nameof(Index));
         }
 
-        // API endpoint para obter notificações via AJAX com status de leitura
+        // API endpoint para obter contagem de notificações não lidas
         [HttpGet]
-        public IActionResult GetNotificacoes(uint idPessoa)
+        public IActionResult GetContagemNaoLidas()
         {
             try
             {
-                var notificacoes = notificacaoService.ObterNotificacoesComStatusPorPessoa(idPessoa);
-                return Json(new { success = true, data = notificacoes });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+                // TODO: Obter ID do usuário logado via Identity
+                const uint TESTE_ID_PESSOA = 1;
 
-        // API endpoint para marcar notificação como lida via AJAX
-        [HttpPost]
-        public IActionResult MarcarComoLidaAjax(uint idNotificacao, uint idPessoa)
-        {
-            try
-            {
-                notificacaoService.MarcarComoLida(idNotificacao, idPessoa);
-                return Json(new { success = true });
+                var contagem = notificacaoService.ObterContagemNaoLidas(TESTE_ID_PESSOA);
+                return Json(new { success = true, count = contagem });
             }
             catch (Exception ex)
             {
