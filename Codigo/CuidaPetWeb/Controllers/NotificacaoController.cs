@@ -17,30 +17,30 @@ namespace CuidaPetWeb.Controllers
             this.mapper = mapper;
         }
 
-        // GET: NotificacaoController - Página de notificações do usuário
+        // GET: NotificacaoController - Página de notificações do usuário (APENAS NÃO LIDAS)
         public IActionResult Index()
         {
-
             // TODO: Obter ID do usuário logado via Identity
             const uint TESTE_ID_PESSOA = 1;
 
             var notificacoesDto = notificacaoService.ObterNotificacoesComStatusPorPessoa(TESTE_ID_PESSOA);
 
-            var viewModel = notificacoesDto.Select(dto => new NotificacaoViewModel
-            {
-                Id = dto.Id,
-                Titulo = dto.Titulo,
-                Descricao = dto.Descricao,
-                DataEnvio = dto.DataEnvio,
-                StatusLida = (sbyte)(dto.Lida ? 1 : 0)
-            }).ToList();
+            // FILTRA APENAS AS NÃO LIDAS
+            var viewModel = notificacoesDto
+                .Where(dto => !dto.Lida)  // ✅ Filtra apenas não lidas
+                .Select(dto => new NotificacaoViewModel
+                {
+                    Id = dto.Id,
+                    Titulo = dto.Titulo,
+                    Descricao = dto.Descricao,
+                    DataEnvio = dto.DataEnvio,
+                    EstaLida = dto.Lida
+                }).ToList();
 
             ViewBag.TotalNotificacoes = viewModel.Count;
-            ViewBag.NotificacoesNaoLidas = viewModel.Count(n => !n.EstaLida);
+            ViewBag.NotificacoesNaoLidas = viewModel.Count; // Todas são não lidas agora
 
             return View(viewModel);
-
-
         }
 
         // GET: NotificacaoController/Details/5
@@ -114,16 +114,23 @@ namespace CuidaPetWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Marcar notificação como lida
+        // POST: Marcar notificação como lida (para AJAX)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult MarcarComoLida(uint idNotificacao)
         {
-            // TODO: Obter ID do usuário logado via Identity
-            const uint TESTE_ID_PESSOA = 1;
+            try
+            {
+                // TODO: Obter ID do usuário logado via Identity
+                const uint TESTE_ID_PESSOA = 1;
 
-            notificacaoService.MarcarComoLida(idNotificacao, TESTE_ID_PESSOA);
-            return RedirectToAction(nameof(Index));
+                notificacaoService.MarcarComoLida(idNotificacao, TESTE_ID_PESSOA);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // API endpoint para obter contagem de notificações não lidas

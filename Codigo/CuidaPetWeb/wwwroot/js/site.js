@@ -107,12 +107,34 @@
     $(window).on('resize', checkResponsive);
     checkResponsive();
 
-    // Atualizar badge inicialmente
-    updateNotificationBadge();
+    // ===== FUNCIONALIDADE DE BADGE DE NOTIFICAÇÕES =====
+    const notificationBadge = $('#notificationBadge');
 
-    // Atualizar badge periodicamente (a cada 2 minutos)
+    window.updateNotificationBadge = function() {
+        $.ajax({
+            url: '/Notificacao/GetContagemNaoLidas',
+            type: 'GET',
+            dataType: 'json'
+        })
+        .done(function (response) {
+            if (response && response.success) {
+                const count = response.count || 0;
+                if (count > 0) {
+                    notificationBadge.text(count > 99 ? '99+' : count).show();
+                } else {
+                    notificationBadge.hide();
+                }
+            }
+        })
+        .fail(function (xhr, status, error) {
+            console.error('Erro ao atualizar contagem de notificações:', error);
+        });
+    };
+
+    window.updateNotificationBadge();
+
     setInterval(function () {
-        updateNotificationBadge();
+        window.updateNotificationBadge();
     }, 2 * 60 * 1000);
 });
 
