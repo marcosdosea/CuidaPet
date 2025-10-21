@@ -66,8 +66,11 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(IEnumerable<NotificacaoViewModel>));
 
             var lista = (IEnumerable<NotificacaoViewModel>)viewResult.ViewData.Model;
-            Assert.AreEqual(3, lista.Count());
+            
+            // Index retorna APENAS não lidas (2 notificações)
+            Assert.AreEqual(2, lista.Count(), "Deve retornar apenas notificações não lidas");
             Assert.AreEqual("Bem-vindo", lista.First().Titulo);
+            Assert.IsTrue(lista.All(n => !(n.EstaLida ?? false)), "Todas devem ser não lidas");
         }
 
         [TestMethod]
@@ -78,11 +81,11 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = (ViewResult)result;
 
-            // Verifica se ViewBag tem os valores esperados
             Assert.IsNotNull(viewResult.ViewData["TotalNotificacoes"]);
             Assert.IsNotNull(viewResult.ViewData["NotificacoesNaoLidas"]);
-            Assert.AreEqual(3, viewResult.ViewData["TotalNotificacoes"]);
-            Assert.AreEqual(2, viewResult.ViewData["NotificacoesNaoLidas"]);
+            
+            Assert.AreEqual(2, viewResult.ViewData["TotalNotificacoes"], "Total deve ser 2");
+            Assert.AreEqual(2, viewResult.ViewData["NotificacoesNaoLidas"], "Não lidas deve ser 2");
         }
 
         [TestMethod]
@@ -208,10 +211,53 @@ namespace CuidaPetWeb.Controllers.Tests
         {
             var result = controller.MarcarComoLida(1);
 
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-            Assert.IsNull(redirect.ControllerName);
-            Assert.AreEqual("Index", redirect.ActionName);
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Value);
+
+            var response = jsonResult.Value;
+            var successProperty = response?.GetType().GetProperty("success");
+            Assert.IsNotNull(successProperty);
+            
+            var successObj = successProperty?.GetValue(response);
+            Assert.IsNotNull(successObj);
+            var success = successObj is bool b && b;
+
+            Assert.IsTrue(success, "Deve retornar success = true");
+        }
+
+        [TestMethod]
+        public void MarcarComoLidaTest_ExcecaoDoServico()
+        {
+            // Arrange
+            var mockServiceWithException = new Mock<INotificacaoService>();
+            mockServiceWithException.Setup(s => s.MarcarComoLida(It.IsAny<uint>(), It.IsAny<uint>()))
+                .Throws(new Exception("Erro ao marcar como lida"));
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new NotificacaoProfile())).CreateMapper();
+
+            var controllerWithException = new NotificacaoController(mockServiceWithException.Object, mapper);
+
+            // Act
+            var result = controllerWithException.MarcarComoLida(1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var jsonResult = (JsonResult)result;
+            var response = jsonResult.Value;
+
+            var successProperty = response?.GetType().GetProperty("success");
+            var messageProperty = response?.GetType().GetProperty("message");
+
+            var successObj = successProperty?.GetValue(response);
+            var success = successObj is bool b && b;
+
+            var messageObj = messageProperty?.GetValue(response);
+            var message = messageObj as string ?? string.Empty;
+
+            Assert.IsFalse(success);
+            Assert.AreEqual("Erro ao marcar como lida", message);
         }
 
         [TestMethod]
@@ -317,15 +363,39 @@ namespace CuidaPetWeb.Controllers.Tests
             var viewResult = (ViewResult)result;
             var lista = viewResult.ViewData.Model as IEnumerable<NotificacaoViewModel>;
 
-            // Verifica se as notificações têm o status correto
             Assert.IsNotNull(lista, "A lista de notificações não pode ser nula.");
             Assert.IsTrue(lista.Any(), "A lista de notificações não pode estar vazia.");
 
-            var primeiraNotificacao = lista.First();
-            Assert.IsFalse(primeiraNotificacao.EstaLida); // Primeira deve ser não lida (StatusLida = 0)
+            // Index retorna APENAS não lidas, então todas devem ser false
+            foreach (var notificacao in lista)
+            {
+                Assert.IsFalse(notificacao.EstaLida, 
+                    $"Notificação '{notificacao.Titulo}' deveria estar não lida, mas EstaLida = {notificacao.EstaLida}");
+            }
+        }
 
-            var segundaNotificacao = lista.ElementAt(1);
-            Assert.IsTrue(segundaNotificacao.EstaLida); // Segunda deve ser lida (StatusLida = 1)
+        [TestMethod]
+        public void IndexTest_ApenasNaoLidas()
+        {
+            // Arrange & Act
+            var result = controller.Index();
+            var viewResult = (ViewResult)result;
+            var lista = viewResult.ViewData.Model as IEnumerable<NotificacaoViewModel>;
+
+            // Assert
+            Assert.IsNotNull(lista);
+            Assert.AreEqual(2, lista.Count(), "Deve retornar apenas as 2 notificações não lidas");
+            
+            // Verifica que nenhuma está marcada como lida
+            Assert.IsTrue(lista.All(n => !(n.EstaLida ?? false)), 
+                "Index deve retornar apenas notificações não lidas");
+            
+            // Verifica os títulos das não lidas
+            var titulos = lista.Select(n => n.Titulo).ToList();
+            Assert.IsTrue(titulos.Contains("Bem-vindo"));
+            Assert.IsTrue(titulos.Contains("Vacina Vencendo"));
+            Assert.IsFalse(titulos.Contains("Consulta Agendada"), 
+                "Notificação lida não deve aparecer");
         }
 
         // Métodos auxiliares
@@ -406,7 +476,7 @@ namespace CuidaPetWeb.Controllers.Tests
             };
         }
 
-        // Novo método para retornar NotificacaoDto
+        // Retorna NotificacaoDto com mix de lidas e não lidas
         private static List<NotificacaoDto> GetNotificacoesDto()
         {
             return new List<NotificacaoDto>
@@ -417,7 +487,7 @@ namespace CuidaPetWeb.Controllers.Tests
                     Descricao = "Seja bem-vindo ao CuidaPet!",
                     DataEnvio = DateTime.Now.AddDays(-2),
                     IdPessoa = 1,
-                    Lida = false // StatusLida = 0
+                    Lida = false // Não lida
                 },
                 new NotificacaoDto {
                     Id = 2,
@@ -425,7 +495,7 @@ namespace CuidaPetWeb.Controllers.Tests
                     Descricao = "Sua consulta foi agendada com sucesso.",
                     DataEnvio = DateTime.Now.AddDays(-1),
                     IdPessoa = 1,
-                    Lida = true // StatusLida = 1
+                    Lida = true // Lida - NÃO deve aparecer no Index
                 },
                 new NotificacaoDto {
                     Id = 3,
@@ -433,7 +503,7 @@ namespace CuidaPetWeb.Controllers.Tests
                     Descricao = "A vacina do seu pet vence em 5 dias.",
                     DataEnvio = DateTime.Now,
                     IdPessoa = 1,
-                    Lida = false // StatusLida = 0
+                    Lida = false // Não lida
                 }
             };
         }
