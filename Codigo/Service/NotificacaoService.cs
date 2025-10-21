@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,23 +112,30 @@ namespace Service
                 .ToList();
         }
 
-        public List<Notificacao> ObterNotificacoesComStatusPorPessoa(uint idPessoa)
+        public List<NotificacaoDto> ObterNotificacoesComStatusPorPessoa(uint idPessoa)
         {
             return context.Pessoanotificacaos
                 .AsNoTracking()
                 .Include(pn => pn.IdNotificacaoNavigation)
                 .Where(pn => pn.IdPessoa == idPessoa)
                 .OrderByDescending(pn => pn.IdNotificacaoNavigation.DataEnvio)
-                .Select(pn => new
+                .Select(pn => new NotificacaoDto
                 {
                     Id = pn.IdNotificacaoNavigation.Id,
                     Titulo = pn.IdNotificacaoNavigation.Titulo,
                     Descricao = pn.IdNotificacaoNavigation.Descricao,
                     DataEnvio = pn.IdNotificacaoNavigation.DataEnvio,
-                    StatusLida = pn.StatusLida
+                    IdPessoa = pn.IdPessoa,
+                    Lida = pn.StatusLida == 1
                 })
-                .Cast<Notificacao>()
                 .ToList();
+        }
+
+        public int ObterContagemNaoLidas(uint idPessoa)
+        {
+            return context.Pessoanotificacaos
+                .AsNoTracking()
+                .Count(pn => pn.IdPessoa == idPessoa && pn.StatusLida == 0);
         }
 
         public void MarcarComoLida(uint idNotificacao, uint idPessoa)

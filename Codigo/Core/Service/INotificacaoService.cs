@@ -1,4 +1,6 @@
-﻿namespace Core.Service
+﻿using Core.DTO;
+
+namespace Core.Service
 {
     public interface INotificacaoService
     {
@@ -14,7 +16,12 @@
         void EnviarNotificacao(string titulo, string mensagem, uint idPessoa);
         List<Notificacao> ObterNotificacoesPorPessoa(uint idPessoa);
         void MarcarComoLida(uint idNotificacao, uint idPessoa);
-        List<Notificacao> ObterNotificacoesComStatusPorPessoa(uint idPessoa);
+        
+        // Retorna lista com informações de status
+        List<NotificacaoDto> ObterNotificacoesComStatusPorPessoa(uint idPessoa);
+        
+        // Obter contagem de não lidas
+        int ObterContagemNaoLidas(uint idPessoa);
 
         // Casos de uso específicos
         void NotificarAprovacaoPedido(uint idPedido);
