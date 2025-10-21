@@ -326,7 +326,6 @@ html {
     flex-direction: column;
     transition: margin-left 0.3s ease;
     position: relative;
-    /* Removido width: 100% que estava causando problemas */
 }
 
     /* Estados do layout principal baseados na sidebar - CORRIGIDO */
@@ -339,23 +338,18 @@ html {
     }
 
 .main-container {
-    flex: 1;
+    flex: 1 0 auto; /* ALTERADO: flex-grow: 1, flex-shrink: 0, flex-basis: auto */
     padding: 0;
-    /* Largura dinâmica baseada no container pai */
     width: 100%;
-    min-width: 0; /* Permite que o container seja menor que seu conteúdo */
+    min-width: 0;
 }
 
 .main-content {
     padding: 1rem;
-    min-height: calc(100vh - 80px - 80px);
     width: 100%;
-    /* Removido max-width que estava limitando o conteúdo */
-    box-sizing: border-box;
-}
-
-/* Sidebar overlay para mobile */
-.sidebar-overlay {
+    box-sizing:
+    /* Sidebar overlay para mobile */
+    .sidebar-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -466,6 +460,7 @@ html {
 
 /* Footer */
 .footer {
+    flex-shrink: 0;
     margin-top: auto;
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;

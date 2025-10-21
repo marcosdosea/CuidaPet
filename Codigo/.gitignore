@@ -24,3 +24,5 @@
 
 # Configurações locais
 *.local
+global.json
+.sonarqube
