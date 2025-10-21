@@ -75,6 +75,11 @@
                             <div class="col-md-6">
                                 <h6 class="fw-bold mb-3"/>
                                 <div class="form-group mb-3">
+                                    <label class="control-label fw-bold">CEP</label>
+                                    <input type="text" class="form-control readonly-style" id="cepInput" maxlength="9" placeholder="00000-000" />
+                                    <small class="form-text text-muted">Digite o CEP para preencher automaticamente</small>
+                                </div>
+                                <div class="form-group mb-3">
                                     <label asp-for="Logradouro" class="control-label fw-bold"></label>
                                     <input asp-for="Logradouro" class="form-control readonly-style" id="logradouroInput" />
                                     <span asp-validation-for="Logradouro" class="text-danger"></span>
@@ -201,6 +206,18 @@
             } else {
                 setPessoaFieldsDisabled(false);
             }
+        });
+
+        document.getElementById('cepInput').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 5) {
+                value = value.substring(0, 5) + '-' + value.substring(5, 8);
+            }
+            e.target.value = value;
+        });
+
+        document.getElementById('cepInput').addEventListener('blur', function() {
+            pesquisaCep(this.value);
         });
     </script>
 }

@@ -1,0 +1,318 @@
+﻿@model IEnumerable<CuidaPetWeb.Models.NotificacaoViewModel>
+
+@{
+    ViewData["Title"] = "Minhas Notificações";
+    var notificacoesNaoLidas = ViewBag.NotificacoesNaoLidas ?? 0;
+}
+
+<article class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">@ViewData["Title"]</h2>
+        <p class="text-muted mb-0">
+            <i class="bi bi-bell me-2"></i>
+            Você tem <strong>@notificacoesNaoLidas</strong> notificaç@(notificacoesNaoLidas != 1 ? "ões" : "ão") não lida@(notificacoesNaoLidas != 1 ? "s" : "")
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-controller="Home" asp-action="Index" title="Voltar para Home" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
+    </div>
+</article>
+
+@if (Model != null && Model.Any())
+{
+    <section class="notifications-container">
+        @foreach (var notificacao in Model)
+        {
+            var iconClass = GetNotificationIcon(notificacao.Titulo);
+
+            <div class="notification-card unread" data-notification-id="@notificacao.Id">
+                <div class="notification-card-header">
+                    <div class="notification-icon-wrapper">
+                        <div class="notification-icon">
+                            <i class="bi @iconClass"></i>
+                        </div>
+                    </div>
+                    <div class="notification-info">
+                        <h5 class="notification-title">
+                            @notificacao.Titulo
+                            <span class="badge bg-danger ms-2">Nova</span>
+                        </h5>
+                        <small class="notification-date text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            @FormatarData(notificacao.DataEnvio)
+                        </small>
+                    </div>
+                    <div class="notification-actions">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-success btn-mark-read" 
+                                data-notification-id="@notificacao.Id"
+                                title="Marcar como lida">
+                            <i class="bi bi-check-circle me-1"></i> Marcar como lida
+                        </button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(notificacao.Descricao))
+                {
+                    <div class="notification-card-body">
+                        <p class="notification-description">@notificacao.Descricao</p>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+}
+else
+{
+    <section class="empty-state text-center py-5">
+        <div class="empty-state-icon mb-3">
+            <i class="bi bi-bell-slash" style="font-size: 5rem; color: #ccc;"></i>
+        </div>
+        <h4 class="text-muted">Nenhuma notificação encontrada</h4>
+        <p class="text-muted">Você não possui notificações no momento.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-success mt-3">
+            <i class="bi bi-house me-2"></i>Voltar para a Home
+        </a>
+    </section>
+}
+
+@functions {
+    private string GetNotificationIcon(string titulo)
+    {
+        var tituloLower = titulo?.ToLower() ?? "";
+
+        if (tituloLower.Contains("vacina")) return "bi-exclamation-circle";
+        if (tituloLower.Contains("consulta")) return "bi-calendar-check";
+        if (tituloLower.Contains("medicamento")) return "bi-capsule";
+        if (tituloLower.Contains("pet")) return "bi-heart";
+        if (tituloLower.Contains("lembrete")) return "bi-bell";
+        if (tituloLower.Contains("pedido")) return "bi-cart-check";
+        if (tituloLower.Contains("agendamento")) return "bi-calendar-event";
+
+        return "bi-info-circle";
+    }
+
+    private string FormatarData(DateTime data)
+    {
+        var diff = DateTime.Now - data;
+
+        if (diff.TotalMinutes < 1) return "Agora mesmo";
+        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes}m atrás";
+        if (diff.TotalHours < 24) return $"{(int)diff.TotalHours}h atrás";
+        if (diff.TotalDays < 7) return $"{(int)diff.TotalDays}d atrás";
+
+        return data.ToString("dd/MM/yyyy 'às' HH:mm");
+    }
+}
+
+@section Styles {
+    <style>
+        .notifications-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+            .notification-card:hover {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .notification-card.unread {
+                border-left: 4px solid #6EA06C;
+                background: linear-gradient(to right, #fff8e1 0%, white 10%);
+            }
+
+            .notification-card.removing {
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.5s ease;
+            }
+
+        .notification-card-header {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem;
+            gap: 1rem;
+        }
+
+        .notification-icon-wrapper {
+            flex-shrink: 0;
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6EA06C, #A9E4AF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .notification-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-date {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .notification-actions {
+            flex-shrink: 0;
+        }
+
+        .notification-card-body {
+            padding: 0 1.25rem 1.25rem 1.25rem;
+            padding-left: calc(1.25rem + 50px + 1rem);
+        }
+
+        .notification-description {
+            margin: 0;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .empty-state-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .notification-card-header {
+                flex-wrap: wrap;
+            }
+
+            .notification-actions {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+
+                .notification-actions button {
+                    width: 100%;
+                }
+
+            .notification-card-body {
+                padding-left: 1.25rem;
+            }
+
+            .notification-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handler para marcar notificação como lida com AJAX
+            $(document).on('click', '.btn-mark-read', function() {
+                const $button = $(this);
+                const notificationId = $button.data('notification-id');
+                const $notificationCard = $button.closest('.notification-card');
+                
+                // Desabilita o botão
+                $button.prop('disabled', true);
+                $button.html('<span class="spinner-border spinner-border-sm me-1"></span>Processando...');
+                
+                // Requisição AJAX
+                $.ajax({
+                    url: '@Url.Action("MarcarComoLida", "Notificacao")',
+                    type: 'POST',
+                    data: {
+                        idNotificacao: notificationId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response && response.success) {
+                            // Animação de remoção
+                            $notificationCard.addClass('removing');
+                            
+                            setTimeout(function() {
+                                $notificationCard.remove();
+                                
+                                // Atualiza contador
+                                const remaining = $('.notification-card').length;
+                                $('#unread-count').text(remaining);
+                                
+                                // Atualiza plural
+                                if (remaining === 1) {
+                                    $('#plural-notif').text('ão');
+                                    $('#plural-lida').text('');
+                                } else {
+                                    $('#plural-notif').text('ões');
+                                    $('#plural-lida').text('s');
+                                }
+                                
+                                // Se não há mais notificações, mostra estado vazio
+                                if (remaining === 0) {
+                                    $('.notifications-container').html(`
+                                        <section class="empty-state text-center py-5">
+                                            <div class="empty-state-icon mb-3">
+                                                <i class="bi bi-bell-slash" style="font-size: 5rem; color: #ccc;"></i>
+                                            </div>
+                                            <h4 class="text-muted">Nenhuma notificação encontrada</h4>
+                                            <p class="text-muted">Você não possui notificações no momento.</p>
+                                            <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-3">
+                                                <i class="bi bi-house me-2"></i>Voltar para a Home
+                                            </a>
+                                        </section>
+                                    `);
+                                }
+                                
+                                // Atualiza badge do header
+                                if (typeof updateNotificationBadge === 'function') {
+                                    updateNotificationBadge();
+                                }
+                            }, 500);
+                        }
+                    },
+                    error: function() {
+                        alert('Erro ao marcar notificação como lida.');
+                        $button.prop('disabled', false);
+                        $button.html('<i class="bi bi-check-circle me-1"></i> Marcar como lida');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    @Html.AntiForgeryToken()
+}
