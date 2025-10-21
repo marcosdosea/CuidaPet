@@ -22,8 +22,6 @@ namespace CuidaPetWeb.Models
         public DateTime DataEnvio { get; set; }
 
         [DisplayName("Status")]
-        public sbyte? StatusLida { get; set; }
-
-        public bool EstaLida => StatusLida.HasValue && StatusLida.Value == 1;
+        public bool? EstaLida { get; set; }
     }
 }

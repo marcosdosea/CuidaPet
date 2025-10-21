@@ -27,9 +27,8 @@
         @foreach (var notificacao in Model)
         {
             var iconClass = GetNotificationIcon(notificacao.Titulo);
-            var isUnread = !notificacao.EstaLida;
 
-            <div class="notification-card @(isUnread ? "unread" : "read")" data-notification-id="@notificacao.Id">
+            <div class="notification-card unread" data-notification-id="@notificacao.Id">
                 <div class="notification-card-header">
                     <div class="notification-icon-wrapper">
                         <div class="notification-icon">
@@ -39,34 +38,21 @@
                     <div class="notification-info">
                         <h5 class="notification-title">
                             @notificacao.Titulo
-                            @if (isUnread)
-                            {
-                                <span class="badge bg-danger ms-2">Nova</span>
-                            }
+                            <span class="badge bg-danger ms-2">Nova</span>
                         </h5>
                         <small class="notification-date text-muted">
                             <i class="bi bi-clock me-1"></i>
                             @FormatarData(notificacao.DataEnvio)
                         </small>
                     </div>
-                    @if (isUnread)
-                    {
-                        <div class="notification-actions">
-                            <form asp-action="MarcarComoLida" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="idNotificacao" value="@notificacao.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-success" title="Marcar como lida">
-                                    <i class="bi bi-check-circle me-1"></i> Marcar como lida
-                                </button>
-                            </form>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="notification-read-icon">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                        </div>
-                    }
+                    <div class="notification-actions">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-success btn-mark-read" 
+                                data-notification-id="@notificacao.Id"
+                                title="Marcar como lida">
+                            <i class="bi bi-check-circle me-1"></i> Marcar como lida
+                        </button>
+                    </div>
                 </div>
 
                 @if (!string.IsNullOrEmpty(notificacao.Descricao))
@@ -98,7 +84,7 @@ else
     {
         var tituloLower = titulo?.ToLower() ?? "";
 
-        if (tituloLower.Contains("vacina")) return "bi-shield-check";
+        if (tituloLower.Contains("vacina")) return "bi-exclamation-circle";
         if (tituloLower.Contains("consulta")) return "bi-calendar-check";
         if (tituloLower.Contains("medicamento")) return "bi-capsule";
         if (tituloLower.Contains("pet")) return "bi-heart";
@@ -148,9 +134,10 @@ else
                 background: linear-gradient(to right, #fff8e1 0%, white 10%);
             }
 
-            .notification-card.read {
-                border-left: 4px solid #e0e0e0;
-                opacity: 0.85;
+            .notification-card.removing {
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.5s ease;
             }
 
         .notification-card-header {
@@ -196,14 +183,9 @@ else
             font-size: 0.875rem;
         }
 
-        .notification-actions,
-        .notification-read-icon {
+        .notification-actions {
             flex-shrink: 0;
         }
-
-            .notification-read-icon i {
-                font-size: 1.5rem;
-            }
 
         .notification-card-body {
             padding: 0 1.25rem 1.25rem 1.25rem;
@@ -255,4 +237,82 @@ else
             }
         }
     </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handler para marcar notificação como lida com AJAX
+            $(document).on('click', '.btn-mark-read', function() {
+                const $button = $(this);
+                const notificationId = $button.data('notification-id');
+                const $notificationCard = $button.closest('.notification-card');
+                
+                // Desabilita o botão
+                $button.prop('disabled', true);
+                $button.html('<span class="spinner-border spinner-border-sm me-1"></span>Processando...');
+                
+                // Requisição AJAX
+                $.ajax({
+                    url: '@Url.Action("MarcarComoLida", "Notificacao")',
+                    type: 'POST',
+                    data: {
+                        idNotificacao: notificationId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response && response.success) {
+                            // Animação de remoção
+                            $notificationCard.addClass('removing');
+                            
+                            setTimeout(function() {
+                                $notificationCard.remove();
+                                
+                                // Atualiza contador
+                                const remaining = $('.notification-card').length;
+                                $('#unread-count').text(remaining);
+                                
+                                // Atualiza plural
+                                if (remaining === 1) {
+                                    $('#plural-notif').text('ão');
+                                    $('#plural-lida').text('');
+                                } else {
+                                    $('#plural-notif').text('ões');
+                                    $('#plural-lida').text('s');
+                                }
+                                
+                                // Se não há mais notificações, mostra estado vazio
+                                if (remaining === 0) {
+                                    $('.notifications-container').html(`
+                                        <section class="empty-state text-center py-5">
+                                            <div class="empty-state-icon mb-3">
+                                                <i class="bi bi-bell-slash" style="font-size: 5rem; color: #ccc;"></i>
+                                            </div>
+                                            <h4 class="text-muted">Nenhuma notificação encontrada</h4>
+                                            <p class="text-muted">Você não possui notificações no momento.</p>
+                                            <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-3">
+                                                <i class="bi bi-house me-2"></i>Voltar para a Home
+                                            </a>
+                                        </section>
+                                    `);
+                                }
+                                
+                                // Atualiza badge do header
+                                if (typeof updateNotificationBadge === 'function') {
+                                    updateNotificationBadge();
+                                }
+                            }, 500);
+                        }
+                    },
+                    error: function() {
+                        alert('Erro ao marcar notificação como lida.');
+                        $button.prop('disabled', false);
+                        $button.html('<i class="bi bi-check-circle me-1"></i> Marcar como lida');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    @Html.AntiForgeryToken()
 }
