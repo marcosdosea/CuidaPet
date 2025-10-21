@@ -308,3 +308,67 @@
         loadNotifications(true);
     }, 2 * 60 * 1000);
 });
+
+const getElement = (id) => document.getElementById(id);
+
+const campos = {
+    rua: () => getElement('logradouroInput'),
+    bairro: () => getElement('bairroInput'),
+    cidade: () => getElement('cidadeInput'),
+    estado: () => getElement('estadoInput')
+};
+
+function limpaFormularioCep() {
+    campos.rua().value = '';
+    campos.bairro().value = '';
+    campos.cidade().value = '';
+    campos.estado().value = '';
+}
+
+function preencherCampos(valor) {
+    campos.rua().value = valor;
+    campos.bairro().value = valor;
+    campos.cidade().value = valor;
+    campos.estado().value = valor;
+}
+
+function atualizarEndereco(dados) {
+    campos.rua().value = dados.logradouro || '';
+    campos.bairro().value = dados.bairro || '';
+    campos.cidade().value = dados.localidade || '';
+    campos.estado().value = dados.uf || '';
+}
+
+async function consultarCep(cep) {
+    try {
+        preencherCampos('...');
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.ok) throw new Error('Erro na consulta do CEP');
+        const dados = await response.json();
+        if (dados.erro) {
+            limpaFormularioCep();
+            alert('CEP não encontrado.');
+            return;
+        }
+        atualizarEndereco(dados);
+    } catch (erro) {
+        limpaFormularioCep();
+        alert('Erro ao consultar CEP. Tente novamente.');
+        console.error('Erro na consulta:', erro);
+    }
+}
+
+function pesquisaCep(valor) {
+    const cep = valor.replace(/\D/g, '');
+    if (!cep) {
+        limpaFormularioCep();
+        return;
+    }
+    const validacep = /^[0-9]{8}$/;
+    if (!validacep.test(cep)) {
+        limpaFormularioCep();
+        alert('Formato de CEP inválido. Use 8 dígitos.');
+        return;
+    }
+    consultarCep(cep);
+}
