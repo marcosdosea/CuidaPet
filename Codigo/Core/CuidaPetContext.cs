@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
@@ -15,9 +17,9 @@ public partial class CuidaPetContext : DbContext
 
     public virtual DbSet<Agendamento> Agendamentos { get; set; }
 
-    public virtual DbSet<Categoria> Categoria { get; set; }
+    public virtual DbSet<Categorium> Categoria { get; set; }
 
-    public virtual DbSet<Consulta> Consulta { get; set; }
+    public virtual DbSet<Consultum> Consulta { get; set; }
 
     public virtual DbSet<Doenca> Doencas { get; set; }
 
@@ -54,6 +56,10 @@ public partial class CuidaPetContext : DbContext
     public virtual DbSet<Vacina> Vacinas { get; set; }
 
     public virtual DbSet<Vacinacao> Vacinacaos { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=cuidapetdb");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -103,7 +109,7 @@ public partial class CuidaPetContext : DbContext
                 .HasConstraintName("fk_Agendamento_Pessoa1");
         });
 
-        modelBuilder.Entity<Categoria>(entity =>
+        modelBuilder.Entity<Categorium>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -118,7 +124,7 @@ public partial class CuidaPetContext : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<Consulta>(entity =>
+        modelBuilder.Entity<Consultum>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

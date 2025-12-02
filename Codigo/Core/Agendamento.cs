@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Agendamento
 {
@@ -21,7 +24,7 @@ public partial class Agendamento
 
     public uint IdTutor { get; set; }
 
-    public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
+    public virtual ICollection<Consultum> Consulta { get; set; } = new List<Consultum>();
 
     public virtual Funcionario IdFuncionarioNavigation { get; set; } = null!;
 

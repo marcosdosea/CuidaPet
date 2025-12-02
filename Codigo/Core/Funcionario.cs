@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Funcionario
 {
@@ -12,7 +15,7 @@ public partial class Funcionario
 
     public virtual ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 
-    public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
+    public virtual ICollection<Consultum> Consulta { get; set; } = new List<Consultum>();
 
     public virtual ICollection<Horariosatendimento> Horariosatendimentos { get; set; } = new List<Horariosatendimento>();
 

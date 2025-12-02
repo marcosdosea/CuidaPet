@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core;
 
-public partial class Especialidade
+public partial class Categorium
 {
     public uint Id { get; set; }
 
@@ -11,5 +11,5 @@ public partial class Especialidade
 
     public string? Descricao { get; set; }
 
-    public virtual ICollection<Funcionario> IdFuncionarios { get; set; } = new List<Funcionario>();
+    public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
 }

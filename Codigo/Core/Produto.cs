@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Produto
 {
@@ -21,7 +24,7 @@ public partial class Produto
 
     public uint IdEstabelecimento { get; set; }
 
-    public virtual Categoria IdCategoriaNavigation { get; set; } = null!;
+    public virtual Categorium IdCategoriaNavigation { get; set; } = null!;
 
     public virtual Estabelecimento IdEstabelecimentoNavigation { get; set; } = null!;
 
