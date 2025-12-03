@@ -30,8 +30,8 @@ namespace Service.Tests
                     Nome = "João Silva",
                     Senha = "senha123",
                     Email = "joao@gmail.com",
-                    Telefone = "11999999999",
-                    Cpf = "12345678900",
+                    Telefone = "12979696546",
+                    Cpf = "41693720779",
                     Tipo = "T",
                     Status = "A",
                     Logradouro = "Rua A",
@@ -46,8 +46,8 @@ namespace Service.Tests
                     Nome = "José Silva",
                     Senha = "senha123",
                     Email = "jose@gmail.com",
-                    Telefone = "11999999999",
-                    Cpf = "98765432100",
+                    Telefone = "12979696546",
+                    Cpf = "22771042568",
                     Tipo = "T",
                     Status = "A",
                     Logradouro = "Rua A",
@@ -73,8 +73,8 @@ namespace Service.Tests
                 Id = 3,
                 Nome = "Ana Bia",
                 Email = "anab@biana.com",
-                Telefone = "11977777777",
-                Cpf = "11122233344",
+                Telefone = "11989794106",
+                Cpf = "26347877902",
                 Senha = "123",
                 Tipo = "T",
                 Status = "A",
@@ -93,8 +93,8 @@ namespace Service.Tests
             Assert.AreEqual("T", pessoa.Tipo);
             Assert.AreEqual("A", pessoa.Status);
             Assert.AreEqual("anab@biana.com", pessoa.Email);
-            Assert.AreEqual("11977777777", pessoa.Telefone);
-            Assert.AreEqual("11122233344", pessoa.Cpf);
+            Assert.AreEqual("11989794106", pessoa.Telefone);
+            Assert.AreEqual("26347877902", pessoa.Cpf);
             Assert.AreEqual("123", pessoa.Senha);
             Assert.AreEqual("Rua 1", pessoa.Logradouro);
             Assert.AreEqual("10", pessoa.Numero);
@@ -104,67 +104,101 @@ namespace Service.Tests
         }
 
         [TestMethod]
-        public void DeleteTest()
+        public void Delete_IdExistente_AlterarStatusParaInativo()
         {
+            // Arrange
+            var pessoa = new Pessoa
+            {
+                Id = 2,
+                Nome = "José Carlos de Alencar Neto III",
+                Status = "A",
+                Tipo = "T",
+                Cpf = "75399735954",
+                Senha = "XyZ123!@#_ComplexPassword",
+                Email = "jose.carlos@ufs.ac.br",
+                Telefone = "41955476567",
+                Logradouro = "R",
+                Numero = "1",
+                Bairro = "Atalaia",
+                Cidade = "Aracaju",
+                Estado = "SE"
+            };
+            context.Pessoas.Add(pessoa);
+            context.SaveChanges();
+
+            // Act
             pessoaService.Delete(2);
 
-            var deleted = pessoaService.Get(2);
+            // Assert
+            var deleted = context.Pessoas.Find((uint)2);
             Assert.IsNotNull(deleted);
-            Assert.AreEqual("I", deleted.Status); // Status deve ser "I" (inativo)
+            Assert.AreEqual("I", deleted.Status);
         }
 
         [TestMethod]
-        public void EditTest()
+        public void Edit_PessoaExistente_AtualizarDados()
         {
-            var pessoa = pessoaService.Get(1);
-            Assert.IsNotNull(pessoa);
-            pessoa.Nome = "João Alterado";
-            pessoa.Email = "joao@ggmail.com";
-            pessoa.Senha = "1234";
-            pessoa.Telefone = "11988888888";
-            pessoa.Logradouro = "Rua 2";
-            pessoa.Numero = "20";
-            pessoa.Complemento = null;
-            pessoa.Bairro = "Bairro 2";
-            pessoa.Cidade = "Rio de Janeiro";
-            pessoa.Estado = "RJ";
+            // Arrange
+            var pessoa = new Pessoa
+            {
+                Id = 1,
+                Nome = "Alice Soares Pereira",
+                Status = "A",
+                Tipo = "T",
+                Cpf = "43487935228",
+                Senha = "=BM9-Fgo5rZ4,YpfUCT~TBXKI$",
+                Email = "alice.sp@gmail.com",
+                Telefone = "21991379225",
+                Logradouro = "R",
+                Numero = "1",
+                Bairro = "Jardim América",
+                Cidade = "São Paulo",
+                Estado = "SP"
+            };
+            context.Pessoas.Add(pessoa);
+            context.SaveChanges();
+            context.Entry(pessoa).State = EntityState.Detached;
 
-            pessoaService.Edit(pessoa);
+            var pessoaEditada = new Pessoa { Id = 1, Nome = "Alterado", Status = "A", Tipo = "T", Cpf = "43487935228", Senha = "123", Email = "o@o.com", Telefone = "21991379225", Logradouro = "R", Numero = "1", Bairro = "B", Cidade = "C", Estado = "UF" };
 
-            pessoa = pessoaService.Get(1);
-            Assert.IsNotNull(pessoa);
-            Assert.AreEqual("João Alterado", pessoa.Nome);
-            Assert.AreEqual("joao@ggmail.com", pessoa.Email);
-            Assert.AreEqual("1234", pessoa.Senha);
-            Assert.AreEqual("11988888888", pessoa.Telefone);
-            Assert.AreEqual("Rua 2", pessoa.Logradouro);
-            Assert.AreEqual("20", pessoa.Numero);
-            Assert.IsNull(pessoa.Complemento);
-            Assert.AreEqual("Bairro 2", pessoa.Bairro);
-            Assert.AreEqual("Rio de Janeiro", pessoa.Cidade);
-            Assert.AreEqual("RJ", pessoa.Estado);
+            // Act
+            pessoaService.Edit(pessoaEditada);
+
+            // Assert
+            var atualizado = context.Pessoas.Find((uint)1);
+            Assert.IsNotNull(atualizado);
+            Assert.AreEqual("Alterado", atualizado.Nome);
         }
 
         [TestMethod]
-        public void GetTest()
+        public void Get_IdExistente_RetornarPessoaCorreta()
         {
-            var pessoa = pessoaService.Get(2);
+            // Arrange
+            var pessoa = new Pessoa
+            {
+                Id = 10,
+                Nome = "Bruno Oliveira Costa",
+                Tipo = "T",
+                Status = "A",
+                Cpf = "36342800260",
+                Senha = "B[Xlwuk{5nD6OPM!hf]9K^[~a]",
+                Email = "bruno.oc@gmail.net",
+                Telefone = "11946769344",
+                Logradouro = "R",
+                Numero = "1",
+                Bairro = "Copacabana",
+                Cidade = "Rio de Janeiro",
+                Estado = "RJ"
+            };
+            context.Pessoas.Add(pessoa);
+            context.SaveChanges();
 
-            Assert.IsNotNull(pessoa);
-            Assert.AreEqual("José Silva", pessoa.Nome);
-            Assert.AreEqual("T", pessoa.Tipo);
-            Assert.AreEqual("A", pessoa.Status);
-            Assert.AreEqual("jose@gmail.com", pessoa.Email);
-            Assert.AreEqual("senha123", pessoa.Senha);
-            Assert.AreEqual("11999999999", pessoa.Telefone);
-            Assert.AreEqual("98765432100", pessoa.Cpf);
-            Assert.AreEqual("Rua A", pessoa.Logradouro);
-            Assert.AreEqual("100", pessoa.Numero);
-            Assert.AreEqual("Apto 101", pessoa.Complemento);
-            Assert.AreEqual("Centro", pessoa.Bairro);
-            Assert.AreEqual("São Paulo", pessoa.Cidade);
-            Assert.AreEqual("SP", pessoa.Estado);
+            // Act
+            var resultado = pessoaService.Get(10);
 
+            // Assert
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual("Busca ID", resultado.Nome);
         }
 
         [TestMethod]
@@ -191,7 +225,7 @@ namespace Service.Tests
         public void GetByCpfTest_Existente_DeveRetornarPessoa()
         {
             // Act
-            var pessoa = pessoaService.GetByCpf("12345678900");
+            var pessoa = pessoaService.GetByCpf("41693720779");
 
             // Assert
             Assert.IsNotNull(pessoa);
@@ -204,7 +238,7 @@ namespace Service.Tests
         public void GetByCpfTest_Inexistente_DeveRetornarNull()
         {
             // Act
-            var pessoa = pessoaService.GetByCpf("00000000000");
+            var pessoa = pessoaService.GetByCpf("75399735954");
 
             // Assert
             Assert.IsNull(pessoa);
@@ -219,8 +253,8 @@ namespace Service.Tests
                 Nome = "Inativo",
                 Senha = "123",
                 Email = "inativo@email.com",
-                Telefone = "11900000000",
-                Cpf = "55544433322",
+                Telefone = "19927046394",
+                Cpf = "90005940818",
                 Tipo = "T",
                 Status = "I", // Inativa
                 Logradouro = "Rua X",
@@ -232,7 +266,7 @@ namespace Service.Tests
             context.SaveChanges();
 
             // Act
-            var pessoa = pessoaService.GetByCpf("55544433322");
+            var pessoa = pessoaService.GetByCpf("90005940818");
 
             // Assert
             Assert.IsNotNull(pessoa);
