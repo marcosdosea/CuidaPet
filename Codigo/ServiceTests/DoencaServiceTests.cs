@@ -121,5 +121,42 @@ namespace Service.Tests
             Assert.AreEqual("Cinomose", doenca.Nome);
             Assert.AreEqual((uint)1, doenca.Id);
         }
+
+        [TestMethod()]
+        public void EditTest_DeveAtualizarNomeDaDoenca_QuandoDadosValidos()
+        {
+            // Arrange - Preparação
+            var doencaOriginal = doencaService.Get(3);
+            Assert.IsNotNull(doencaOriginal, "Doença deve existir antes da edição");
+            
+            var novoNome = "Parvovirose Canina Atualizada";
+            doencaOriginal.Nome = novoNome;
+            
+            // Act - Ação
+            doencaService.Edit(doencaOriginal);
+            
+            // Assert - Verificação
+            var doencaEditada = doencaService.Get(3);
+            Assert.IsNotNull(doencaEditada);
+            Assert.AreEqual(novoNome, doencaEditada.Nome);
+            Assert.AreEqual((uint)1, doencaEditada.IdEspecie);
+        }
+
+        [TestMethod()]
+        public void EditTest_NaoDeveAlterarQuantidadeDeDoencas_QuandoEditarDoencaExistente()
+        {
+            // Arrange
+            var quantidadeInicial = doencaService.GetAll(page, pageSize).Count();
+            var doenca = doencaService.Get(3);
+            Assert.IsNotNull(doenca);
+            doenca.Nome = "Nome Atualizado";
+            
+            // Act
+            doencaService.Edit(doenca);
+            
+            // Assert
+            var quantidadeFinal = doencaService.GetAll(page, pageSize).Count();
+            Assert.AreEqual(quantidadeInicial, quantidadeFinal);
+        }
     }
 }

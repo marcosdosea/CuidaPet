@@ -135,6 +135,69 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
+        [TestMethod()]
+        public void EditTest_Post_DeveRetornarView_QuandoModelStateInvalido()
+        {
+            // Arrange
+            controller.ModelState.AddModelError("Nome", "O campo Nome é obrigatório.");
+            var doencaModel = GetTargetDoencaModel();
+
+            // Act
+            var result = controller.Edit(doencaModel);
+
+            // Assert
+            Assert.AreEqual(1, controller.ModelState.ErrorCount, "Deve haver exatamente um erro no ModelState");
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Deve retornar uma ViewResult quando há erros");
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DoencaViewModel), "O modelo deve ser do tipo DoencaViewModel");
+            Assert.AreEqual(doencaModel.Nome, ((DoencaViewModel)viewResult.ViewData.Model).Nome, "O modelo retornado deve manter os dados originais");
+        }
+
+        [TestMethod()]
+        public void DetailsTest_DeveRetornarViewComDadosCorretos_QuandoIdValido()
+        {
+            // Arrange
+            uint idDoenca = 1;
+
+            // Act
+            var result = controller.Details(idDoenca);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Deve retornar uma ViewResult");
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsNotNull(viewResult.ViewData.Model, "O modelo não deve ser nulo");
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DoencaViewModel), "O modelo deve ser do tipo DoencaViewModel");
+            
+            DoencaViewModel doencaModel = (DoencaViewModel)viewResult.ViewData.Model;
+            Assert.AreEqual(idDoenca, doencaModel.Id, "O ID da doença deve corresponder ao solicitado");
+            Assert.AreEqual("Raiva", doencaModel.Nome, "O nome da doença deve ser 'Raiva'");
+            Assert.AreEqual(1u, doencaModel.IdEspecie, "O ID da espécie deve ser 1");
+        }
+
+        [TestMethod()]
+        public void IndexTest_DeveRetornarListaVazia_QuandoNaoHouverDoencas()
+        {
+            // Arrange
+            var mockService = new Mock<IDoencaService>();
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new DoencaProfile())).CreateMapper();
+            mockService.Setup(service => service.GetAll(page, pageSize))
+                .Returns(new List<Doenca>());
+            var controllerVazio = new DoencaController(mockService.Object, mapper);
+
+            // Act
+            var result = controllerVazio.Index();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Deve retornar uma ViewResult");
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(IEnumerable<DoencaViewModel>), "O modelo deve ser uma coleção de DoencaViewModel");
+            
+            var listaDoencas = (IEnumerable<DoencaViewModel>)viewResult.ViewData.Model;
+            Assert.IsNotNull(listaDoencas, "A lista não deve ser nula");
+            Assert.AreEqual(0, listaDoencas.Count(), "A lista deve estar vazia quando não há doenças");
+        }
+
         private DoencaViewModel GetNewDoenca()
         {
             return new DoencaViewModel()
