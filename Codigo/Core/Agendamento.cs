@@ -24,7 +24,7 @@ public partial class Agendamento
 
     public uint IdTutor { get; set; }
 
-    public virtual ICollection<Consultum> Consulta { get; set; } = new List<Consultum>();
+    public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
 
     public virtual Funcionario IdFuncionarioNavigation { get; set; } = null!;
 

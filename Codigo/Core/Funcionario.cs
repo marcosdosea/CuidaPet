@@ -15,7 +15,7 @@ public partial class Funcionario
 
     public virtual ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 
-    public virtual ICollection<Consultum> Consulta { get; set; } = new List<Consultum>();
+    public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
 
     public virtual ICollection<Horariosatendimento> Horariosatendimentos { get; set; } = new List<Horariosatendimento>();
 

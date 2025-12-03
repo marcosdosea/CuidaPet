@@ -24,7 +24,7 @@ public partial class Produto
 
     public uint IdEstabelecimento { get; set; }
 
-    public virtual Categorium IdCategoriaNavigation { get; set; } = null!;
+    public virtual Categoria IdCategoriaNavigation { get; set; } = null!;
 
     public virtual Estabelecimento IdEstabelecimentoNavigation { get; set; } = null!;
 

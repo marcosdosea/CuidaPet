@@ -17,9 +17,9 @@ public partial class CuidaPetContext : DbContext
 
     public virtual DbSet<Agendamento> Agendamentos { get; set; }
 
-    public virtual DbSet<Categorium> Categoria { get; set; }
+    public virtual DbSet<Categoria> Categoria { get; set; }
 
-    public virtual DbSet<Consultum> Consulta { get; set; }
+    public virtual DbSet<Consulta> Consulta { get; set; }
 
     public virtual DbSet<Doenca> Doencas { get; set; }
 
@@ -109,7 +109,7 @@ public partial class CuidaPetContext : DbContext
                 .HasConstraintName("fk_Agendamento_Pessoa1");
         });
 
-        modelBuilder.Entity<Categorium>(entity =>
+        modelBuilder.Entity<Categoria>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -124,7 +124,7 @@ public partial class CuidaPetContext : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<Consultum>(entity =>
+        modelBuilder.Entity<Consulta>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
