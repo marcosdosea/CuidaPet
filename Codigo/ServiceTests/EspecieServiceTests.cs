@@ -50,12 +50,22 @@ namespace Service.Tests
 
             // Assert
             Assert.AreEqual((uint)4, novaEspecie);
-            Assert.AreEqual(4, especieService.GetAll(page, pageSize).Count());
             var especie = especieService.Get(4);
             Assert.IsNotNull(especie);
             Assert.IsTrue(4 == especie.Id);
             Assert.AreEqual("Ave", especie.Nome);
         }
+
+        [TestMethod]
+        public void Create_DeveAumentarQuantidade()
+        {
+            // Act
+            especieService.Create(new Especie { Nome = "Ave" });
+
+            // Assert
+            Assert.AreEqual(4, especieService.GetCount());
+        }
+
 
         [TestMethod()]
         public void DeleteTest()
@@ -67,6 +77,12 @@ namespace Service.Tests
             Assert.AreEqual(2, especieService.GetAll(page, pageSize).Count());
             var especie = especieService.Get(2);
             Assert.IsNull(especie);
+        }
+
+        [TestMethod]
+        public void Delete_IdInexistente_ShouldNotThrow()
+        {
+            especieService.Delete(999);
         }
 
         [TestMethod()]
@@ -85,6 +101,20 @@ namespace Service.Tests
             Assert.IsTrue(3 == especie.Id);
         }
 
+        [TestMethod]
+        public void Edit_ItemInexistente_ShouldNotThrow()
+        {
+            // Arrange
+            var especie = new Especie { Id = 999, Nome = "Nada" };
+
+            // Act
+            especieService.Edit(especie);
+
+            // Assert
+            Assert.AreEqual(3, especieService.GetCount());
+        }
+
+
         [TestMethod()]
         public void GetTest()
         {
@@ -96,6 +126,15 @@ namespace Service.Tests
             Assert.AreEqual("Cachorro", especie.Nome);
             Assert.AreEqual((uint)1, especie.Id);
         }
+
+        [TestMethod]
+        public void Get_IdInexistente_RetornaNulo()
+        {
+            var especie = especieService.Get(999);
+
+            Assert.IsNull(especie);
+        }
+
 
         [TestMethod()]
         public void GetAllTest()
@@ -124,6 +163,25 @@ namespace Service.Tests
             var produto = especies.First();
             Assert.AreEqual("Cachorro", produto.Nome);
             Assert.AreEqual((uint)1, produto.Id);
+        }
+
+        [TestMethod]
+        public void GetAll_Paginado_DeveRetornarQuantidadeCorreta()
+        {
+            var lista = especieService.GetAll(1, 2);
+
+            Assert.AreEqual(2, lista.Count());
+        }
+
+        [TestMethod]
+        public void GetByNome_Parcial_DeveRetornarMultiplos()
+        {
+            context.Especies.Add(new Especie { Nome = "Cachorrão" });
+            context.SaveChanges();
+
+            var resultado = especieService.GetByNome("Cacho");
+
+            Assert.AreEqual(2, resultado.Count());
         }
     }
 }

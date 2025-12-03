@@ -16,7 +16,6 @@ namespace Service.Tests
         [TestInitialize]
         public void Initialize()
         {
-            //Arrange
             var builder = new DbContextOptionsBuilder<CuidaPetContext>();
             builder.UseInMemoryDatabase("cuidapetdb");
             var options = builder.Options;
@@ -44,7 +43,8 @@ namespace Service.Tests
 
             var vacinas = new List<Vacina>
             {
-                new() {
+                new()
+                {
                     Id = 1,
                     Nome = "Antirrábica",
                     PeriodoEmDias = 365,
@@ -52,7 +52,8 @@ namespace Service.Tests
                     IdEspecie = 1
                 },
 
-                new() {
+                new()
+                {
                     Id = 2,
                     Nome = "Polivalente V10",
                     PeriodoEmDias = 365,
@@ -60,7 +61,8 @@ namespace Service.Tests
                     IdEspecie = 1
                 },
 
-                new() {
+                new()
+                {
                     Id = 3,
                     Nome = "Quádrupla Felina",
                     PeriodoEmDias = 365,
@@ -78,7 +80,6 @@ namespace Service.Tests
         [TestMethod()]
         public void CreateTest()
         {
-            // Act
             var novaVacinaId = vacinaService.Create(new()
             {
                 Id = 4,
@@ -88,7 +89,6 @@ namespace Service.Tests
                 IdEspecie = 1
             });
 
-            // Assert
             Assert.AreEqual((uint)4, novaVacinaId);
             Assert.AreEqual(4, vacinaService.GetAll(page, pageSize).Count());
             var vacina = vacinaService.Get(4);
@@ -99,31 +99,49 @@ namespace Service.Tests
             Assert.AreEqual<uint>(1, vacina.IdEspecie);
         }
 
+        [TestMethod]
+        public void Criar_DeveAumentarQuantidade()
+        {
+            vacinaService.Create(new Vacina
+            {
+                Nome = "Vacina Teste",
+                PeriodoEmDias = 30,
+                IdDoenca = 1,
+                IdEspecie = 1
+            });
+
+            Assert.AreEqual(4, vacinaService.GetAll(page, pageSize).Count());
+        }
+
         [TestMethod()]
         public void DeleteTest()
         {
-            // Act
             vacinaService.Delete(2);
 
-            // Assert
             Assert.AreEqual(2, vacinaService.GetAll(page, pageSize).Count());
             var vacina = vacinaService.Get(2);
             Assert.IsNull(vacina);
         }
 
+        [TestMethod]
+        public void Deletar_IdInexistente_NaoDeveGerarExcecao()
+        {
+            vacinaService.Delete(999);
+        }
+
         [TestMethod()]
         public void EditTest()
         {
-            //Act 
             var vacina = vacinaService.Get(3);
             Assert.IsNotNull(vacina);
+
             vacina.Nome = "Vacina contra Mixomatose";
             vacina.PeriodoEmDias = 365;
             vacina.IdDoenca = 1;
             vacina.IdEspecie = 2;
+
             vacinaService.Edit(vacina);
 
-            //Assert
             vacina = vacinaService.Get(3);
             Assert.IsNotNull(vacina);
             Assert.AreEqual("Vacina contra Mixomatose", vacina.Nome);
@@ -132,13 +150,28 @@ namespace Service.Tests
             Assert.AreEqual<uint>(2, vacina.IdEspecie);
         }
 
+        [TestMethod]
+        public void Editar_IdInexistente_NaoDeveAlterarQuantidade()
+        {
+            var vacina = new Vacina
+            {
+                Id = 999,
+                Nome = "Inexistente",
+                PeriodoEmDias = 100,
+                IdDoenca = 1,
+                IdEspecie = 1
+            };
+
+            vacinaService.Edit(vacina);
+
+            Assert.AreEqual(3, vacinaService.GetAll(page, pageSize).Count());
+        }
+
         [TestMethod()]
         public void GetTest()
         {
-            // Act
             var vacina = vacinaService.Get(1);
 
-            // Assert
             Assert.IsNotNull(vacina);
             Assert.AreEqual("Antirrábica", vacina.Nome);
             Assert.AreEqual<uint?>(365, vacina.PeriodoEmDias);
@@ -146,13 +179,19 @@ namespace Service.Tests
             Assert.AreEqual<uint>(1, vacina.IdEspecie);
         }
 
+        [TestMethod]
+        public void Obter_IdInexistente_DeveRetornarNull()
+        {
+            var vacina = vacinaService.Get(999);
+
+            Assert.IsNull(vacina);
+        }
+
         [TestMethod()]
         public void GetAllTest()
         {
-            // Act
             var listaVacinas = vacinaService.GetAll(page, pageSize);
 
-            // Assert
             Assert.IsInstanceOfType(listaVacinas, typeof(IEnumerable<Vacina>));
             Assert.IsNotNull(listaVacinas);
             Assert.AreEqual(3, listaVacinas.Count());
@@ -160,13 +199,19 @@ namespace Service.Tests
             Assert.AreEqual("Antirrábica", listaVacinas.First().Nome);
         }
 
+        [TestMethod]
+        public void ObterTodos_Paginado_DeveRetornarQuantidadeCorreta()
+        {
+            var lista = vacinaService.GetAll(1, 2);
+
+            Assert.AreEqual(2, lista.Count());
+        }
+
         [TestMethod()]
         public void GetByNomeTest()
         {
-            //Act
             var vacinas = vacinaService.GetByNome("Antirrábica");
 
-            //Assert
             Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
@@ -176,26 +221,55 @@ namespace Service.Tests
             Assert.AreEqual<uint>(1, vacina.Especie.Id);
         }
 
+        [TestMethod]
+        public void ObterPorNome_Parcial_DeveRetornarMultiplos()
+        {
+            context.Vacinas.Add(new Vacina
+            {
+                Nome = "Antirrábica Premium",
+                PeriodoEmDias = 365,
+                IdDoenca = 1,
+                IdEspecie = 1
+            });
+            context.SaveChanges();
+
+            var resultado = vacinaService.GetByNome("Antir");
+
+            Assert.AreEqual(2, resultado.Count());
+        }
+
+        [TestMethod]
+        public void ObterPorNome_SemCorrespondencia_DeveRetornarVazio()
+        {
+            var resultado = vacinaService.GetByNome("XYZ");
+
+            Assert.AreEqual(0, resultado.Count());
+        }
+
         [TestMethod()]
         public void GetByDoencaTest()
         {
-            //Act
             var vacinas = vacinaService.GetByDoenca(3);
 
-            //Assert
             Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
             Assert.IsTrue(vacinas.Any(p => p.Nome == "Quádrupla Felina"));
         }
 
+        [TestMethod]
+        public void ObterPorDoenca_Inexistente_DeveRetornarVazio()
+        {
+            var vacinas = vacinaService.GetByDoenca(999);
+
+            Assert.AreEqual(0, vacinas.Count());
+        }
+
         [TestMethod()]
         public void GetByEspecieTest()
         {
-            //Act
             var vacinas = vacinaService.GetByEspecie(2);
 
-            //Assert
             Assert.IsInstanceOfType(vacinas, typeof(IEnumerable<VacinaDto>));
             Assert.IsNotNull(vacinas);
             Assert.AreEqual(1, vacinas.Count());
@@ -203,6 +277,14 @@ namespace Service.Tests
             Assert.AreEqual("Quádrupla Felina", vacina.Nome);
             Assert.IsNotNull(vacina.Especie);
             Assert.IsNotNull(vacina.Doenca);
+        }
+
+        [TestMethod]
+        public void ObterPorEspecie_Inexistente_DeveRetornarVazio()
+        {
+            var vacinas = vacinaService.GetByEspecie(999);
+
+            Assert.AreEqual(0, vacinas.Count());
         }
     }
 }

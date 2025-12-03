@@ -173,6 +173,64 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
+        [TestMethod()]
+        public void DetailsTest_AdivinhacaoErro_IdInexistente()
+        {
+            // Arrange
+            var mockService = new Mock<IVacinaService>();
+            mockService.Setup(s => s.Get(It.IsAny<uint>())).Returns((Vacina?)null);
+
+            var controller = new VacinaController(
+                mockService.Object,
+                new Mock<IDoencaService>().Object,
+                new Mock<IEspecieService>().Object,
+                new MapperConfiguration(cfg => cfg.AddProfile(new VacinaProfile())).CreateMapper()
+            );
+
+            // Act
+            var result = controller.Details(999);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void EditTest_Get_AdivinhacaoErro_IdInexistente()
+        {
+            var mockService = new Mock<IVacinaService>();
+            mockService.Setup(s => s.Get(It.IsAny<uint>())).Returns((Vacina?)null);
+
+            var controller = new VacinaController(
+                mockService.Object,
+                new Mock<IDoencaService>().Object,
+                new Mock<IEspecieService>().Object,
+                new MapperConfiguration(cfg => cfg.AddProfile(new VacinaProfile())).CreateMapper()
+            );
+
+            var result = controller.Edit(999);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void DeleteTest_Get_AdivinhacaoErro_IdInexistente()
+        {
+            var mockService = new Mock<IVacinaService>();
+            mockService.Setup(s => s.Get(It.IsAny<uint>())).Returns((Vacina?)null);
+
+            var controller = new VacinaController(
+                mockService.Object,
+                new Mock<IDoencaService>().Object,
+                new Mock<IEspecieService>().Object,
+                new MapperConfiguration(cfg => cfg.AddProfile(new VacinaProfile())).CreateMapper()
+            );
+
+            var result = controller.Delete(999);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+
         private VacinaViewModel GetNewVacina()
         {
             return new VacinaViewModel

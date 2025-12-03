@@ -163,6 +163,115 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
+        [TestMethod()]
+        public void IndexTest_CondicaoComposta_PaginaPadrao()
+        {
+            var result = controller.Index(1, 10);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = (ViewResult)result;
+
+            Assert.AreEqual(1, viewResult.ViewData["Page"]);
+            Assert.AreEqual(10, viewResult.ViewData["PageSize"]);
+        }
+
+        [TestMethod()]
+        public void IndexTest_CondicaoComposta_PaginaPersonalizada()
+        {
+            var mockService = new Mock<IEspecieService>();
+            mockService.Setup(s => s.GetAll(2, 5)).Returns(GetTestEspecies().Take(2));
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new EspecieProfile())).CreateMapper();
+
+            var tempController = new EspecieController(mockService.Object, mapper);
+
+            var result = tempController.Index(2, 5);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = (ViewResult)result;
+
+            Assert.AreEqual(2, viewResult.ViewData["Page"]);
+            Assert.AreEqual(5, viewResult.ViewData["PageSize"]);
+        }
+
+        [TestMethod()]
+        public void IndexTest_CondicaoComposta_PaginaZero()
+        {
+            var result = controller.Index(0, 10);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+        [TestMethod()]
+        public void IndexTest_CondicaoComposta_PageSizeZero()
+        {
+            var result = controller.Index(1, 0);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void DetailsTest_AdivinhacaoErro_IdInexistente()
+        {
+            var mockService = new Mock<IEspecieService>();
+            mockService.Setup(s => s.Get(999)).Returns((Especie?)null);
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new EspecieProfile())).CreateMapper();
+
+            var tempController = new EspecieController(mockService.Object, mapper);
+
+            var result = tempController.Details(999);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void DetailsTest_AdivinhacaoErro_IdZero()
+        {
+            var mockService = new Mock<IEspecieService>();
+            mockService.Setup(s => s.Get(0)).Returns((Especie?)null);
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new EspecieProfile())).CreateMapper();
+
+            var tempController = new EspecieController(mockService.Object, mapper);
+
+            var result = tempController.Details(0);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void DetailsTest_AdivinhacaoErro_IdMaximo()
+        {
+            var mockService = new Mock<IEspecieService>();
+            mockService.Setup(s => s.Get(uint.MaxValue)).Returns((Especie?)null);
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new EspecieProfile())).CreateMapper();
+
+            var tempController = new EspecieController(mockService.Object, mapper);
+
+            var result = tempController.Details(uint.MaxValue);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod()]
+        public void EditTest_Get_AdivinhacaoErro_IdInexistente()
+        {
+            var mockService = new Mock<IEspecieService>();
+            mockService.Setup(s => s.Get(999)).Returns((Especie?)null);
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new EspecieProfile())).CreateMapper();
+
+            var tempController = new EspecieController(mockService.Object, mapper);
+
+            var result = tempController.Edit(999);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
         private EspecieViewModel GetNewEspecie()
         {
             return new EspecieViewModel
