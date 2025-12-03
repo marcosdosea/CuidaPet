@@ -19,7 +19,7 @@ namespace Service.Tests
         {
             //Arrange
             var builder = new DbContextOptionsBuilder<CuidaPetContext>();
-            builder.UseInMemoryDatabase("cuidapetdb");
+            builder.UseInMemoryDatabase("AgendamentoServiceTests");
             var options = builder.Options;
 
             context = new CuidaPetContext(options);
@@ -28,16 +28,46 @@ namespace Service.Tests
 
             var pessoas = new List<Pessoa>
             {
-                new() { Id = 1, Nome = "João Silva", Cpf = "12345678901", Tipo = "T", Email = "joao@email.com", Telefone = "11999999999" },
-                new() { Id = 2, Nome = "Maria Santos", Cpf = "98765432101", Tipo = "F", Email = "maria@email.com", Telefone = "11888888888" }
+                new() 
+                { 
+                    Id = 1, 
+                    Nome = "João Silva", 
+                    Cpf = "12345678901", 
+                    Tipo = "T", 
+                    Email = "joao@email.com", 
+                    Telefone = "11999999999",
+                    Senha = "senha123",
+                    Status = "A",
+                    Logradouro = "Rua A",
+                    Numero = "100",
+                    Bairro = "Centro",
+                    Cidade = "São Paulo",
+                    Estado = "SP"
+                },
+                new() 
+                { 
+                    Id = 2, 
+                    Nome = "Maria Santos", 
+                    Cpf = "98765432101", 
+                    Tipo = "F", 
+                    Email = "maria@email.com", 
+                    Telefone = "11888888888",
+                    Senha = "senha456",
+                    Status = "A",
+                    Logradouro = "Rua B",
+                    Numero = "200",
+                    Bairro = "Centro",
+                    Cidade = "São Paulo",
+                    Estado = "SP"
+                }
             };
 
             context.AddRange(pessoas);
 
             var especies = new List<Especie>
             {
-                new() { Id = 1 },
-                new() { Id = 2 }
+                new() { Id = 1, Nome = "Canina" },
+                new() { Id = 2, Nome = "Felina" }
             };
 
             context.AddRange(especies);
@@ -51,16 +81,33 @@ namespace Service.Tests
             context.AddRange(racas);
 
             var pets = new List<Pet>
-            {
-                new() { Id = 1, Nome = "Rex", DataNascimento = DateTime.Now.AddYears(-3), IdRaca = 1 },
-                new() { Id = 2, Nome = "Miau", DataNascimento = DateTime.Now.AddYears(-2), IdRaca = 2 }
+            {      
+                new() { Id = 1, Nome = "Rex", DataNascimento = DateTime.Now.AddYears(-3), IdRaca = 1, Sexo = "M" },
+                new() { Id = 2, Nome = "Miau", DataNascimento = DateTime.Now.AddYears(-2), IdRaca = 2, Sexo = "F" }
             };
 
             context.AddRange(pets);
 
+            var estabelecimento = new Estabelecimento
+            {
+                Id = 1,
+                Nome = "Pet Clínica",
+                Cnpj = "12345678901234",
+                Telefone = "11977777777",
+                Logradouro = "Av Principal",
+                Numero = "500",
+                Bairro = "Centro",
+                Cidade = "São Paulo",
+                Estado = "SP",
+                IdGerente = 1,
+                Tipo = "C"
+            };
+
+            context.Add(estabelecimento);
+
             var funcionarios = new List<Funcionario>
             {
-                new() { Id = 2, IdPessoa = 2, Crmv = "123456" }
+                new() { Id = 2, IdPessoa = 2, Crmv = "123456", IdEstabelecimento = 1 }
             };
 
             context.AddRange(funcionarios);
