@@ -152,6 +152,55 @@ namespace CuidaPetWeb.Controllers.Tests
             Assert.AreEqual("Index", redirect.ActionName);
         }
 
+        [TestMethod()]
+        public void CreateTest_Post_VerificaMapeamentoEChamadaServico()
+        {
+            var mockService = new Mock<IAgendamentoService>();
+
+            var model = GetNewAgendamentoModel();
+            model.Status = "S";
+
+            var result = controller!.Create(model);
+
+            mockService.Verify(s => s.Create(It.Is<Agendamento>(a =>
+                a.Status == model.Status &&
+                a.IdPet == model.IdPet &&
+                a.IdTutor == model.IdTutor
+            )), Times.Once);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        }
+
+        [TestMethod()]
+        public void IndexTest_ListaVazia_RetornaViewSemErros()
+        {
+            var mockService = new Mock<IAgendamentoService>();
+
+            mockService.Setup(s => s.GetAll(It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(new List<Agendamento>());
+            mockService.Setup(s => s.GetCount()).Returns(0);
+
+            var result = controller!.Index();
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.Model, typeof(IEnumerable<AgendamentoViewModel>));
+            Assert.AreEqual(0, ((IEnumerable<AgendamentoViewModel>)viewResult.Model).Count());
+            Assert.AreEqual(0, viewResult.ViewData["TotalItems"]);
+        }
+
+        [TestMethod()]
+        public void DetailsTest_ChamaServicoComIdCorreto()
+        {
+            var mockService = new Mock<IAgendamentoService>();
+
+            uint idSolicitado = 1;
+
+            controller!.Details(idSolicitado);
+
+            mockService.Verify(s => s.Get(idSolicitado), Times.Once);
+        }
+
         private AgendamentoViewModel GetNewAgendamentoModel()
         {
             return new AgendamentoViewModel
