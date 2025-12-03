@@ -215,5 +215,42 @@ namespace Service.Tests
             // Assert
             Assert.AreEqual(3, count);
         }
+
+        [TestMethod()]
+        public void GetAllTest_Paginacao_FluxoControle()
+        {
+            var novoAgendamento = new Agendamento { Id = 4, DataSolicitacao = DateTime.Now, Horario = TimeSpan.Zero, Status = "S", IdPet = 1, IdFuncionario = 2, IdTutor = 1 };
+            context.Agendamentos.Add(novoAgendamento);
+            context.SaveChanges();
+
+            var pagina1 = agendamentoService.GetAll(1, 2);
+            var pagina2 = agendamentoService.GetAll(2, 2);
+
+            Assert.AreEqual(2, pagina1.Count());
+            Assert.AreEqual(2, pagina2.Count());
+            Assert.IsFalse(pagina1.Any(p => pagina2.Select(x => x.Id).Contains(p.Id)));
+        }
+
+        [TestMethod()]
+        public void DeleteTest_IdInexistente_CondicaoFalsa()
+        {
+            uint idInexistente = 999;
+            int totalAntes = agendamentoService.GetAll(1, 100).Count();
+
+            agendamentoService.Delete(idInexistente);
+            int totalDepois = agendamentoService.GetAll(1, 100).Count();
+
+            Assert.AreEqual(totalAntes, totalDepois);
+        }
+
+        [TestMethod()]
+        public void GetByPetTest_FiltroExclusivo_FluxoDados()
+        {
+            var agendamentosPet1 = agendamentoService.GetByPet(1);
+
+            Assert.IsTrue(agendamentosPet1.All(a => a.IdPet == 1));
+            Assert.IsFalse(agendamentosPet1.Any(a => a.IdPet == 2));
+            Assert.AreEqual(2, agendamentosPet1.Count());
+        }
     }
 }
