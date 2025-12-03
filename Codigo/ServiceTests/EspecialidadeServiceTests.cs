@@ -102,5 +102,68 @@ namespace Service.Tests
             Assert.AreEqual((uint)1, listaEspecialidades.First().Id);
             Assert.AreEqual("Cardiologia", listaEspecialidades.First().Nome);
         }
+
+        [TestMethod()]
+        public void GetByNomeTest_DeveRetornarEspecialidade_QuandoNomeExiste()
+        {
+            // Arrange
+            string nomeBusca = "Cardiologia";
+
+            // Act
+            var especialidades = especialidadeService.GetByNome(nomeBusca);
+
+            // Assert
+            Assert.IsNotNull(especialidades, "A lista de especialidades não deve ser nula");
+            Assert.IsInstanceOfType(especialidades, typeof(IEnumerable<Especialidade>), "Deve retornar uma coleção de Especialidade");
+            Assert.AreEqual(1, especialidades.Count(), "Deve retornar exatamente uma especialidade");
+            
+            var especialidade = especialidades.First();
+            Assert.AreEqual("Cardiologia", especialidade.Nome, "O nome da especialidade deve ser 'Cardiologia'");
+            Assert.AreEqual("Especialista em coração", especialidade.Descricao, "A descrição deve estar correta");
+        }
+
+        [TestMethod()]
+        public void GetCountTest_DeveRetornarQuantidadeCorreta_DeEspecialidades()
+        {
+            // Arrange
+            int quantidadeEsperada = 3;
+
+            // Act
+            int quantidadeAtual = especialidadeService.GetCount();
+
+            // Assert
+            Assert.AreEqual(quantidadeEsperada, quantidadeAtual, "A quantidade de especialidades deve ser 3");
+            Assert.IsTrue(quantidadeAtual > 0, "Deve haver pelo menos uma especialidade cadastrada");
+        }
+
+        [TestMethod()]
+        public void CreateAndDeleteTest_DeveManterIntegridade_AposOperacoesCRUD()
+        {
+            // Arrange
+            int quantidadeInicial = especialidadeService.GetCount();
+            var novaEspecialidade = new Especialidade()
+            {
+                Id = 5,
+                Nome = "Neurologia",
+                Descricao = "Especialista em sistema nervoso"
+            };
+
+            // Act - Criar
+            var novoId = especialidadeService.Create(novaEspecialidade);
+            int quantidadeAposCreate = especialidadeService.GetCount();
+
+            // Assert - Verificar criação
+            Assert.AreEqual((uint)5, novoId, "O ID retornado deve ser 5");
+            Assert.AreEqual(quantidadeInicial + 1, quantidadeAposCreate, "Quantidade deve aumentar em 1 após criar");
+
+            // Act - Deletar
+            especialidadeService.Delete(novoId);
+            int quantidadeAposDelete = especialidadeService.GetCount();
+            var especialidadeRemovida = especialidadeService.Get(novoId);
+
+            // Assert - Verificar remoção
+            Assert.AreEqual(quantidadeInicial, quantidadeAposDelete, "Quantidade deve voltar ao valor inicial após deletar");
+            Assert.IsNull(especialidadeRemovida, "A especialidade deletada não deve mais existir");
+        }
     }
 }
