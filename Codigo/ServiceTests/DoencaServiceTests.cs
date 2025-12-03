@@ -38,6 +38,7 @@ namespace Service.Tests
                 new() { Id = 2, Nome = "Leucemia Felina", IdEspecie = 2 },
                 new() { Id = 3, Nome = "Parvovirose", IdEspecie = 1 }
             };
+
             context.AddRange(doencas);
             context.SaveChanges();
 
@@ -62,6 +63,18 @@ namespace Service.Tests
             Assert.AreEqual((uint)2, doenca.IdEspecie);
         }
 
+        [TestMethod]
+        public void Criar_DeveAumentarQuantidade()
+        {
+            doencaService.Create(new Doenca
+            {
+                Nome = "Raiva",
+                IdEspecie = 1
+            });
+
+            Assert.AreEqual(4, doencaService.GetAll(page, pageSize).Count());
+        }
+
         [TestMethod()]
         public void DeleteTest()
         {
@@ -70,6 +83,12 @@ namespace Service.Tests
             Assert.AreEqual(2, doencaService.GetAll(page, pageSize).Count());
             var doenca = doencaService.Get(2);
             Assert.IsNull(doenca);
+        }
+
+        [TestMethod]
+        public void Deletar_IdInexistente_NaoDeveGerarExcecao()
+        {
+            doencaService.Delete(999);
         }
 
         [TestMethod()]
@@ -87,6 +106,21 @@ namespace Service.Tests
             Assert.AreEqual((uint)1, doenca.IdEspecie);
         }
 
+        [TestMethod]
+        public void Editar_IdInexistente_NaoDeveAlterarQuantidade()
+        {
+            var doenca = new Doenca
+            {
+                Id = 999,
+                Nome = "Nada",
+                IdEspecie = 1
+            };
+
+            doencaService.Edit(doenca);
+
+            Assert.AreEqual(3, doencaService.GetAll(page, pageSize).Count());
+        }
+
         [TestMethod()]
         public void GetTest()
         {
@@ -95,6 +129,14 @@ namespace Service.Tests
             Assert.IsNotNull(doenca);
             Assert.AreEqual("Cinomose", doenca.Nome);
             Assert.AreEqual((uint)1, doenca.IdEspecie);
+        }
+
+        [TestMethod]
+        public void Obter_IdInexistente_DeveRetornarNull()
+        {
+            var doenca = doencaService.Get(999);
+
+            Assert.IsNull(doenca);
         }
 
         [TestMethod()]
@@ -109,6 +151,14 @@ namespace Service.Tests
             Assert.AreEqual("Cinomose", listaDoencas.First().Nome);
         }
 
+        [TestMethod]
+        public void ObterTodos_Paginado_DeveRetornarQuantidadeCorreta()
+        {
+            var lista = doencaService.GetAll(1, 2);
+
+            Assert.AreEqual(2, lista.Count());
+        }
+
         [TestMethod()]
         public void GetByNomeTest()
         {
@@ -120,6 +170,29 @@ namespace Service.Tests
             var doenca = doencas.First();
             Assert.AreEqual("Cinomose", doenca.Nome);
             Assert.AreEqual((uint)1, doenca.Id);
+        }
+
+        [TestMethod]
+        public void ObterPorNome_Parcial_DeveRetornarMultiplos()
+        {
+            context.Doencas.Add(new Doenca
+            {
+                Nome = "Cinomose Nervosa",
+                IdEspecie = 1
+            });
+            context.SaveChanges();
+
+            var resultado = doencaService.GetByNome("Cino");
+
+            Assert.AreEqual(2, resultado.Count());
+        }
+
+        [TestMethod]
+        public void ObterPorNome_SemCorrespondencia_DeveRetornarVazio()
+        {
+            var resultado = doencaService.GetByNome("XYZ");
+
+            Assert.AreEqual(0, resultado.Count());
         }
     }
 }
