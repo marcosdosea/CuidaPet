@@ -242,8 +242,10 @@ namespace Service.Tests
             pedidoProdutoService = new PedidoProdutoService(context);
         }
 
+        #region Testes CRUD Básicos
+
         [TestMethod()]
-        public void CreateTest()
+        public void Create_QuandoDadosValidos_DevePersistirNoBancoDeDados()
         {
             // Act
             var novoPedidoProdutoId = pedidoProdutoService.Create(new Pedidoproduto()
@@ -264,7 +266,7 @@ namespace Service.Tests
         }
 
         [TestMethod()]
-        public void DeleteTest()
+        public void Delete_QuandoRegistroExiste_DeveRemoverDoBancoDeDados()
         {
             // Act
             pedidoProdutoService.Delete(2);
@@ -275,39 +277,43 @@ namespace Service.Tests
         }
 
         [TestMethod()]
-        public void EditTest()
+        public void Edit_QuandoDadosAlterados_DeveAtualizarRegistroNoBanco()
         {
-            // Act
+            // Arrange
             var pedidoProduto = pedidoProdutoService.Get(1);
             Assert.IsNotNull(pedidoProduto);
+            
+            // Act
             pedidoProduto.Quantidade = 5;
             pedidoProduto.Preco = 140.00m;
             pedidoProdutoService.Edit(pedidoProduto);
 
-            // Assert
-            pedidoProduto = pedidoProdutoService.Get(1);
-            Assert.IsNotNull(pedidoProduto);
-            Assert.AreEqual(5, pedidoProduto.Quantidade);
-            Assert.AreEqual(140.00m, pedidoProduto.Preco);
+            // Assert - Validar persistência dos dados
+            var pedidoAtualizado = pedidoProdutoService.Get(1);
+            Assert.IsNotNull(pedidoAtualizado);
+            Assert.AreEqual(5, pedidoAtualizado.Quantidade);
+            Assert.AreEqual(140.00m, pedidoAtualizado.Preco);
         }
 
         [TestMethod()]
-        public void GetTest()
+        public void Get_QuandoRegistroExiste_DeveRetornarComNavegacaoCarregada()
         {
             // Act
             var pedidoProduto = pedidoProdutoService.Get(1);
 
-            // Assert
+            // Assert - Validar integridade dos dados e navegação
             Assert.IsNotNull(pedidoProduto);
             Assert.AreEqual((uint)1, pedidoProduto.Id);
             Assert.AreEqual(2, pedidoProduto.Quantidade);
             Assert.AreEqual(150.00m, pedidoProduto.Preco);
             Assert.IsNotNull(pedidoProduto.IdProdutoNavigation);
             Assert.AreEqual("Ração Premium", pedidoProduto.IdProdutoNavigation.Nome);
+            Assert.IsNotNull(pedidoProduto.IdPedidoNavigation);
+            Assert.IsNotNull(pedidoProduto.IdPedidoNavigation.IdTutorNavigation);
         }
 
         [TestMethod()]
-        public void GetTest_Inexistente()
+        public void Get_QuandoRegistroNaoExiste_DeveRetornarNull()
         {
             // Act
             var pedidoProduto = pedidoProdutoService.Get(999);
@@ -316,26 +322,35 @@ namespace Service.Tests
             Assert.IsNull(pedidoProduto);
         }
 
+        #endregion
+
+        #region Testes de Filtros e Consultas
+
         [TestMethod()]
-        public void GetAllTest()
+        public void GetAll_QuandoChamado_DeveRetornarApenasPedidosAtivosEFinalizados()
         {
             // Act
             var listaPedidoProdutos = pedidoProdutoService.GetAll(page, pageSize);
 
-            // Assert
+            // Assert - Validar regra de negócio de filtro por status
             Assert.IsInstanceOfType(listaPedidoProdutos, typeof(IEnumerable<Pedidoproduto>));
             Assert.IsNotNull(listaPedidoProdutos);
-            // Deve retornar apenas pedidos com status "A" ou "F" (2 registros)
             Assert.AreEqual(2, listaPedidoProdutos.Count());
+            
+            foreach (var item in listaPedidoProdutos)
+            {
+                Assert.IsTrue(item.IdPedidoNavigation.Status == "A" || item.IdPedidoNavigation.Status == "F",
+                    "Deve retornar apenas pedidos com status A ou F");
+            }
         }
 
         [TestMethod()]
-        public void GetByStatusTest()
+        public void GetByStatus_QuandoStatusAndamento_DeveRetornarDadosCompletosMapeados()
         {
             // Act
             var pedidosAndamento = pedidoProdutoService.GetByStatus("A");
 
-            // Assert
+            // Assert - Validar transformação de dados e cálculos
             Assert.IsInstanceOfType(pedidosAndamento, typeof(IEnumerable<PedidoProdutoDto>));
             Assert.IsNotNull(pedidosAndamento);
             Assert.AreEqual(1, pedidosAndamento.Count());
@@ -345,11 +360,11 @@ namespace Service.Tests
             Assert.AreEqual("João Silva", pedido.TutorNome);
             Assert.AreEqual(2, pedido.Quantidade);
             Assert.AreEqual(150.00m, pedido.PrecoUnitario);
-            Assert.AreEqual(300.00m, pedido.PrecoTotal);
+            Assert.AreEqual(300.00m, pedido.PrecoTotal, "PrecoTotal deve ser PrecoUnitario * Quantidade");
         }
 
         [TestMethod()]
-        public void GetByStatusTest_Finalizado()
+        public void GetByStatus_QuandoStatusFinalizado_DeveRetornarApenasFinalizados()
         {
             // Act
             var pedidosFinalizados = pedidoProdutoService.GetByStatus("F");
@@ -364,24 +379,39 @@ namespace Service.Tests
         }
 
         [TestMethod()]
-        public void GetByTutorTest()
+        public void GetByStatus_QuandoStatusCancelado_DeveRetornarApenasCancelados()
+        {
+            // Act
+            var pedidosCancelados = pedidoProdutoService.GetByStatus("C");
+
+            // Assert - Validar filtro de status
+            Assert.IsNotNull(pedidosCancelados);
+            Assert.AreEqual(1, pedidosCancelados.Count());
+            
+            var pedido = pedidosCancelados.First();
+            Assert.AreEqual("C", pedido.Status);
+            Assert.AreEqual((uint)3, pedido.Id);
+        }
+
+        [TestMethod()]
+        public void GetByTutor_QuandoTutorPossuiPedidos_DeveRetornarApenasPedidosAtivos()
         {
             // Act
             var pedidosTutor1 = pedidoProdutoService.GetByTutor(1);
 
-            // Assert
+            // Assert - Validar filtro por tutor e status
             Assert.IsInstanceOfType(pedidosTutor1, typeof(IEnumerable<PedidoProdutoDto>));
             Assert.IsNotNull(pedidosTutor1);
-            // Tutor 1 tem 1 pedido ativo (status A)
-            Assert.AreEqual(1, pedidosTutor1.Count());
+            Assert.AreEqual(1, pedidosTutor1.Count(), "Tutor 1 tem apenas 1 pedido ativo");
             
             var pedido = pedidosTutor1.First();
             Assert.AreEqual((uint)1, pedido.TutorId);
             Assert.AreEqual("João Silva", pedido.TutorNome);
+            Assert.AreEqual("5527999999999", pedido.TutorTelefone);
         }
 
         [TestMethod()]
-        public void GetByTutorTest_SemPedidos()
+        public void GetByTutor_QuandoTutorNaoPossuiPedidos_DeveRetornarListaVazia()
         {
             // Act
             var pedidosTutor999 = pedidoProdutoService.GetByTutor(999);
@@ -391,22 +421,26 @@ namespace Service.Tests
             Assert.AreEqual(0, pedidosTutor999.Count());
         }
 
+        #endregion
+
+        #region Testes de Regras de Negócio
+
         [TestMethod()]
-        public void AlterarStatusTest()
+        public void AlterarStatus_QuandoPedidoEmAndamento_DeveAlterarStatusParaFinalizado()
         {
-            // Act - Alterar de "A" (Andamento) para "F" (Finalizado)
+            // Act
             pedidoProdutoService.AlterarStatus(1, "F");
 
-            // Assert
+            // Assert - Validar alteração de estado
             var pedidoProduto = pedidoProdutoService.Get(1);
             Assert.IsNotNull(pedidoProduto);
             Assert.AreEqual("F", pedidoProduto.IdPedidoNavigation.Status);
         }
 
         [TestMethod()]
-        public void AlterarStatusTest_PedidoJaFinalizado()
+        public void AlterarStatus_QuandoPedidoJaFinalizado_NaoDeveAlterarStatus()
         {
-            // Arrange - Pedido 2 já está finalizado
+            // Arrange
             var pedidoAntes = pedidoProdutoService.Get(2);
             Assert.IsNotNull(pedidoAntes);
             Assert.AreEqual("F", pedidoAntes.IdPedidoNavigation.Status);
@@ -414,69 +448,31 @@ namespace Service.Tests
             // Act - Tentar alterar status de um pedido já finalizado
             pedidoProdutoService.AlterarStatus(2, "C");
 
-            // Assert - Status não deve mudar pois não está mais em "A"
+            // Assert - Validar regra: apenas pedidos "A" podem ter status alterado
             var pedidoDepois = pedidoProdutoService.Get(2);
             Assert.IsNotNull(pedidoDepois);
-            Assert.AreEqual("F", pedidoDepois.IdPedidoNavigation.Status);
+            Assert.AreEqual("F", pedidoDepois.IdPedidoNavigation.Status, "Status não deve mudar pois pedido não está em andamento");
         }
 
         [TestMethod()]
-        public void GetDetalhesTest()
+        public void AlterarStatus_QuandoPedidoCancelado_NaoDeveAlterarStatus()
         {
-            // Act
-            var detalhes = pedidoProdutoService.GetDetalhes(1);
+            // Arrange
+            var pedidoAntes = pedidoProdutoService.Get(3);
+            Assert.IsNotNull(pedidoAntes);
+            Assert.AreEqual("C", pedidoAntes.IdPedidoNavigation.Status);
 
-            // Assert
-            Assert.IsNotNull(detalhes);
-            Assert.AreEqual((uint)1, detalhes.Id);
-            Assert.AreEqual("Ração Premium", detalhes.ProdutoNome);
-            Assert.AreEqual(2, detalhes.Quantidade);
-            Assert.AreEqual(150.00m, detalhes.PrecoUnitario);
-            Assert.AreEqual(300.00m, detalhes.PrecoTotal);
-            Assert.AreEqual("João Silva", detalhes.TutorNome);
-            Assert.AreEqual("5527999999999", detalhes.TutorTelefone);
-            Assert.AreEqual("A", detalhes.Status);
+            // Act
+            pedidoProdutoService.AlterarStatus(3, "F");
+
+            // Assert - Validar integridade da regra de negócio
+            var pedidoDepois = pedidoProdutoService.Get(3);
+            Assert.IsNotNull(pedidoDepois);
+            Assert.AreEqual("C", pedidoDepois.IdPedidoNavigation.Status, "Pedido cancelado não pode ter status alterado");
         }
 
         [TestMethod()]
-        public void GetDetalhesTest_Inexistente()
-        {
-            // Act
-            var detalhes = pedidoProdutoService.GetDetalhes(999);
-
-            // Assert
-            Assert.IsNull(detalhes);
-        }
-
-        [TestMethod()]
-        public void GetItensByPedidoIdTest()
-        {
-            // Act
-            var itens = pedidoProdutoService.GetItensByPedidoId(1);
-
-            // Assert
-            Assert.IsInstanceOfType(itens, typeof(IEnumerable<PedidoProdutoDto>));
-            Assert.IsNotNull(itens);
-            Assert.AreEqual(1, itens.Count());
-            
-            var item = itens.First();
-            Assert.AreEqual((uint)1, item.PedidoId);
-            Assert.AreEqual("Ração Premium", item.ProdutoNome);
-        }
-
-        [TestMethod()]
-        public void GetItensByPedidoIdTest_PedidoSemItens()
-        {
-            // Act
-            var itens = pedidoProdutoService.GetItensByPedidoId(999);
-
-            // Assert
-            Assert.IsNotNull(itens);
-            Assert.AreEqual(0, itens.Count());
-        }
-
-        [TestMethod()]
-        public void RecusarPedidoTest()
+        public void RecusarPedido_QuandoPedidoEmAndamento_DeveDeletarItensECancelarPedido()
         {
             // Arrange
             var pedidoAntes = context.Pedidos.Find((uint)1);
@@ -486,29 +482,27 @@ namespace Service.Tests
             // Act
             pedidoProdutoService.RecusarPedido(1);
 
-            // Assert
-            // Verificar se o item foi deletado
+            // Assert - Validar transformação de dados: deleção e mudança de status
             var pedidoProduto = pedidoProdutoService.Get(1);
-            Assert.IsNull(pedidoProduto);
+            Assert.IsNull(pedidoProduto, "Item deve ser deletado");
 
-            // Verificar se o pedido foi marcado como cancelado
             var pedidoDepois = context.Pedidos.Find((uint)1);
             Assert.IsNotNull(pedidoDepois);
-            Assert.AreEqual("C", pedidoDepois.Status);
+            Assert.AreEqual("C", pedidoDepois.Status, "Pedido deve ser marcado como cancelado");
         }
 
         [TestMethod()]
-        public void RecusarPedidoTest_PedidoJaFinalizado()
+        public void RecusarPedido_QuandoPedidoJaFinalizado_NaoDeveAlterarDados()
         {
-            // Arrange - Pedido 2 já está finalizado
+            // Arrange
             var pedidoAntes = context.Pedidos.Find((uint)2);
             Assert.IsNotNull(pedidoAntes);
             Assert.AreEqual("F", pedidoAntes.Status);
 
-            // Act - Tentar recusar um pedido já finalizado
+            // Act
             pedidoProdutoService.RecusarPedido(2);
 
-            // Assert - Pedido não deve ser alterado
+            // Assert - Validar regra: apenas pedidos "A" podem ser recusados
             var pedidoProduto = pedidoProdutoService.Get(2);
             Assert.IsNotNull(pedidoProduto, "Item não deve ser deletado pois pedido não está em andamento");
             
@@ -517,101 +511,250 @@ namespace Service.Tests
             Assert.AreEqual("F", pedidoDepois.Status, "Status não deve mudar");
         }
 
+        #endregion
+
+        #region Testes de Transformação de Dados (DTO)
+
         [TestMethod()]
-        public void GetPedidosAtivosTest()
+        public void GetDetalhes_QuandoRegistroExiste_DeveRetornarDtoComCalculoCorreto()
+        {
+            // Act
+            var detalhes = pedidoProdutoService.GetDetalhes(1);
+
+            // Assert - Validar mapeamento e cálculo de PrecoTotal
+            Assert.IsNotNull(detalhes);
+            Assert.AreEqual((uint)1, detalhes.Id);
+            Assert.AreEqual("Ração Premium", detalhes.ProdutoNome);
+            Assert.AreEqual(2, detalhes.Quantidade);
+            Assert.AreEqual(150.00m, detalhes.PrecoUnitario);
+            Assert.AreEqual(300.00m, detalhes.PrecoTotal, "PrecoTotal = PrecoUnitario * Quantidade");
+            Assert.AreEqual("João Silva", detalhes.TutorNome);
+            Assert.AreEqual("5527999999999", detalhes.TutorTelefone);
+            Assert.AreEqual("A", detalhes.Status);
+        }
+
+        [TestMethod()]
+        public void GetDetalhes_QuandoRegistroNaoExiste_DeveRetornarNull()
+        {
+            // Act
+            var detalhes = pedidoProdutoService.GetDetalhes(999);
+
+            // Assert
+            Assert.IsNull(detalhes);
+        }
+
+        [TestMethod()]
+        public void GetItensByPedidoId_QuandoPedidoPossuiItens_DeveRetornarDtosComDadosCompletos()
+        {
+            // Act
+            var itens = pedidoProdutoService.GetItensByPedidoId(1);
+
+            // Assert - Validar transformação e integridade dos dados
+            Assert.IsInstanceOfType(itens, typeof(IEnumerable<PedidoProdutoDto>));
+            Assert.IsNotNull(itens);
+            Assert.AreEqual(1, itens.Count());
+            
+            var item = itens.First();
+            Assert.AreEqual((uint)1, item.PedidoId);
+            Assert.AreEqual("Ração Premium", item.ProdutoNome);
+            Assert.AreEqual(2, item.Quantidade);
+            Assert.AreEqual(150.00m, item.PrecoUnitario);
+            Assert.AreEqual(300.00m, item.PrecoTotal);
+            Assert.AreEqual("João Silva", item.TutorNome);
+        }
+
+        [TestMethod()]
+        public void GetItensByPedidoId_QuandoPedidoNaoPossuiItens_DeveRetornarListaVazia()
+        {
+            // Act
+            var itens = pedidoProdutoService.GetItensByPedidoId(999);
+
+            // Assert
+            Assert.IsNotNull(itens);
+            Assert.AreEqual(0, itens.Count());
+        }
+
+        #endregion
+
+        #region Testes de Ordenação e Paginação
+
+        [TestMethod()]
+        public void GetPedidosAtivos_QuandoChamado_DeveRetornarApenasPedidosAtivosEFinalizados()
         {
             // Act
             var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize);
 
-            // Assert
+            // Assert - Validar filtro de status
             Assert.IsInstanceOfType(pedidos, typeof(IEnumerable<PedidoProdutoDto>));
             Assert.IsNotNull(pedidos);
-            // Deve retornar apenas pedidos com status "A" ou "F"
             Assert.AreEqual(2, pedidos.Count());
-        }
-
-        [TestMethod()]
-        public void GetPedidosAtivosTest_ComOrdenacaoPorData()
-        {
-            // Act - Ordenar por data crescente
-            var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize, "data", false);
-
-            // Assert
-            Assert.IsNotNull(pedidos);
-            var lista = pedidos.ToList();
-            Assert.AreEqual(2, lista.Count);
-            // Primeiro deve ser o mais antigo
-            Assert.IsTrue(lista[0].RealizadoEm <= lista[1].RealizadoEm);
-        }
-
-        [TestMethod()]
-        public void GetPedidosAtivosTest_ComOrdenacaoPorTutor()
-        {
-            // Act - Ordenar por tutor
-            var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize, "tutor", false);
-
-            // Assert
-            Assert.IsNotNull(pedidos);
-            var lista = pedidos.ToList();
-            Assert.AreEqual(2, lista.Count);
-            // Verificar ordem alfabética
-            for (int i = 0; i < lista.Count - 1; i++)
+            
+            foreach (var pedido in pedidos)
             {
-                Assert.IsTrue(string.Compare(lista[i].TutorNome, lista[i + 1].TutorNome, StringComparison.Ordinal) <= 0);
+                Assert.IsTrue(pedido.Status == "A" || pedido.Status == "F",
+                    "Deve retornar apenas pedidos com status A ou F");
             }
         }
 
         [TestMethod()]
-        public void GetPedidosAtivosTest_ComPaginacao()
-        {
-            // Act - Pegar apenas 1 item por página
-            var pedidosPagina1 = pedidoProdutoService.GetPedidosAtivos(1, 1);
-            var pedidosPagina2 = pedidoProdutoService.GetPedidosAtivos(2, 1);
-
-            // Assert
-            Assert.AreEqual(1, pedidosPagina1.Count());
-            Assert.AreEqual(1, pedidosPagina2.Count());
-            // Devem ser diferentes
-            Assert.AreNotEqual(pedidosPagina1.First().Id, pedidosPagina2.First().Id);
-        }
-
-        [TestMethod()]
-        public void GetCountPedidosAtivosTest()
+        public void GetPedidosAtivos_QuandoOrdenadoPorDataCrescente_DeveRetornarEmOrdemCorreta()
         {
             // Act
-            var count = pedidoProdutoService.GetCountPedidosAtivos();
+            var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize, "data", false);
 
-            // Assert
-            // Deve contar apenas pedidos com status "A" ou "F" (2 no total)
-            Assert.AreEqual(2, count);
+            // Assert - Validar ordenação de dados
+            Assert.IsNotNull(pedidos);
+            var lista = pedidos.ToList();
+            Assert.AreEqual(2, lista.Count);
+            Assert.IsTrue(lista[0].RealizadoEm <= lista[1].RealizadoEm, "Primeiro item deve ser o mais antigo");
         }
 
         [TestMethod()]
-        public void GetCountPedidosAtivosTest_AposRecusar()
-        {
-            // Arrange
-            var countAntes = pedidoProdutoService.GetCountPedidosAtivos();
-
-            // Act - Recusar um pedido ativo
-            pedidoProdutoService.RecusarPedido(1);
-            var countDepois = pedidoProdutoService.GetCountPedidosAtivos();
-
-            // Assert
-            Assert.AreEqual(countAntes - 1, countDepois);
-        }
-
-        [TestMethod()]
-        public void GetPedidosAtivosTest_OrdenacaoDescendente()
+        public void GetPedidosAtivos_QuandoOrdenadoPorDataDecrescente_DeveRetornarEmOrdemCorreta()
         {
             // Act
             var pedidosDesc = pedidoProdutoService.GetPedidosAtivos(page, pageSize, "data", true);
 
-            // Assert
+            // Assert - Validar ordenação decrescente
             Assert.IsNotNull(pedidosDesc);
             var lista = pedidosDesc.ToList();
             Assert.AreEqual(2, lista.Count);
-            // Verificar ordem decrescente
-            Assert.IsTrue(lista[0].RealizadoEm >= lista[1].RealizadoEm);
+            Assert.IsTrue(lista[0].RealizadoEm >= lista[1].RealizadoEm, "Primeiro item deve ser o mais recente");
         }
+
+        [TestMethod()]
+        public void GetPedidosAtivos_QuandoOrdenadoPorTutor_DeveRetornarEmOrdemAlfabetica()
+        {
+            // Act
+            var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize, "tutor", false);
+
+            // Assert - Validar ordenação alfabética
+            Assert.IsNotNull(pedidos);
+            var lista = pedidos.ToList();
+            Assert.AreEqual(2, lista.Count);
+            
+            for (int i = 0; i < lista.Count - 1; i++)
+            {
+                Assert.IsTrue(string.Compare(lista[i].TutorNome, lista[i + 1].TutorNome, StringComparison.Ordinal) <= 0,
+                    "Nomes devem estar em ordem alfabética");
+            }
+        }
+
+        [TestMethod()]
+        public void GetPedidosAtivos_QuandoPaginado_DeveRetornarPaginasCorretas()
+        {
+            // Act
+            var pedidosPagina1 = pedidoProdutoService.GetPedidosAtivos(1, 1);
+            var pedidosPagina2 = pedidoProdutoService.GetPedidosAtivos(2, 1);
+
+            // Assert - Validar paginação
+            Assert.AreEqual(1, pedidosPagina1.Count());
+            Assert.AreEqual(1, pedidosPagina2.Count());
+            Assert.AreNotEqual(pedidosPagina1.First().Id, pedidosPagina2.First().Id, "Páginas devem conter registros diferentes");
+        }
+
+        [TestMethod()]
+        public void GetPedidosAtivos_QuandoPaginaExcedeLimite_DeveRetornarListaVazia()
+        {
+            // Act
+            var pedidosPagina99 = pedidoProdutoService.GetPedidosAtivos(99, pageSize);
+
+            // Assert
+            Assert.IsNotNull(pedidosPagina99);
+            Assert.AreEqual(0, pedidosPagina99.Count(), "Página inexistente deve retornar lista vazia");
+        }
+
+        #endregion
+
+        #region Testes de Contagem
+
+        [TestMethod()]
+        public void GetCountPedidosAtivos_QuandoChamado_DeveContarApenasPedidosAtivosEFinalizados()
+        {
+            // Act
+            var count = pedidoProdutoService.GetCountPedidosAtivos();
+
+            // Assert - Validar cálculo de contagem
+            Assert.AreEqual(2, count, "Deve contar apenas pedidos com status A ou F");
+        }
+
+        [TestMethod()]
+        public void GetCountPedidosAtivos_AposRecusarPedido_DeveDecrementarContagem()
+        {
+            // Arrange
+            var countAntes = pedidoProdutoService.GetCountPedidosAtivos();
+
+            // Act
+            pedidoProdutoService.RecusarPedido(1);
+            var countDepois = pedidoProdutoService.GetCountPedidosAtivos();
+
+            // Assert - Validar integridade da contagem após alteração
+            Assert.AreEqual(countAntes - 1, countDepois, "Contagem deve diminuir após recusar pedido");
+        }
+
+        [TestMethod()]
+        public void GetCountPedidosAtivos_AposFinalizarPedido_DeveManterContagem()
+        {
+            // Arrange
+            var countAntes = pedidoProdutoService.GetCountPedidosAtivos();
+
+            // Act - Finalizar pedido em andamento
+            pedidoProdutoService.AlterarStatus(1, "F");
+            var countDepois = pedidoProdutoService.GetCountPedidosAtivos();
+
+            // Assert - Pedido continua ativo, apenas mudou de A para F
+            Assert.AreEqual(countAntes, countDepois, "Contagem deve permanecer a mesma pois F também é considerado ativo");
+        }
+
+        #endregion
+
+        #region Testes de Casos de Borda e Validação
+
+        [TestMethod()]
+        public void GetByStatus_QuandoStatusInexistente_DeveRetornarListaVazia()
+        {
+            // Act
+            var pedidos = pedidoProdutoService.GetByStatus("X");
+
+            // Assert
+            Assert.IsNotNull(pedidos);
+            Assert.AreEqual(0, pedidos.Count());
+        }
+
+        [TestMethod()]
+        public void GetPedidosAtivos_QuandoNaoHaPedidos_DeveRetornarListaVazia()
+        {
+            // Arrange - Remover todos os pedidos ativos
+            pedidoProdutoService.RecusarPedido(1);
+            context.Pedidos.Find((uint)2)!.Status = "C";
+            context.SaveChanges();
+
+            // Act
+            var pedidos = pedidoProdutoService.GetPedidosAtivos(page, pageSize);
+
+            // Assert
+            Assert.IsNotNull(pedidos);
+            Assert.AreEqual(0, pedidos.Count());
+        }
+
+        [TestMethod()]
+        public void GetDetalhes_DeveCalcularPrecoTotalCorretamente()
+        {
+            // Arrange
+            var pedidoProduto = pedidoProdutoService.Get(2);
+            Assert.IsNotNull(pedidoProduto);
+            int quantidade = pedidoProduto.Quantidade;
+            decimal precoUnitario = pedidoProduto.Preco;
+
+            // Act
+            var detalhes = pedidoProdutoService.GetDetalhes(2);
+
+            // Assert - Validar fórmula de cálculo
+            Assert.IsNotNull(detalhes);
+            Assert.AreEqual(quantidade * precoUnitario, detalhes.PrecoTotal, 
+                "PrecoTotal deve ser igual a Quantidade * PrecoUnitario");
+        }
+
+        #endregion
     }
 }
