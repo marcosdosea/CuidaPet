@@ -40,23 +40,27 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod]
-        public void IndexTest_Valido()
+        public void Index_AoSerChamado_RetornarViewComListaDePessoas()
         {
+            //Act
             var result = controller.Index();
 
+            //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = (ViewResult)result;
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(IEnumerable<PessoaViewModel>));
 
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(IEnumerable<PessoaViewModel>));
             var lista = (IEnumerable<PessoaViewModel>)viewResult.ViewData.Model;
             Assert.AreEqual(3, lista.Count());
         }
 
         [TestMethod]
-        public void DetailsTest_Valido()
+        public void Details_IdExistente_RetornarViewModel()
         {
+            //Act
             var result = controller.Details(1);
 
+            //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = (ViewResult)result;
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(PessoaViewModel));
@@ -89,12 +93,15 @@ namespace CuidaPetWeb.Controllers.Tests
         }
 
         [TestMethod]
-        public void CreateTest_Post_Invalido()
+        public void Create_Post_ModelInvalido_RetornarViewSemSalvar()
         {
+            //Arrange
             controller.ModelState.AddModelError("Nome", "Campo requerido");
 
+            //Act
             var result = controller.Create(GetNewPessoaModel());
 
+            //Assert
             Assert.AreEqual(1, controller.ModelState.ErrorCount);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = (ViewResult)result;
