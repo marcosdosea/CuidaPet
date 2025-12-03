@@ -17,7 +17,8 @@ namespace Service.Tests
         public void Initialize()
         {
             var builder = new DbContextOptionsBuilder<CuidaPetContext>();
-            builder.UseInMemoryDatabase("cuidapetdb");
+
+            builder.UseInMemoryDatabase("RacaServiceTests");
             var options = builder.Options;
 
             context = new CuidaPetContext(options);
