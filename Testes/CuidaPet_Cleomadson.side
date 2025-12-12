@@ -1,0 +1,283 @@
+{
+  "id": "41af6c23-6638-4a2d-b523-ddcde19533f7",
+  "version": "2.0",
+  "name": "CuidaPet",
+  "url": "https://localhost:7020",
+  "tests": [{
+    "id": "df12ce91-f991-42b3-b0bf-1910da9deec1",
+    "name": "Inserir Nova Espécie Válida",
+    "commands": [{
+      "id": "de7aa75b-c3eb-4c6f-a7b7-4e1a49ed2f5d",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1e0e9b65-3fac-4469-ad34-81599c4d0ed7",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ac5c2d94-c626-4e8d-a931-ef2fcc0f6103",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Espécies",
+      "targets": [
+        ["linkText=Espécies", "linkText"],
+        ["css=li:nth-child(7) > a", "css:finder"],
+        ["xpath=//nav[@id='sidebar']/ul/li[7]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/Especie')]", "xpath:href"],
+        ["xpath=//li[7]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Espécies')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e6bac41e-26c8-453a-aade-a847c4bdc6b5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bi-plus-circle-fill",
+      "targets": [
+        ["css=.bi-plus-circle-fill", "css:finder"],
+        ["xpath=//div[@id='mainWrapper']/div/main/article/div/a[2]/i", "xpath:idRelative"],
+        ["xpath=//a[2]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f84a829b-6741-417e-8111-203e39a59183",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "52d727a4-9df2-41ea-a838-69bfd0c6ea7a",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5aeaf241-8c4f-4f0b-b05c-90a148fde89e",
+      "comment": "",
+      "command": "type",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "Tarantula"
+    }, {
+      "id": "44413ac0-f46b-458b-bfdd-c567d1b88351",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Salvar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "118c85f7-c156-444a-a0b5-93d25e8e7422",
+    "name": "Inserir Nova Espécie Inválida",
+    "commands": [{
+      "id": "c64ceeee-e76d-42ca-9244-fbfdbf66f19c",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "051ab3fe-f9f2-4c36-8c1d-e40b5e0f0694",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db07e69b-4600-4407-afcf-4becb444c0c7",
+      "comment": "",
+      "command": "click",
+      "target": "css=li:nth-child(7) span",
+      "targets": [
+        ["css=li:nth-child(7) span", "css:finder"],
+        ["xpath=//nav[@id='sidebar']/ul/li[7]/a/span", "xpath:idRelative"],
+        ["xpath=//li[7]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Espécies')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0dccf31-f767-4b5a-9be0-696e3e495094",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bi-plus-circle-fill",
+      "targets": [
+        ["css=.bi-plus-circle-fill", "css:finder"],
+        ["xpath=//div[@id='mainWrapper']/div/main/article/div/a[2]/i", "xpath:idRelative"],
+        ["xpath=//a[2]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "524bced2-ec98-429c-91b8-2003bc5ae971",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3eafb2ff-cc34-482a-aed8-ce9180f2ebfd",
+      "comment": "",
+      "command": "type",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "Cão"
+    }, {
+      "id": "a2b5235a-28e6-4f05-ab98-6618522356aa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/form/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Salvar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "52daddcb-388c-4e02-aef1-1b6634dcc85e",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=2",
+      "targets": [
+        ["linkText=2", "linkText"],
+        ["css=.page-item:nth-child(3) > .page-link", "css:finder"],
+        ["xpath=//a[contains(text(),'2')]", "xpath:link"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/nav/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/Especie?page=2&pageSize=10')]", "xpath:href"],
+        ["xpath=//div/nav/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'2')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "3df018d2-08b6-4b0a-95da-004c4bd6c40a",
+    "name": "Remover Espécie Válido",
+    "commands": [{
+      "id": "ea0b8c7b-a508-447b-ac80-473257e818c8",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "276afc7d-d4c6-4c2e-9630-8f83c1ab1c30",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b08c2559-98ed-4df8-aa59-872d9de49942",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Espécies",
+      "targets": [
+        ["linkText=Espécies", "linkText"],
+        ["css=li:nth-child(7) > a", "css:finder"],
+        ["xpath=//nav[@id='sidebar']/ul/li[7]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/Especie')]", "xpath:href"],
+        ["xpath=//li[7]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Espécies')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "21192fec-0b16-4fbf-8086-e98faa57864b",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=2",
+      "targets": [
+        ["linkText=2", "linkText"],
+        ["css=.page-item:nth-child(3) > .page-link", "css:finder"],
+        ["xpath=//a[contains(text(),'2')]", "xpath:link"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/nav/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/Especie?page=2&pageSize=10')]", "xpath:href"],
+        ["xpath=//div/nav/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'2')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bb5d646a-9301-42c7-b1d7-03209adfba32",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(1) .bi-trash-fill",
+      "targets": [
+        ["css=tr:nth-child(1) .bi-trash-fill", "css:finder"],
+        ["xpath=//table[@id='table']/tbody/tr/td[3]/a[3]/i", "xpath:idRelative"],
+        ["xpath=//a[3]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f523a560-4228-4b9a-a8ff-05c11d3eb6a3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-danger",
+      "targets": [
+        ["css=.btn-danger", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='mainWrapper']/div/main/section/div/div/div[2]/div[3]/form/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Confirmar Exclusão')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "33abd93b-7d86-443b-b258-9dd5493e7a09",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["https://localhost:7020/"],
+  "plugins": []
+}
