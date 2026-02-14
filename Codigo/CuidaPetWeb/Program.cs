@@ -1,8 +1,9 @@
-using Core;
 using Core.Service;
 using CuidaPetWebFilter;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Core.Context;
+using Core;
 using CuidaPetWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 namespace CuidaPetWeb
@@ -36,10 +37,12 @@ namespace CuidaPetWeb
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDbContext<CuidaPetContext>(
-                options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")!));
+                options => options.UseMySQL(
+                    builder.Configuration.GetConnectionString("CuidaPetDatabase")!,
+                    b => b.MigrationsAssembly("CuidaPetWeb")));
 
-            builder.Services.AddDbContext<IdentityContext>(options =>
-                options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDatabase")!));
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
 
             builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
             { 
@@ -63,7 +66,7 @@ namespace CuidaPetWeb
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-            }).AddEntityFrameworkStores<IdentityContext>();
+            }).AddEntityFrameworkStores<CuidaPetContext>();
 
             var app = builder.Build();
 

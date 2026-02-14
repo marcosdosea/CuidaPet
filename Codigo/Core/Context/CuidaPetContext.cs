@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core;
+namespace Core.Context;
 
-public partial class CuidaPetContext : DbContext
+public partial class CuidaPetContext : IdentityDbContext<UsuarioIdentity>
 {
-    public CuidaPetContext()
-    {
-    }
-
-    public CuidaPetContext(DbContextOptions<CuidaPetContext> options)
-        : base(options)
+    public CuidaPetContext(DbContextOptions<CuidaPetContext> options) : base(options)
     {
     }
 
@@ -57,17 +53,10 @@ public partial class CuidaPetContext : DbContext
 
     public virtual DbSet<Vacinacao> Vacinacaos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=cuidapetdb");
-        }
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Agendamento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
