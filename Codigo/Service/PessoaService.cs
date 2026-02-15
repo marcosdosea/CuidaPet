@@ -74,25 +74,14 @@ namespace Service
 
         public IEnumerable<Pessoa> GetGerentes()
         {
-            var gerenteRoleId = context.Roles
-                .Where(r => r.Name == "Gerente")
-                .Select(r => r.Id)
-                .FirstOrDefault();
+            var query = from pessoa in context.Pessoas.Include(p => p.IdUsuarioNavigation)
+                        join userRole in context.UserRoles on pessoa.IdUsuario equals userRole.UserId
+                        join role in context.Roles on userRole.RoleId equals role.Id
+                        where role.Name == "Gerente" && pessoa.Status == "A"
+                        orderby pessoa.IdUsuarioNavigation.UserName
+                        select pessoa;
 
-            if (gerenteRoleId == null)
-                return Enumerable.Empty<Pessoa>();
-
-            var usuariosGerentesIds = context.UserRoles
-                .Where(ur => ur.RoleId == gerenteRoleId)
-                .Select(ur => ur.UserId)
-                .ToList();
-
-            return context.Pessoas
-                .Include(p => p.IdUsuarioNavigation)
-                .AsNoTracking()
-                .Where(p => p.Status == "A" && usuariosGerentesIds.Contains(p.IdUsuario))
-                .OrderBy(p => p.IdUsuarioNavigation.UserName)
-                .ToList();
+            return query.AsNoTracking().ToList();
         }
     }
 }
