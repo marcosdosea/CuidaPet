@@ -59,16 +59,29 @@ namespace CuidaPetWeb.Controllers
                 estabelecimentoService.Create(estabelecimento);
                 return RedirectToAction(nameof(Index));
             }
+
             Console.WriteLine("ModelState inválido. Erros:");
             foreach (var key in ModelState.Keys)
             {
-                if (ModelState[key].Errors.Count > 0)
+                // Correção 1: Armazenamos a entrada e usamos o operador ?.
+                var stateEntry = ModelState[key];
+                
+                if (stateEntry?.Errors.Count > 0)
                 {
-                    Console.WriteLine($"Erro no campo {key}: {string.Join(", ", ModelState[key].Errors.Select(e => e.ErrorMessage))}");
+                    Console.WriteLine($"Erro no campo {key}: {string.Join(", ", stateEntry.Errors.Select(e => e.ErrorMessage))}");
                 }
             }
+
             var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
+            
+            // Correção 2: Usamos ?. para evitar NullReference caso IdUsuarioNavigation seja nulo, 
+            // e ?? para definir um valor padrão (fallback)
+            ViewBag.Gerentes = gerentes.Select(g => new 
+            { 
+                g.Id, 
+                Nome = g.IdUsuarioNavigation?.UserName ?? "Usuário não definido" 
+            });
+
             return View(estabelecimentoViewModel);
         }
 
