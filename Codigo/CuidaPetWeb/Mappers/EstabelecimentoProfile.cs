@@ -8,7 +8,13 @@ namespace CuidaPetWeb.Mappers
     {
         public EstabelecimentoProfile()
         {
-            CreateMap<EstabelecimentoViewModel, Estabelecimento>().ReverseMap();
+            CreateMap<EstabelecimentoViewModel, Estabelecimento>();
+
+            CreateMap<Estabelecimento, EstabelecimentoViewModel>()
+                .ForMember(dest => dest.NomeGerente, 
+                    opt => opt.MapFrom(src => src.IdGerenteNavigation != null && src.IdGerenteNavigation.IdUsuarioNavigation != null 
+                        ? src.IdGerenteNavigation.IdUsuarioNavigation.UserName 
+                        : ""));
         }
 
     }

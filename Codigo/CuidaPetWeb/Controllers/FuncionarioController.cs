@@ -84,6 +84,11 @@ namespace CuidaPetWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(FuncionarioViewModel funcionarioViewModel)
         {
+            if (string.IsNullOrWhiteSpace(funcionarioViewModel.Senha))
+            {
+                ModelState.AddModelError("Senha", "A senha é obrigatória.");
+            }
+
             if (funcionarioViewModel.Tipo == "V" && string.IsNullOrWhiteSpace(funcionarioViewModel.Crmv))
             {
                 ModelState.AddModelError("Crmv", "O campo CRMV é obrigatório para veterinários.");
@@ -107,6 +112,13 @@ namespace CuidaPetWeb.Controllers
                     if (usuarioExistente != null)
                     {
                         ModelState.AddModelError("Email", "Email já cadastrado.");
+                        return View(funcionarioViewModel);
+                    }
+
+                    // Verificar se a senha foi fornecida
+                    if (string.IsNullOrEmpty(funcionarioViewModel.Senha))
+                    {
+                        ModelState.AddModelError("Senha", "A senha é obrigatória.");
                         return View(funcionarioViewModel);
                     }
 

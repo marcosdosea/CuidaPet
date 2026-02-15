@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="Preco" class="form-label"></label>
-                        <input asp-for="Preco" class="form-control" />
+                        <input asp-for="Preco" type="text" class="form-control" />
                         <small class="form-text text-muted">Use vírgula para decimal (ex: 30,29)</small>
                         <span asp-validation-for="Preco" class="text-danger"></span>
                     </div>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="PrecoPromocao" class="form-label"></label>
-                        <input asp-for="PrecoPromocao" class="form-control" />
+                        <input asp-for="PrecoPromocao" type="text" class="form-control" />
                         <small class="form-text text-muted">Use vírgula para decimal (ex: 25,50)</small>
                         <span asp-validation-for="PrecoPromocao" class="text-danger"></span>
                     </div>
@@ -91,4 +91,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Substituir validação de número para aceitar vírgula
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        };
+
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        };
+    </script>
 }

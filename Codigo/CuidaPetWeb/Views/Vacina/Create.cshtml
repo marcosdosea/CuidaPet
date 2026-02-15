@@ -17,12 +17,12 @@
     <form asp-action="Create">
         <div class="row g-3 mb-4">
             <div class="col-md-3">
-                <label  asp-for="Nome" class="form-label visually-hidden">Digite a Vacina</label>
+                <label  asp-for="Nome" class="form-label">Digite a Vacina</label>
                 <input asp-for="Nome" type="text" class="form-control" placeholder="Digite a Vacina">
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
             <div class="col-md-3">
-                <label asp-for="IdEspecie" class="form-label visually-hidden">Selecione Espécie Alvo</label>
+                <label asp-for="IdEspecie" class="form-label">Selecione Espécie Alvo</label>
                 <select asp-for="IdEspecie" asp-items="ViewBag.Especies" class="form-select">
                     <option selected>Selecione Espécie Alvo</option>
                 </select>
@@ -30,14 +30,14 @@
             </div>
             
             <div class="col-md-3">
-                <label asp-for="IdDoenca" class="form-label visually-hidden">Selecione a Doença</label>
+                <label asp-for="IdDoenca" class="form-label">Selecione a Doença</label>
                 <select asp-for="IdDoenca" asp-items="ViewBag.Doencas" class="form-select">
                     <option value="">Selecione Doença</option>
                 </select>
                 <span asp-validation-for="IdDoenca" class="text-danger"></span>
             </div>
             <div class="col-md-3">
-                <label asp-for="PeriodoEmDias" class="form-label visually-hidden">Digite Intervalo de Reforço (Em dias)</label>
+                <label asp-for="PeriodoEmDias" class="form-label">Digite Intervalo de Reforço (Em dias)</label>
                 <input asp-for="PeriodoEmDias" type="number" class="form-control" placeholder="Ex.: 365">
                 <span asp-validation-for="PeriodoEmDias" class="text-danger"></span>
             </div>

@@ -48,5 +48,8 @@ namespace CuidaPetWeb.Models
         [Display(Name = "Gerente")]
         [Required(ErrorMessage = "É obrigatório selecionar um gerente.")]
         public uint IdGerente { get; set; }
+
+        [Display(Name = "Nome do Gerente")]
+        public string? NomeGerente { get; set; }
     }
 }

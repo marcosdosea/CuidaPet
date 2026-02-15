@@ -17,11 +17,6 @@ namespace CuidaPetWeb
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add<CustomExceptionFilter>();
-            });
-
             // Configurar localização para aceitar vírgula como separador decimal
             var cultureInfo = new CultureInfo("pt-BR");
             cultureInfo.NumberFormat.NumberDecimalSeparator = ",";
@@ -29,6 +24,11 @@ namespace CuidaPetWeb
 
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<CustomExceptionFilter>();
+            });
 
             builder.Services.AddTransient<IProdutoService, ProdutoService>();
             builder.Services.AddTransient<IEspecieService, EspecieService>();
