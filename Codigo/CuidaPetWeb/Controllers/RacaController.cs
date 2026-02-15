@@ -4,6 +4,7 @@ using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -11,11 +12,13 @@ namespace CuidaPetWeb.Controllers
     public class RacaController : Controller
     {
         private readonly IRacaService racaService;
+        private readonly IEspecieService especieService;
         private readonly IMapper mapper;
 
-        public RacaController(IRacaService racaService, IMapper mapper)
+        public RacaController(IRacaService racaService, IEspecieService especieService, IMapper mapper)
         {
             this.racaService = racaService;
+            this.especieService = especieService;
             this.mapper = mapper;
         }
 
@@ -24,6 +27,10 @@ namespace CuidaPetWeb.Controllers
         {
             var racas = racaService.GetAll(page, pageSize);
             var racaViewModels = mapper.Map<IEnumerable<RacaViewModel>>(racas);
+
+            int maxPageSize = 100;
+            var especies = especieService.GetAll(1, maxPageSize);
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
 
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
@@ -37,12 +44,25 @@ namespace CuidaPetWeb.Controllers
         {
             var raca = racaService.Get(id);
             var racaViewModel = mapper.Map<RacaViewModel>(raca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(racaViewModel);
         }
 
         // GET: Raca/Create
         public ActionResult Create()
         {
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View();
         }
 
@@ -57,6 +77,13 @@ namespace CuidaPetWeb.Controllers
                 racaService.Create(raca);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(racaViewModel);
         }
 
@@ -65,6 +92,13 @@ namespace CuidaPetWeb.Controllers
         {
             var raca = racaService.Get(id);
             var racaViewModel = mapper.Map<RacaViewModel>(raca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(racaViewModel);
         }
 
@@ -79,6 +113,13 @@ namespace CuidaPetWeb.Controllers
                 racaService.Edit(raca);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(racaViewModel);
         }
 
@@ -87,6 +128,13 @@ namespace CuidaPetWeb.Controllers
         {
             var raca = racaService.Get(id);
             var racaViewModel = mapper.Map<RacaViewModel>(raca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(racaViewModel);
         }
 

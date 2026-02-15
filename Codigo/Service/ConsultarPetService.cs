@@ -1,4 +1,5 @@
 using Core;
+using Core.Context;
 using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace Service
                     .ThenInclude(p => p.Petdoencas)
                         .ThenInclude(pd => pd.IdDoencaNavigation)
                 .Include(a => a.IdTutorNavigation)
+                    .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(a => a.IdFuncionarioNavigation)
                 .FirstOrDefault(a => a.Id == idAgendamento && a.IdPet == idPet && a.Status == "A");
 
@@ -40,11 +42,11 @@ namespace Service
                 IdPet = pet.Id,
                 NomePet = pet.Nome,
                 Raca = pet.IdRacaNavigation.Nome,
-                Sexo = pet.Sexo == "M" ? "Macho" : "Fêmea",
+                Sexo = pet.Sexo == "M" ? "Macho" : "Fï¿½mea",
                 Idade = pet.DataNascimento.HasValue 
                     ? CalcularIdade(pet.DataNascimento.Value) 
                     : null,
-                NomeTutor = tutor.Nome,
+                NomeTutor = tutor.IdUsuarioNavigation?.UserName ?? "",
                 Vacinas = pet.Vacinacaos
                     .Select(v => v.IdVacinaNavigation.Nome)
                     .Distinct()
@@ -63,12 +65,12 @@ namespace Service
 
         public uint FinalizarConsulta(ConsultarPetDto consultarPetDto)
         {
-            // Verificar se o agendamento existe e está aprovado
+            // Verificar se o agendamento existe e estï¿½ aprovado
             var agendamento = context.Agendamentos
                 .FirstOrDefault(a => a.Id == consultarPetDto.IdAgendamento && a.Status == "A");
 
             if (agendamento == null)
-                throw new Exception("Agendamento não encontrado ou não está aprovado.");
+                throw new Exception("Agendamento nï¿½o encontrado ou nï¿½o estï¿½ aprovado.");
 
             // Criar registro de consulta
             var consulta = new Consulta
@@ -97,6 +99,7 @@ namespace Service
             var agendamentos = context.Agendamentos
                 .Include(a => a.IdPetNavigation)
                 .Include(a => a.IdTutorNavigation)
+                    .ThenInclude(t => t.IdUsuarioNavigation)
                 .Where(a => a.IdFuncionario == idFuncionario && a.Status == "A")
                 .OrderBy(a => a.Horario)
                 .AsNoTracking()
@@ -104,15 +107,15 @@ namespace Service
                 {
                     IdAgendamento = a.Id,
                     Numero = index + 1,
-                    NomeTutor = a.IdTutorNavigation.Nome,
+                    NomeTutor = a.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
                     NomePet = a.IdPetNavigation.Nome,
                     Horario = a.Horario,
                     IdPet = a.IdPet
                 })
                 .ToList();
 
-            // Ajustar numeração sequencial
-            for (int i = 0; i < agendamentos.Count; i++)
+            // Ajustar numeraï¿½ï¿½o sequencial
+            for (int i = 0; i < agendamentos.Count(); i++)
             {
                 agendamentos[i].Numero = i + 1;
             }

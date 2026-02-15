@@ -26,3 +26,6 @@
 *.local
 global.json
 .sonarqube
+
+# Configurações de variaveis de ambiente
+appsettings.json

@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Context;
 using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,7 @@ namespace Service
             var existingEstabelecimento = context.Estabelecimentos.Find(estabelecimento.Id);
             if (existingEstabelecimento != null)
             {
+                context.Entry(existingEstabelecimento).State = EntityState.Detached;
                 context.Estabelecimentos.Update(estabelecimento);
                 context.SaveChanges();
             }
@@ -61,13 +63,10 @@ namespace Service
         /// <returns>Dados do estabelecimento</returns>
         public Estabelecimento? Get(uint id)
         {
-            var estabelecimento = context.Estabelecimentos.Find(id);
-            if (estabelecimento != null)
-            {
-                return estabelecimento;
-            }
-
-            return null;
+            return context.Estabelecimentos
+                .Include(e => e.IdGerenteNavigation)
+                    .ThenInclude(g => g.IdUsuarioNavigation)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         /// <summary>
@@ -77,6 +76,8 @@ namespace Service
         public IEnumerable<Estabelecimento> GetAll(int page, int pageSize)
         {
             return context.Estabelecimentos
+            .Include(e => e.IdGerenteNavigation)
+                .ThenInclude(g => g.IdUsuarioNavigation)
             .AsNoTracking()
             .OrderBy(e => e.Id)
             .Skip((page - 1) * pageSize)

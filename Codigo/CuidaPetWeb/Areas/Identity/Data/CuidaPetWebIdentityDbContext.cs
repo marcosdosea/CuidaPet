@@ -1,13 +1,12 @@
-using CuidaPetWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CuidaPetWeb.Areas.Identity.Data;
 
-public class IdentityContext : IdentityDbContext<UsuarioIdentity>
+public class CuidaPetWebIdentityDbContext : IdentityDbContext<IdentityUser>
 {
-    public IdentityContext(DbContextOptions<IdentityContext> options)
+    public CuidaPetWebIdentityDbContext(DbContextOptions<CuidaPetWebIdentityDbContext> options)
         : base(options)
     {
     }

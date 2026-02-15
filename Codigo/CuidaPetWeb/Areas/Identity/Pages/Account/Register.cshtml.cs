@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,16 +8,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using CuidaPetWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Core;
+using Core.Context;
 
 namespace CuidaPetWeb.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<UsuarioIdentity> _signInManager;
@@ -29,129 +27,166 @@ namespace CuidaPetWeb.Areas.Identity.Pages.Account
         private readonly IUserStore<UsuarioIdentity> _userStore;
         private readonly IUserEmailStore<UsuarioIdentity> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly CuidaPetContext _context;
 
         public RegisterModel(
             UserManager<UsuarioIdentity> userManager,
             IUserStore<UsuarioIdentity> userStore,
             SignInManager<UsuarioIdentity> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            CuidaPetContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _context = context;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = null!;
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = null!;
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = null!;
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "O campo Email é obrigatório.")]
+            [EmailAddress(ErrorMessage = "Email inválido.")]
             [Display(Name = "Email")]
-            public string Email { get; set; }
+            public string Email { get; set; } = null!;
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
+            [Required(ErrorMessage = "O campo Nome é obrigatório.")]
+            [StringLength(100, ErrorMessage = "O {0} deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 3)]
+            [Display(Name = "Nome Completo")]
+            public string Nome { get; set; } = null!;
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Required(ErrorMessage = "O campo Telefone é obrigatório.")]
+            [StringLength(11, ErrorMessage = "O Telefone deve ter 11 dígitos (DDD + número).", MinimumLength = 11)]
+            [Display(Name = "Telefone")]
+            [RegularExpression(@"^\d{11}$", ErrorMessage = "Telefone deve conter apenas números (11 dígitos).")]
+            public string Telefone { get; set; } = null!;
+
+            [Required(ErrorMessage = "O campo CPF é obrigatório.")]
+            [StringLength(11, ErrorMessage = "O CPF deve ter 11 dígitos.", MinimumLength = 11)]
+            [Display(Name = "CPF")]
+            [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF deve conter apenas números (11 dígitos).")]
+            public string Cpf { get; set; } = null!;
+
+            [Required(ErrorMessage = "O campo Senha é obrigatório.")]
+            [StringLength(100, ErrorMessage = "A {0} deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            [Display(Name = "Senha")]
+            public string Password { get; set; } = null!;
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirmar Senha")]
+            [Compare("Password", ErrorMessage = "A senha e a confirmação não coincidem.")]
+            public string ConfirmPassword { get; set; } = null!;
+
+            // Campos de Endereço
+            [Required(ErrorMessage = "O campo Logradouro é obrigatório.")]
+            [StringLength(100, ErrorMessage = "O Logradouro deve ter no máximo 100 caracteres.")]
+            [Display(Name = "Logradouro")]
+            public string Logradouro { get; set; } = null!;
+
+            [Required(ErrorMessage = "O campo Número é obrigatório.")]
+            [StringLength(10, ErrorMessage = "O Número deve ter no máximo 10 caracteres.")]
+            [Display(Name = "Número")]
+            public string Numero { get; set; } = null!;
+
+            [StringLength(50, ErrorMessage = "O Complemento deve ter no máximo 50 caracteres.")]
+            [Display(Name = "Complemento")]
+            public string? Complemento { get; set; }
+
+            [Required(ErrorMessage = "O campo Bairro é obrigatório.")]
+            [StringLength(50, ErrorMessage = "O Bairro deve ter no máximo 50 caracteres.")]
+            [Display(Name = "Bairro")]
+            public string Bairro { get; set; } = null!;
+
+            [Required(ErrorMessage = "O campo Cidade é obrigatório.")]
+            [StringLength(100, ErrorMessage = "A Cidade deve ter no máximo 100 caracteres.")]
+            [Display(Name = "Cidade")]
+            public string Cidade { get; set; } = null!;
+
+            [Required(ErrorMessage = "O campo Estado é obrigatório.")]
+            [StringLength(2, ErrorMessage = "O Estado deve ter 2 caracteres.", MinimumLength = 2)]
+            [Display(Name = "Estado (UF)")]
+            [RegularExpression(@"^[A-Z]{2}$", ErrorMessage = "Estado deve ser a sigla com 2 letras maiúsculas (ex: SP, RJ).")]
+            public string Estado { get; set; } = null!;
         }
 
-
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
-            ReturnUrl = returnUrl;
+            ReturnUrl = returnUrl ?? string.Empty;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
             if (ModelState.IsValid)
             {
+                // Verificar se o CPF já está cadastrado
+                var pessoaExistente = _context.Pessoas.FirstOrDefault(p => p.Cpf == Input.Cpf);
+                if (pessoaExistente != null)
+                {
+                    ModelState.AddModelError(string.Empty, "CPF já cadastrado.");
+                    return Page();
+                }
+
+                // Criar o usuário Identity
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Nome, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.PhoneNumber = Input.Telefone;
+                user.NormalizedUserName = Input.Nome.ToUpper();
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Usuário criou uma nova conta com senha.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    // Atribuir role padrão de "Tutor" para novos usuários
+                    await _userManager.AddToRoleAsync(user, "Tutor");
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    // Criar a Pessoa associada ao usuário
+                    var pessoa = new Pessoa
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                        Cpf = Input.Cpf,
+                        IdUsuario = user.Id,
+                        Status = "A", // Ativo
+                        Logradouro = Input.Logradouro,
+                        Numero = Input.Numero,
+                        Complemento = Input.Complemento,
+                        Bairro = Input.Bairro,
+                        Cidade = Input.Cidade,
+                        Estado = Input.Estado
+                    };
+
+                    _context.Pessoas.Add(pessoa);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Pessoa criada e associada ao usuário.");
+
+                    // Fazer login automático após o registro
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Se chegou aqui, algo falhou, reexibir o formulário
             return Page();
         }
 
@@ -163,9 +198,9 @@ namespace CuidaPetWeb.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(UsuarioIdentity)}'. " +
-                    $"Ensure that '{nameof(UsuarioIdentity)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"Não foi possível criar uma instância de '{nameof(UsuarioIdentity)}'. " +
+                    $"Certifique-se de que '{nameof(UsuarioIdentity)}' não é uma classe abstrata e possui um construtor sem parâmetros, ou alternativamente " +
+                    $"substitua a página de registro em /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
@@ -173,7 +208,7 @@ namespace CuidaPetWeb.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("A UI padrão requer um user store com suporte a email.");
             }
             return (IUserEmailStore<UsuarioIdentity>)_userStore;
         }

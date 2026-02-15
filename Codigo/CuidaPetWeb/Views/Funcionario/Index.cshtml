@@ -66,6 +66,13 @@
                         </span>
                     </th>
                     <th class="align-middle" style="cursor: pointer;" onclick="sortTable(5, 'text')">
+                        Estabelecimento
+                        <span class="sort-arrows align-middle">
+                            <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
+                            <i class="bi bi-caret-down-fill" style="font-size: 12px;"></i>
+                        </span>
+                    </th>
+                    <th class="align-middle" style="cursor: pointer;" onclick="sortTable(6, 'text')">
                         Status
                         <span class="sort-arrows align-middle">
                             <i class="bi bi-caret-up-fill" style="font-size: 12px;"></i>
@@ -80,6 +87,7 @@
             <tbody>
                 @foreach (var funcionario in Model)
                 {
+                    var estabelecimentos = ViewBag.Estabelecimentos as Dictionary<uint, string>;
                     <tr>
                         <td>@funcionario.Id</td>
                         <td>@funcionario.Cpf</td>
@@ -99,6 +107,7 @@
                                 <span>@funcionario.Tipo</span>
                             }
                         </td>
+                        <td>@(estabelecimentos != null && estabelecimentos.ContainsKey(funcionario.IdEstabelecimento) ? estabelecimentos[funcionario.IdEstabelecimento] : funcionario.IdEstabelecimento.ToString())</td>
                         <td>
                             @if (funcionario.Status == "A")
                             {

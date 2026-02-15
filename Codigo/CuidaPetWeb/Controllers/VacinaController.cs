@@ -29,6 +29,13 @@ namespace CuidaPetWeb.Controllers
             var vacinas = vacinaService.GetAll(page, pageSize);
             var vacinaViewModels = mapper.Map<IEnumerable<VacinaViewModel>>(vacinas);
 
+            int maxPageSize = 100;
+            var doencas = doencaService.GetAll(1, maxPageSize);
+            var especies = especieService.GetAll(1, maxPageSize);
+
+            ViewBag.Doencas = doencas.ToDictionary(d => d.Id, d => d.Nome);
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = vacinaService.GetCount();
@@ -41,6 +48,15 @@ namespace CuidaPetWeb.Controllers
             var vacina = vacinaService.Get(id);
 
             var vacinaViewModel = mapper.Map<VacinaViewModel>(vacina);
+
+            int page = 1;
+            int pageSize = 100;
+            var doencas = doencaService.GetAll(page, pageSize);
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Doencas = doencas.ToDictionary(d => d.Id, d => d.Nome);
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(vacinaViewModel);
         }
 
@@ -67,6 +83,15 @@ namespace CuidaPetWeb.Controllers
                 vacinaService.Create(vacina);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 20;
+            var listaDeDoencas = doencaService.GetAll(page, pageSize) ?? new List<Doenca>();
+            var listaDeEspecies = especieService.GetAll(page, pageSize) ?? new List<Especie>();
+
+            ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
+            ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");
+
             return View(vacinaViewModel);
         }
 
@@ -74,6 +99,15 @@ namespace CuidaPetWeb.Controllers
         {
             var vacina = vacinaService.Get(id);
             var vacinaViewModel = mapper.Map<VacinaViewModel>(vacina);
+
+            int page = 1;
+            int pageSize = 20;
+            var listaDeDoencas = doencaService.GetAll(page, pageSize) ?? new List<Doenca>();
+            var listaDeEspecies = especieService.GetAll(page, pageSize) ?? new List<Especie>();
+
+            ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
+            ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");
+
             return View(vacinaViewModel);
         }
 
@@ -87,6 +121,15 @@ namespace CuidaPetWeb.Controllers
                 vacinaService.Edit(vacina);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 20;
+            var listaDeDoencas = doencaService.GetAll(page, pageSize) ?? new List<Doenca>();
+            var listaDeEspecies = especieService.GetAll(page, pageSize) ?? new List<Especie>();
+
+            ViewBag.Doencas = new SelectList(listaDeDoencas, "Id", "Nome");
+            ViewBag.Especies = new SelectList(listaDeEspecies, "Id", "Nome");
+
             return View(vacinaViewModel);
         }
 
@@ -94,6 +137,15 @@ namespace CuidaPetWeb.Controllers
         {
             var vacina = vacinaService.Get(id);
             var vacinaViewModel = mapper.Map<VacinaViewModel>(vacina);
+
+            int page = 1;
+            int pageSize = 100;
+            var doencas = doencaService.GetAll(page, pageSize);
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Doencas = doencas.ToDictionary(d => d.Id, d => d.Nome);
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(vacinaViewModel);
         }
 

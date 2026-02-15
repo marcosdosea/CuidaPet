@@ -32,7 +32,9 @@
                 <div class="mb-3 d-flex justify-content-center">
                     <div class="col-md-6">
                         <label asp-for="IdEspecie" class="form-label"></label>
-                        <input asp-for="IdEspecie" class="form-control" />
+                        <select asp-for="IdEspecie" asp-items="ViewBag.Especies" class="form-select">
+                            <option value="">Selecione a Espécie</option>
+                        </select>
                         <span asp-validation-for="IdEspecie" class="text-danger"></span>
                     </div>
                 </div>

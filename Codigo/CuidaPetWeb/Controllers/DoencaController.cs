@@ -4,6 +4,7 @@ using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -11,11 +12,13 @@ namespace CuidaPetWeb.Controllers
     public class DoencaController : Controller
     {
         private readonly IDoencaService doencaService;
+        private readonly IEspecieService especieService;
         private readonly IMapper mapper;
 
-        public DoencaController(IDoencaService doencaService, IMapper mapper)
+        public DoencaController(IDoencaService doencaService, IEspecieService especieService, IMapper mapper)
         {
             this.doencaService = doencaService;
+            this.especieService = especieService;
             this.mapper = mapper;
         }
 
@@ -24,11 +27,15 @@ namespace CuidaPetWeb.Controllers
         {
             var doencas = doencaService.GetAll(page, pageSize);
             var doencaViewModels = mapper.Map<IEnumerable<DoencaViewModel>>(doencas);
-            
+
+            int maxPageSize = 100;
+            var especies = especieService.GetAll(1, maxPageSize);
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = doencaService.GetCount();
-            
+
             return View(doencaViewModels);
         }
 
@@ -37,12 +44,25 @@ namespace CuidaPetWeb.Controllers
         {
             var doenca = doencaService.Get(id);
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(doencaViewModel);
         }
 
         // GET: DoencaController/Create
         public ActionResult Create()
         {
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View();
         }
 
@@ -57,6 +77,13 @@ namespace CuidaPetWeb.Controllers
                 doencaService.Create(doenca);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(doencaViewModel);
         }
 
@@ -65,6 +92,13 @@ namespace CuidaPetWeb.Controllers
         {
             var doenca = doencaService.Get(id);
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(doencaViewModel);
         }
 
@@ -79,6 +113,13 @@ namespace CuidaPetWeb.Controllers
                 doencaService.Edit(doenca);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = new SelectList(especies, "Id", "Nome");
+
             return View(doencaViewModel);
         }
 
@@ -87,6 +128,13 @@ namespace CuidaPetWeb.Controllers
         {
             var doenca = doencaService.Get(id);
             var doencaViewModel = mapper.Map<DoencaViewModel>(doenca);
+
+            int page = 1;
+            int pageSize = 100;
+            var especies = especieService.GetAll(page, pageSize);
+
+            ViewBag.Especies = especies.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(doencaViewModel);
         }
 

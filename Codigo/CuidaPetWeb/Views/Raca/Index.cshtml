@@ -59,10 +59,11 @@
             <tbody>
                 @foreach (var raca in Model)
                 {
+                    var especies = ViewBag.Especies as Dictionary<uint, string>;
                     <tr>
                         <td>@raca.Id</td>
                         <td>@raca.Nome</td>
-                        <td>@raca.IdEspecie</td>
+                        <td>@(especies != null && especies.ContainsKey(raca.IdEspecie) ? especies[raca.IdEspecie] : raca.IdEspecie.ToString())</td>
                         <td>
                             <a asp-action="Details" asp-route-id="@raca.Id" class="text-decoration-none" title="Detalhes">
                                 <i class="bi bi-eye-fill icon-action icon-view" style="font-size: 20px; color: blue;"></i>

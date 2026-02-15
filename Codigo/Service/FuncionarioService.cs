@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Context;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,6 +59,7 @@ public class FuncionarioService : IFuncionarioService
     {
         return context.Funcionarios
             .Include(f => f.IdPessoaNavigation)
+                .ThenInclude(p => p.IdUsuarioNavigation)
             .Include(f => f.IdEstabelecimentoNavigation)
             .FirstOrDefault(f => f.Id == id);
     }
@@ -71,10 +73,12 @@ public class FuncionarioService : IFuncionarioService
         return context.Funcionarios
                 .Include(f => f.IdEstabelecimentoNavigation)
                 .Include(f => f.IdPessoaNavigation)
+                    .ThenInclude(p => p.IdUsuarioNavigation)
                 .AsNoTracking()
                 .OrderBy(f => f.Id)
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize)
+                .ToList();
     }
 
     /// <summary>

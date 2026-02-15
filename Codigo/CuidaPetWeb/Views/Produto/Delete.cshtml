@@ -69,10 +69,20 @@
                         }
 
                         <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdCategoria)</dt>
-                        <dd class="col-sm-9">@Html.DisplayFor(model => model.IdCategoria)</dd>
+                        <dd class="col-sm-9">
+                            @{
+                                var categorias = ViewBag.Categorias as Dictionary<uint, string>;
+                                @(categorias != null && categorias.ContainsKey(Model.IdCategoria) ? categorias[Model.IdCategoria] : Model.IdCategoria.ToString())
+                            }
+                        </dd>
 
                         <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdEstabelecimento)</dt>
-                        <dd class="col-sm-9">@Html.DisplayFor(model => model.IdEstabelecimento)</dd>
+                        <dd class="col-sm-9">
+                            @{
+                                var estabelecimentos = ViewBag.Estabelecimentos as Dictionary<uint, string>;
+                                @(estabelecimentos != null && estabelecimentos.ContainsKey(Model.IdEstabelecimento) ? estabelecimentos[Model.IdEstabelecimento] : Model.IdEstabelecimento.ToString())
+                            }
+                        </dd>
                     </dl>
                 </div>
                 <div class="card-footer">

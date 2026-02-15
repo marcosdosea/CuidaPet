@@ -1,6 +1,8 @@
 ﻿using Core;
+using Core.Context;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Service
 {
@@ -41,14 +43,17 @@ namespace Service
 
         public Pessoa? Get(uint id)
         {
-            return context.Pessoas.Find(id);
+            return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public IEnumerable<Pessoa> GetAll(int page, int pageSize)
         {
             return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
                 .AsNoTracking()
-                .Where(p => p.Tipo == "T" && p.Status == "A")
+                .Where(p => p.Status == "A")
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -57,12 +62,26 @@ namespace Service
 
         public int GetCount()
         {
-            return context.Pessoas.Count(p => p.Tipo == "T" && p.Status == "A");
+            return context.Pessoas.Count(p => p.Status == "A");
         }
 
         public Pessoa? GetByCpf(string cpf)
         {
-            return context.Pessoas.FirstOrDefault(p => p.Cpf == cpf);
+            return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
+                .FirstOrDefault(p => p.Cpf == cpf);
+        }
+
+        public IEnumerable<Pessoa> GetGerentes()
+        {
+            var query = from pessoa in context.Pessoas.Include(p => p.IdUsuarioNavigation)
+                        join userRole in context.UserRoles on pessoa.IdUsuario equals userRole.UserId
+                        join role in context.Roles on userRole.RoleId equals role.Id
+                        where role.Name == "Gerente" && pessoa.Status == "A"
+                        orderby pessoa.IdUsuarioNavigation.UserName
+                        select pessoa;
+
+            return query.AsNoTracking().ToList();
         }
     }
 }

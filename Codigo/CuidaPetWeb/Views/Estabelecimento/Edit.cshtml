@@ -1,4 +1,5 @@
-﻿@model CuidaPetWeb.Models.EstabelecimentoViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model CuidaPetWeb.Models.EstabelecimentoViewModel
 
 @{
     ViewData["Title"] = "Editar Estabelecimento";
@@ -34,12 +35,12 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="Cnpj" class="control-label"></label>
-                        <input asp-for="Cnpj" class="form-control" />
+                        <input asp-for="Cnpj" class="form-control" maxlength="14" />
                         <span asp-validation-for="Cnpj" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="Telefone" class="control-label"></label>
-                        <input asp-for="Telefone" class="form-control" />
+                        <input asp-for="Telefone" class="form-control" maxlength="11" />
                         <span asp-validation-for="Telefone" class="text-danger"></span>
                     </div>
                 </div>
@@ -94,9 +95,11 @@
                     </div>
                 </div>
                 
-                <div class="row">
+                <div class="row mb-3">
                     <label asp-for="IdGerente" class="control-label"></label>
-                    <input asp-for="IdGerente" disabled value="1" class="form-control" />
+                    <select asp-for="IdGerente" class="form-select" asp-items="@(new SelectList(ViewBag.Gerentes, "Id", "Nome"))">
+                        <option value="">Selecione um gerente</option>
+                    </select>
                     <span asp-validation-for="IdGerente" class="text-danger"></span>
                 </div>
 

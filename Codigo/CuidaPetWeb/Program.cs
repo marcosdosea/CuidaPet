@@ -1,17 +1,29 @@
-using Core;
 using Core.Service;
 using CuidaPetWebFilter;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Core.Context;
+using Core;
 using CuidaPetWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
 namespace CuidaPetWeb
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Configurar localização para aceitar vírgula como separador decimal
+            var cultureInfo = new CultureInfo("pt-BR");
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ",";
+            cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             builder.Services.AddControllersWithViews(options =>
             {
@@ -36,10 +48,12 @@ namespace CuidaPetWeb
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDbContext<CuidaPetContext>(
-                options => options.UseMySQL(builder.Configuration.GetConnectionString("CuidaPetDatabase")!));
+                options => options.UseMySQL(
+                    builder.Configuration.GetConnectionString("CuidaPetDatabase")!,
+                    b => b.MigrationsAssembly("CuidaPetWeb")));
 
-            builder.Services.AddDbContext<IdentityContext>(options =>
-                options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDatabase")!));
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
 
             builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
             { 
@@ -63,9 +77,25 @@ namespace CuidaPetWeb
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-            }).AddEntityFrameworkStores<IdentityContext>();
+            }).AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<CuidaPetContext>();
 
             var app = builder.Build();
+
+            // Criar roles se não existirem
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new[] { "Administrador", "Gerente", "Tutor", "Atendente", "Veterinário" };
+                
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -77,6 +107,15 @@ namespace CuidaPetWeb
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Configurar localização
+            var supportedCultures = new[] { new CultureInfo("pt-BR") };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("pt-BR"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseRouting();
 
