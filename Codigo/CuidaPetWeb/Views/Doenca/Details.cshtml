@@ -27,7 +27,12 @@
                         <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome)</dd>
 
                         <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdEspecie)</dt>
-                        <dd class="col-sm-9">@Html.DisplayFor(model => model.IdEspecie)</dd>
+                        <dd class="col-sm-9">
+                            @{
+                                var especies = ViewBag.Especies as Dictionary<uint, string>;
+                                @(especies != null && especies.ContainsKey(Model.IdEspecie) ? especies[Model.IdEspecie] : Model.IdEspecie.ToString())
+                            }
+                        </dd>
                     </dl>
                 </div>
                 <div class="card-footer">

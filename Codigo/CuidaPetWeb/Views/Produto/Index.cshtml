@@ -72,10 +72,11 @@
             </thead>
             <tbody>
                 @foreach (var produto in Model) {
+                    var categorias = ViewBag.Categorias as Dictionary<uint, string>;
                     <tr>
                         <td>@produto.Id</td>
                         <td>@produto.Nome</td>
-                        <td>@produto.IdCategoria</td>
+                        <td>@(categorias != null && categorias.ContainsKey(produto.IdCategoria) ? categorias[produto.IdCategoria] : produto.IdCategoria.ToString())</td>
                         <td>R$ @produto.Preco.ToString("F2")</td>
                         <td>
                             @if (produto.Status == "P")

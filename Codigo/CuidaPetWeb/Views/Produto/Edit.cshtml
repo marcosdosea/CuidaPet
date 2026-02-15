@@ -31,7 +31,8 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="Preco" class="form-label"></label>
-                        <input asp-for="Preco" class="form-control" step="0.01" />
+                        <input asp-for="Preco" class="form-control" />
+                        <small class="form-text text-muted">Use vírgula para decimal (ex: 30,29)</small>
                         <span asp-validation-for="Preco" class="text-danger"></span>
                     </div>
                 </div>
@@ -49,7 +50,8 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="PrecoPromocao" class="form-label"></label>
-                        <input asp-for="PrecoPromocao" class="form-control" step="0.01" />
+                        <input asp-for="PrecoPromocao" class="form-control" />
+                        <small class="form-text text-muted">Use vírgula para decimal (ex: 25,50)</small>
                         <span asp-validation-for="PrecoPromocao" class="text-danger"></span>
                     </div>
                 </div>
@@ -63,12 +65,16 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="IdCategoria" class="form-label"></label>
-                        <input asp-for="IdCategoria" class="form-control" />
+                        <select asp-for="IdCategoria" asp-items="ViewBag.Categorias" class="form-select">
+                            <option value="">Selecione a Categoria</option>
+                        </select>
                         <span asp-validation-for="IdCategoria" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label asp-for="IdEstabelecimento" class="form-label"></label>
-                        <input asp-for="IdEstabelecimento" class="form-control" />
+                        <select asp-for="IdEstabelecimento" asp-items="ViewBag.Estabelecimentos" class="form-select">
+                            <option value="">Selecione o Estabelecimento</option>
+                        </select>
                         <span asp-validation-for="IdEstabelecimento" class="text-danger"></span>
                     </div>
                 </div>

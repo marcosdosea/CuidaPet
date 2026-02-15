@@ -50,6 +50,8 @@
             </thead>
             <tbody>
             @foreach (var vacina in Model) {
+                var doencas = ViewBag.Doencas as Dictionary<uint, string>;
+                var especies = ViewBag.Especies as Dictionary<uint, string>;
                 <tr>
                     <td>
                         @vacina.Id
@@ -61,10 +63,10 @@
                         @vacina.PeriodoEmDias
                     </td>
                     <td>
-                        @vacina.IdDoenca
+                        @(doencas != null && doencas.ContainsKey(vacina.IdDoenca) ? doencas[vacina.IdDoenca] : vacina.IdDoenca.ToString())
                     </td>
                     <td>
-                        @vacina.IdEspecie
+                        @(especies != null && especies.ContainsKey(vacina.IdEspecie) ? especies[vacina.IdEspecie] : vacina.IdEspecie.ToString())
                     </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@vacina.Id" class="text-decoration-none" title="Detalhes">

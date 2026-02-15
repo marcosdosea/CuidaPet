@@ -100,7 +100,12 @@
                                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Estado)</dd>
 
                                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.IdEstabelecimento)</dt>
-                                <dd class="col-sm-8">@Html.DisplayFor(model => model.IdEstabelecimento)</dd>
+                                <dd class="col-sm-8">
+                                    @{
+                                        var estabelecimentos = ViewBag.Estabelecimentos as Dictionary<uint, string>;
+                                        @(estabelecimentos != null && estabelecimentos.ContainsKey(Model.IdEstabelecimento) ? estabelecimentos[Model.IdEstabelecimento] : Model.IdEstabelecimento.ToString())
+                                    }
+                                </dd>
                             </dl>
                         </div>
                     </div>

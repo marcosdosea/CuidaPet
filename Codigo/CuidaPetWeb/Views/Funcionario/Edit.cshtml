@@ -61,7 +61,10 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label asp-for="IdEstabelecimento" class="control-label fw-bold"></label>
-                                    <input asp-for="IdEstabelecimento" class="form-control" readonly />
+                                    <select asp-for="IdEstabelecimento" asp-items="ViewBag.Estabelecimentos" class="form-select">
+                                        <option value="">Selecione o Estabelecimento</option>
+                                    </select>
+                                    <span asp-validation-for="IdEstabelecimento" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">

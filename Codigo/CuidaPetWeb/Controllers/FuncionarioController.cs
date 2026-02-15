@@ -5,6 +5,7 @@ using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -13,14 +14,16 @@ namespace CuidaPetWeb.Controllers
     {
         private readonly IFuncionarioService funcionarioService;
         private readonly IPessoaService pessoaService;
+        private readonly IEstabelecimentoService estabelecimentoService;
         private readonly IMapper mapper;
         private readonly UserManager<UsuarioIdentity> userManager;
         private readonly ILogger<FuncionarioController> logger;
 
-        public FuncionarioController(IFuncionarioService funcionarioService, IPessoaService pessoaService, IMapper mapper, UserManager<UsuarioIdentity> userManager, ILogger<FuncionarioController> logger)
+        public FuncionarioController(IFuncionarioService funcionarioService, IPessoaService pessoaService, IEstabelecimentoService estabelecimentoService, IMapper mapper, UserManager<UsuarioIdentity> userManager, ILogger<FuncionarioController> logger)
         {
             this.funcionarioService = funcionarioService;
             this.pessoaService = pessoaService;
+            this.estabelecimentoService = estabelecimentoService;
             this.mapper = mapper;
             this.userManager = userManager;
             this.logger = logger;
@@ -37,6 +40,10 @@ namespace CuidaPetWeb.Controllers
                 .Where(f => f.Tipo == "V" || f.Tipo == "A")
                 .ToList();
 
+            int maxPageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(1, maxPageSize);
+            ViewBag.Estabelecimentos = estabelecimentos.ToDictionary(e => e.Id, e => e.Nome);
+
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = funcionarioService.GetCount();
@@ -50,12 +57,25 @@ namespace CuidaPetWeb.Controllers
             var funcionario = funcionarioService.Get(id);
 
             var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+            int page = 1;
+            int pageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+            ViewBag.Estabelecimentos = estabelecimentos.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(funcionarioViewModel);
         }
 
         // GET: FuncionarioController/Create
         public ActionResult Create()
         {
+            int page = 1;
+            int pageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+            ViewBag.Estabelecimentos = new SelectList(estabelecimentos, "Id", "Nome");
+
             return View();
         }
 
@@ -134,6 +154,13 @@ namespace CuidaPetWeb.Controllers
                     }
                 }
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+            ViewBag.Estabelecimentos = new SelectList(estabelecimentos, "Id", "Nome");
+
             return View(funcionarioViewModel);
         }
 
@@ -142,6 +169,13 @@ namespace CuidaPetWeb.Controllers
         {
                 var funcionario = funcionarioService.Get(id);
                 var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+                int page = 1;
+                int pageSize = 100;
+                var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+                ViewBag.Estabelecimentos = new SelectList(estabelecimentos, "Id", "Nome");
+
                 return View(funcionarioViewModel);
         }
 
@@ -156,6 +190,13 @@ namespace CuidaPetWeb.Controllers
                 funcionarioService.Edit(funcionario);
                 return RedirectToAction(nameof(Index));
             }
+
+            int page = 1;
+            int pageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+            ViewBag.Estabelecimentos = new SelectList(estabelecimentos, "Id", "Nome");
+
             return View(funcionarioViewModel);
         }
 
@@ -164,6 +205,13 @@ namespace CuidaPetWeb.Controllers
         {
             var funcionario = funcionarioService.Get(id);
             var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+            int page = 1;
+            int pageSize = 100;
+            var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
+
+            ViewBag.Estabelecimentos = estabelecimentos.ToDictionary(e => e.Id, e => e.Nome);
+
             return View(funcionarioViewModel);
         }
 

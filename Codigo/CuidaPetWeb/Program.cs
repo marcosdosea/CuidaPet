@@ -6,6 +6,9 @@ using Core.Context;
 using Core;
 using CuidaPetWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
 namespace CuidaPetWeb
 {
     public class Program
@@ -18,6 +21,14 @@ namespace CuidaPetWeb
             {
                 options.Filters.Add<CustomExceptionFilter>();
             });
+
+            // Configurar localização para aceitar vírgula como separador decimal
+            var cultureInfo = new CultureInfo("pt-BR");
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ",";
+            cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             builder.Services.AddTransient<IProdutoService, ProdutoService>();
             builder.Services.AddTransient<IEspecieService, EspecieService>();
@@ -96,6 +107,15 @@ namespace CuidaPetWeb
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Configurar localização
+            var supportedCultures = new[] { new CultureInfo("pt-BR") };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("pt-BR"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseRouting();
 
