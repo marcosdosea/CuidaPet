@@ -36,6 +36,7 @@ namespace Service
             var existingEstabelecimento = context.Estabelecimentos.Find(estabelecimento.Id);
             if (existingEstabelecimento != null)
             {
+                context.Entry(existingEstabelecimento).State = EntityState.Detached;
                 context.Estabelecimentos.Update(estabelecimento);
                 context.SaveChanges();
             }
