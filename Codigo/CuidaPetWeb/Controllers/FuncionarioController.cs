@@ -31,10 +31,34 @@ namespace CuidaPetWeb.Controllers
 
 
         // GET: FuncionarioController
-        public ActionResult Index(int page = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
             var funcionarios = funcionarioService.GetAll(page, pageSize);
-            var funcionarioViewModels = mapper.Map<IEnumerable<FuncionarioViewModel>>(funcionarios);
+            var funcionarioViewModels = mapper.Map<List<FuncionarioViewModel>>(funcionarios);
+
+            // Recuperar as roles de cada funcionário
+            foreach (var funcionarioViewModel in funcionarioViewModels)
+            {
+                var funcionario = funcionarios.FirstOrDefault(f => f.Id == funcionarioViewModel.Id);
+                if (funcionario?.IdPessoaNavigation?.IdUsuarioNavigation != null)
+                {
+                    var user = funcionario.IdPessoaNavigation.IdUsuarioNavigation;
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("Veterinário"))
+                    {
+                        funcionarioViewModel.Tipo = "V";
+                    }
+                    else if (roles.Contains("Atendente"))
+                    {
+                        funcionarioViewModel.Tipo = "A";
+                    }
+                    else
+                    {
+                        funcionarioViewModel.Tipo = "T";
+                    }
+                }
+            }
 
             funcionarioViewModels = funcionarioViewModels
                 .Where(f => f.Tipo == "V" || f.Tipo == "A")
@@ -52,11 +76,31 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: FuncionarioController/Details/5
-        public ActionResult Details(uint id)
+        public async Task<ActionResult> Details(uint id)
         {
             var funcionario = funcionarioService.Get(id);
 
             var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+            // Recuperar a role do funcionário
+            if (funcionario?.IdPessoaNavigation?.IdUsuarioNavigation != null)
+            {
+                var user = funcionario.IdPessoaNavigation.IdUsuarioNavigation;
+                var roles = await userManager.GetRolesAsync(user);
+
+                if (roles.Contains("Veterinário"))
+                {
+                    funcionarioViewModel.Tipo = "V";
+                }
+                else if (roles.Contains("Atendente"))
+                {
+                    funcionarioViewModel.Tipo = "A";
+                }
+                else
+                {
+                    funcionarioViewModel.Tipo = "T";
+                }
+            }
 
             int page = 1;
             int pageSize = 100;
@@ -177,10 +221,30 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: FuncionarioController/Edit/5
-        public ActionResult Edit(uint id)
+        public async Task<ActionResult> Edit(uint id)
         {
                 var funcionario = funcionarioService.Get(id);
                 var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+                // Recuperar a role do funcionário
+                if (funcionario?.IdPessoaNavigation?.IdUsuarioNavigation != null)
+                {
+                    var user = funcionario.IdPessoaNavigation.IdUsuarioNavigation;
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("Veterinário"))
+                    {
+                        funcionarioViewModel.Tipo = "V";
+                    }
+                    else if (roles.Contains("Atendente"))
+                    {
+                        funcionarioViewModel.Tipo = "A";
+                    }
+                    else
+                    {
+                        funcionarioViewModel.Tipo = "T";
+                    }
+                }
 
                 int page = 1;
                 int pageSize = 100;
@@ -194,12 +258,39 @@ namespace CuidaPetWeb.Controllers
         // POST: FuncionarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(FuncionarioViewModel funcionarioViewModel)
+        public async Task<ActionResult> Edit(FuncionarioViewModel funcionarioViewModel)
         {
             if (ModelState.IsValid)
             {
                 var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
                 funcionarioService.Edit(funcionario);
+
+                // Atualizar a role do usuário se o tipo mudou
+                var funcionarioDb = funcionarioService.Get(funcionario.Id);
+                if (funcionarioDb?.IdPessoaNavigation?.IdUsuarioNavigation != null)
+                {
+                    var user = funcionarioDb.IdPessoaNavigation.IdUsuarioNavigation;
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    // Determinar a nova role baseada no tipo
+                    string novaRole = funcionarioViewModel.Tipo switch
+                    {
+                        "V" => "Veterinário",
+                        "A" => "Atendente",
+                        _ => "Funcionario"
+                    };
+
+                    // Remover roles antigas de funcionário
+                    var rolesToRemove = roles.Where(r => r == "Veterinário" || r == "Atendente" || r == "Funcionario").ToList();
+                    if (rolesToRemove.Any())
+                    {
+                        await userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                    }
+
+                    // Adicionar nova role
+                    await userManager.AddToRoleAsync(user, novaRole);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -213,10 +304,30 @@ namespace CuidaPetWeb.Controllers
         }
 
         // GET: FuncionarioController/Delete/5
-        public ActionResult Delete(uint id)
+        public async Task<ActionResult> Delete(uint id)
         {
             var funcionario = funcionarioService.Get(id);
             var funcionarioViewModel = mapper.Map<FuncionarioViewModel>(funcionario);
+
+            // Recuperar a role do funcionário
+            if (funcionario?.IdPessoaNavigation?.IdUsuarioNavigation != null)
+            {
+                var user = funcionario.IdPessoaNavigation.IdUsuarioNavigation;
+                var roles = await userManager.GetRolesAsync(user);
+
+                if (roles.Contains("Veterinário"))
+                {
+                    funcionarioViewModel.Tipo = "V";
+                }
+                else if (roles.Contains("Atendente"))
+                {
+                    funcionarioViewModel.Tipo = "A";
+                }
+                else
+                {
+                    funcionarioViewModel.Tipo = "T";
+                }
+            }
 
             int page = 1;
             int pageSize = 100;
