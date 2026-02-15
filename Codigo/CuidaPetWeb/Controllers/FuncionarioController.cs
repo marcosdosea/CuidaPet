@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CuidaPetWeb.Controllers
@@ -13,12 +14,16 @@ namespace CuidaPetWeb.Controllers
         private readonly IFuncionarioService funcionarioService;
         private readonly IPessoaService pessoaService;
         private readonly IMapper mapper;
+        private readonly UserManager<UsuarioIdentity> userManager;
+        private readonly ILogger<FuncionarioController> logger;
 
-        public FuncionarioController(IFuncionarioService funcionarioService, IPessoaService pessoaService, IMapper mapper)
+        public FuncionarioController(IFuncionarioService funcionarioService, IPessoaService pessoaService, IMapper mapper, UserManager<UsuarioIdentity> userManager, ILogger<FuncionarioController> logger)
         {
             this.funcionarioService = funcionarioService;
             this.pessoaService = pessoaService;
             this.mapper = mapper;
+            this.userManager = userManager;
+            this.logger = logger;
         }
 
 
@@ -57,7 +62,7 @@ namespace CuidaPetWeb.Controllers
         // POST: FuncionarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(FuncionarioViewModel funcionarioViewModel)
+        public async Task<ActionResult> Create(FuncionarioViewModel funcionarioViewModel)
         {
             if (funcionarioViewModel.Tipo == "V" && string.IsNullOrWhiteSpace(funcionarioViewModel.Crmv))
             {
@@ -77,14 +82,56 @@ namespace CuidaPetWeb.Controllers
                 }
                 else
                 {
-                    var pessoa = mapper.Map<Pessoa>(funcionarioViewModel);
-                    var idPessoa = pessoaService.Create(pessoa);
+                    // Verificar se o email já está cadastrado
+                    var usuarioExistente = await userManager.FindByEmailAsync(funcionarioViewModel.Email);
+                    if (usuarioExistente != null)
+                    {
+                        ModelState.AddModelError("Email", "Email já cadastrado.");
+                        return View(funcionarioViewModel);
+                    }
 
-                    var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
-                    funcionario.IdPessoa = idPessoa;
-                    funcionarioService.Create(funcionario);
+                    // Criar o usuário Identity
+                    var user = new UsuarioIdentity
+                    {
+                        UserName = funcionarioViewModel.Nome,
+                        Email = funcionarioViewModel.Email,
+                        PhoneNumber = funcionarioViewModel.Telefone,
+                        NormalizedUserName = funcionarioViewModel.Nome.ToUpper(),
+                        EmailConfirmed = true
+                    };
 
-                    return RedirectToAction(nameof(Index));
+                    var result = await userManager.CreateAsync(user, funcionarioViewModel.Senha);
+
+                    if (result.Succeeded)
+                    {
+                        logger.LogInformation("Usuário funcionário criado com sucesso.");
+
+                        // Atribuir role baseado no tipo de funcionário
+                        string role = funcionarioViewModel.Tipo switch
+                        {
+                            "V" => "Veterinário",
+                            "A" => "Atendente",
+                            _ => "Funcionario"
+                        };
+                        await userManager.AddToRoleAsync(user, role);
+
+                        // Criar a Pessoa associada ao usuário
+                        var pessoa = mapper.Map<Pessoa>(funcionarioViewModel);
+                        pessoa.IdUsuario = user.Id;
+                        var idPessoa = pessoaService.Create(pessoa);
+
+                        // Criar o Funcionário
+                        var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
+                        funcionario.IdPessoa = idPessoa;
+                        funcionarioService.Create(funcionario);
+
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
             return View(funcionarioViewModel);
