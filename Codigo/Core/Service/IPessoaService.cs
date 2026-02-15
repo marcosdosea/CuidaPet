@@ -9,5 +9,6 @@
         IEnumerable<Pessoa> GetAll(int page, int pageSize);
         int GetCount();
         Pessoa? GetByCpf(string cpf);
+        IEnumerable<Pessoa> GetGerentes();
     }
 }

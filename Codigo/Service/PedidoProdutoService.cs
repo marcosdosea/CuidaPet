@@ -71,6 +71,7 @@ namespace Service
             return context.Pedidoprodutos
                 .Include(pp => pp.IdPedidoNavigation)
                     .ThenInclude(p => p.IdTutorNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(pp => pp.IdProdutoNavigation)
                 .Where(pp => pp.IdPedidoNavigation.Status == status)
                 .Select(pp => new PedidoProdutoDto
@@ -85,8 +86,8 @@ namespace Service
                     Status = pp.IdPedidoNavigation.Status,
                     ProdutoNome = pp.IdProdutoNavigation.Nome,
                     TutorId = pp.IdPedidoNavigation.IdTutorNavigation.Id,
-                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.Nome,
-                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.Telefone
+                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
+                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.PhoneNumber ?? ""
                 }).ToList();
         }
 
@@ -95,6 +96,7 @@ namespace Service
             return context.Pedidoprodutos
                 .Include(pp => pp.IdPedidoNavigation)
                     .ThenInclude(p => p.IdTutorNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(pp => pp.IdProdutoNavigation)
                 .Where(pp => pp.IdPedidoNavigation.IdTutorNavigation.Id == tutorId && 
                            (pp.IdPedidoNavigation.Status == "A" || pp.IdPedidoNavigation.Status == "F")) // Filtrar apenas pendentes e concluídos
@@ -110,8 +112,8 @@ namespace Service
                     Status = pp.IdPedidoNavigation.Status,
                     ProdutoNome = pp.IdProdutoNavigation.Nome,
                     TutorId = pp.IdPedidoNavigation.IdTutorNavigation.Id,
-                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.Nome,
-                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.Telefone
+                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
+                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.PhoneNumber ?? ""
                 }).ToList();
         }
 
@@ -133,6 +135,7 @@ namespace Service
             var pp = context.Pedidoprodutos
                 .Include(p => p.IdPedidoNavigation)
                     .ThenInclude(pedido => pedido.IdTutorNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(p => p.IdProdutoNavigation)
                 .FirstOrDefault(p => p.Id == id);
 
@@ -150,8 +153,8 @@ namespace Service
                 Status = pp.IdPedidoNavigation.Status,
                 ProdutoNome = pp.IdProdutoNavigation.Nome,
                 TutorId = pp.IdPedidoNavigation.IdTutorNavigation.Id,
-                TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.Nome,
-                TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.Telefone
+                TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
+                TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.PhoneNumber ?? ""
             };
         }
 
@@ -161,6 +164,7 @@ namespace Service
             return context.Pedidoprodutos
                 .Include(pp => pp.IdPedidoNavigation)
                     .ThenInclude(p => p.IdTutorNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(pp => pp.IdProdutoNavigation)
                 .Where(pp => pp.IdPedido == pedidoId)
                 .Select(pp => new PedidoProdutoDto
@@ -175,8 +179,8 @@ namespace Service
                     Status = pp.IdPedidoNavigation.Status,
                     ProdutoNome = pp.IdProdutoNavigation.Nome,
                     TutorId = pp.IdPedidoNavigation.IdTutorNavigation.Id,
-                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.Nome,
-                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.Telefone
+                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
+                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.PhoneNumber ?? ""
                 }).ToList();
         }
 
@@ -215,6 +219,7 @@ namespace Service
             var query = context.Pedidoprodutos
                 .Include(pp => pp.IdPedidoNavigation)
                     .ThenInclude(p => p.IdTutorNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
                 .Include(pp => pp.IdProdutoNavigation)
                 .Where(pp => pp.IdPedidoNavigation.Status == "A" || pp.IdPedidoNavigation.Status == "F")
                 .Select(pp => new PedidoProdutoDto
@@ -229,8 +234,8 @@ namespace Service
                     Status = pp.IdPedidoNavigation.Status,
                     ProdutoNome = pp.IdProdutoNavigation.Nome,
                     TutorId = pp.IdPedidoNavigation.IdTutorNavigation.Id,
-                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.Nome,
-                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.Telefone
+                    TutorNome = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.UserName ?? "",
+                    TutorTelefone = pp.IdPedidoNavigation.IdTutorNavigation.IdUsuarioNavigation.PhoneNumber ?? ""
                 });
 
             // Aplicar ordenação se especificada

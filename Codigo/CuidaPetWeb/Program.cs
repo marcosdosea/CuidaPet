@@ -66,9 +66,25 @@ namespace CuidaPetWeb
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-            }).AddEntityFrameworkStores<CuidaPetContext>();
+            }).AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<CuidaPetContext>();
 
             var app = builder.Build();
+
+            // Criar roles se não existirem
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new[] { "Administrador", "Gerente", "Tutor", "Atendente", "Veterinário" };
+                
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

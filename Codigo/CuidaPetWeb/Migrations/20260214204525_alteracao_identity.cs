@@ -123,11 +123,7 @@ namespace CuidaPetWeb.Migrations
                     id = table.Column<uint>(type: "int unsigned", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     cpf = table.Column<string>(type: "char(11)", fixedLength: true, maxLength: 11, nullable: false),
-                    nome = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false),
-                    senha = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
-                    email = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
-                    telefone = table.Column<string>(type: "char(11)", fixedLength: true, maxLength: 11, nullable: false),
-                    tipo = table.Column<string>(type: "enum('T','G','A','V','Ad')", nullable: false, comment: "T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)"),
+                    idUsuario = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: false),
                     status = table.Column<string>(type: "enum('A','I')", nullable: false, defaultValueSql: "'A'", comment: "A (Ativo), I (Inativo)"),
                     logradouro = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     numero = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
@@ -139,6 +135,11 @@ namespace CuidaPetWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_pessoa_usuario",
+                        column: x => x.idUsuario,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -871,15 +872,9 @@ namespace CuidaPetWeb.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "email",
+                name: "idUsuario_UNIQUE",
                 table: "pessoa",
-                column: "email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "telefone_UNIQUE",
-                table: "pessoa",
-                column: "telefone",
+                column: "idUsuario",
                 unique: true);
 
             migrationBuilder.CreateIndex(

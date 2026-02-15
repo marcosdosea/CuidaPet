@@ -2,6 +2,7 @@
 using Core.Context;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Service
 {
@@ -42,14 +43,17 @@ namespace Service
 
         public Pessoa? Get(uint id)
         {
-            return context.Pessoas.Find(id);
+            return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public IEnumerable<Pessoa> GetAll(int page, int pageSize)
         {
             return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
                 .AsNoTracking()
-                .Where(p => p.Tipo == "T" && p.Status == "A")
+                .Where(p => p.Status == "A")
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -58,12 +62,37 @@ namespace Service
 
         public int GetCount()
         {
-            return context.Pessoas.Count(p => p.Tipo == "T" && p.Status == "A");
+            return context.Pessoas.Count(p => p.Status == "A");
         }
 
         public Pessoa? GetByCpf(string cpf)
         {
-            return context.Pessoas.FirstOrDefault(p => p.Cpf == cpf);
+            return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
+                .FirstOrDefault(p => p.Cpf == cpf);
+        }
+
+        public IEnumerable<Pessoa> GetGerentes()
+        {
+            var gerenteRoleId = context.Roles
+                .Where(r => r.Name == "Gerente")
+                .Select(r => r.Id)
+                .FirstOrDefault();
+
+            if (gerenteRoleId == null)
+                return Enumerable.Empty<Pessoa>();
+
+            var usuariosGerentesIds = context.UserRoles
+                .Where(ur => ur.RoleId == gerenteRoleId)
+                .Select(ur => ur.UserId)
+                .ToList();
+
+            return context.Pessoas
+                .Include(p => p.IdUsuarioNavigation)
+                .AsNoTracking()
+                .Where(p => p.Status == "A" && usuariosGerentesIds.Contains(p.IdUsuario))
+                .OrderBy(p => p.IdUsuarioNavigation.UserName)
+                .ToList();
         }
     }
 }

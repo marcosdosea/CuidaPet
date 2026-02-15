@@ -488,10 +488,11 @@ namespace CuidaPetWeb.Migrations
                         .HasColumnName("cpf")
                         .IsFixedLength();
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("email");
+                    b.Property<string>("IdUsuario")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)")
+                        .HasColumnName("idUsuario");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -506,23 +507,11 @@ namespace CuidaPetWeb.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("logradouro");
 
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("nome");
-
                     b.Property<string>("Numero")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)")
                         .HasColumnName("numero");
-
-                    b.Property<string>("Senha")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
-                        .HasColumnName("senha");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -532,29 +521,13 @@ namespace CuidaPetWeb.Migrations
                         .HasDefaultValueSql("'A'")
                         .HasComment("A (Ativo), I (Inativo)");
 
-                    b.Property<string>("Telefone")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("char(11)")
-                        .HasColumnName("telefone")
-                        .IsFixedLength();
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasColumnType("enum('T','G','A','V','Ad')")
-                        .HasColumnName("tipo")
-                        .HasComment("T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)");
-
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "Cpf" }, "cpf_UNIQUE")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "Email" }, "email")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "Telefone" }, "telefone_UNIQUE")
+                    b.HasIndex(new[] { "IdUsuario" }, "idUsuario_UNIQUE")
                         .IsUnique();
 
                     b.ToTable("pessoa", (string)null);
@@ -1489,6 +1462,12 @@ namespace CuidaPetWeb.Migrations
 
             modelBuilder.Entity("Core.Pessoa", b =>
                 {
+                    b.HasOne("Core.UsuarioIdentity", "IdUsuarioNavigation")
+                        .WithOne("Pessoa")
+                        .HasForeignKey("Core.Pessoa", "IdUsuario")
+                        .IsRequired()
+                        .HasConstraintName("fk_pessoa_usuario");
+
                     b.Navigation("Agendamentos");
 
                     b.Navigation("Consulta");
@@ -1502,6 +1481,8 @@ namespace CuidaPetWeb.Migrations
                     b.Navigation("Pessoanotificacaos");
 
                     b.Navigation("Vacinacaos");
+
+                    b.Navigation("IdUsuarioNavigation");
                 });
 
             modelBuilder.Entity("Core.Pet", b =>
@@ -1523,6 +1504,11 @@ namespace CuidaPetWeb.Migrations
             modelBuilder.Entity("Core.Raca", b =>
                 {
                     b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("Core.UsuarioIdentity", b =>
+                {
+                    b.Navigation("Pessoa");
                 });
 
             modelBuilder.Entity("Core.Vacina", b =>

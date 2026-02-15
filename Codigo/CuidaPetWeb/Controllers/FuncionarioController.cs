@@ -70,12 +70,6 @@ namespace CuidaPetWeb.Controllers
 
                 if (pessoaExistente != null)
                 {
-                    if (pessoaExistente.Tipo != funcionarioViewModel.Tipo)
-                    {
-                        pessoaExistente.Tipo = funcionarioViewModel.Tipo;
-                        pessoaService.Edit(pessoaExistente);
-                    }
-
                     funcionarioViewModel.IdPessoa = pessoaExistente.Id;
                     var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
                     funcionarioService.Create(funcionario);
@@ -84,7 +78,6 @@ namespace CuidaPetWeb.Controllers
                 else
                 {
                     var pessoa = mapper.Map<Pessoa>(funcionarioViewModel);
-                    pessoa.Tipo = funcionarioViewModel.Tipo;
                     var idPessoa = pessoaService.Create(pessoa);
 
                     var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
@@ -112,13 +105,6 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pessoa = pessoaService.Get(funcionarioViewModel.IdPessoa);
-                if (pessoa != null)
-                {
-                    pessoa.Tipo = funcionarioViewModel.Tipo;
-                    pessoaService.Edit(pessoa);
-                }
-
                 var funcionario = mapper.Map<Funcionario>(funcionarioViewModel);
                 funcionarioService.Edit(funcionario);
                 return RedirectToAction(nameof(Index));
@@ -150,13 +136,15 @@ namespace CuidaPetWeb.Controllers
             if (pessoa == null)
                 return Json(null);
 
+            // Carregar os dados do usuário associado
+            var usuario = pessoa.IdUsuarioNavigation;
+
             return Json(new
             {
                 id = pessoa.Id,
-                nome = pessoa.Nome,
-                email = pessoa.Email,
-                senha = pessoa.Senha,
-                telefone = pessoa.Telefone,
+                nome = usuario?.UserName ?? "",
+                email = usuario?.Email ?? "",
+                telefone = usuario?.PhoneNumber ?? "",
                 logradouro = pessoa.Logradouro,
                 numero = pessoa.Numero,
                 complemento = pessoa.Complemento,

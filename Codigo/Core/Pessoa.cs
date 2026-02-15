@@ -9,18 +9,7 @@ public partial class Pessoa
 
     public string Cpf { get; set; } = null!;
 
-    public string Nome { get; set; } = null!;
-
-    public string Senha { get; set; } = null!;
-
-    public string? Email { get; set; }
-
-    public string Telefone { get; set; } = null!;
-
-    /// <summary>
-    /// T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)
-    /// </summary>
-    public string Tipo { get; set; } = null!;
+    public string IdUsuario { get; set; } = null!;
 
     /// <summary>
     /// A (Ativo), I (Inativo)
@@ -38,6 +27,8 @@ public partial class Pessoa
     public string Cidade { get; set; } = null!;
 
     public string Estado { get; set; } = null!;
+
+    public virtual UsuarioIdentity IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 

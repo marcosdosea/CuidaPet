@@ -11,12 +11,13 @@ namespace CuidaPetWeb.Controllers
     public class EstabelecimentoController : Controller
     {
         private readonly IEstabelecimentoService estabelecimentoService;
-
+        private readonly IPessoaService pessoaService;
         private readonly IMapper mapper;
 
-        public EstabelecimentoController(IEstabelecimentoService estabelecimentoService, IMapper mapper)
+        public EstabelecimentoController(IEstabelecimentoService estabelecimentoService, IPessoaService pessoaService, IMapper mapper)
         {
             this.estabelecimentoService = estabelecimentoService;
+            this.pessoaService = pessoaService;
             this.mapper = mapper;
         }
 
@@ -42,6 +43,8 @@ namespace CuidaPetWeb.Controllers
 
         public ActionResult Create()
         {
+            var gerentes = pessoaService.GetGerentes();
+            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
             return View();
         }
 
@@ -51,10 +54,21 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine($"Criando estabelecimento: {estabelecimentoViewModel.Nome}, CNPJ: {estabelecimentoViewModel.Cnpj}");
                 var estabelecimento = mapper.Map<Estabelecimento>(estabelecimentoViewModel);
                 estabelecimentoService.Create(estabelecimento);
                 return RedirectToAction(nameof(Index));
             }
+            Console.WriteLine("ModelState inválido. Erros:");
+            foreach (var key in ModelState.Keys)
+            {
+                if (ModelState[key].Errors.Count > 0)
+                {
+                    Console.WriteLine($"Erro no campo {key}: {string.Join(", ", ModelState[key].Errors.Select(e => e.ErrorMessage))}");
+                }
+            }
+            var gerentes = pessoaService.GetGerentes();
+            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
             return View(estabelecimentoViewModel);
         }
 
@@ -62,6 +76,8 @@ namespace CuidaPetWeb.Controllers
         {
             var estabelecimento = estabelecimentoService.Get(id);
             var estabelecimentoViewModel = mapper.Map<EstabelecimentoViewModel>(estabelecimento);
+            var gerentes = pessoaService.GetGerentes();
+            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
             return View(estabelecimentoViewModel);
         }
 
@@ -75,6 +91,8 @@ namespace CuidaPetWeb.Controllers
                 estabelecimentoService.Edit(estabelecimento);
                 return RedirectToAction(nameof(Index));
             }
+            var gerentes = pessoaService.GetGerentes();
+            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
             return View(estabelecimentoViewModel);
         }
 

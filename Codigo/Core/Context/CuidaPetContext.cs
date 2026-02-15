@@ -434,9 +434,7 @@ public partial class CuidaPetContext : IdentityDbContext<UsuarioIdentity>
 
             entity.HasIndex(e => e.Cpf, "cpf_UNIQUE").IsUnique();
 
-            entity.HasIndex(e => e.Email, "email").IsUnique();
-
-            entity.HasIndex(e => e.Telefone, "telefone_UNIQUE").IsUnique();
+            entity.HasIndex(e => e.IdUsuario, "idUsuario_UNIQUE").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Bairro)
@@ -452,9 +450,9 @@ public partial class CuidaPetContext : IdentityDbContext<UsuarioIdentity>
                 .HasMaxLength(11)
                 .IsFixedLength()
                 .HasColumnName("cpf");
-            entity.Property(e => e.Email)
-                .HasMaxLength(30)
-                .HasColumnName("email");
+            entity.Property(e => e.IdUsuario)
+                .HasMaxLength(450)
+                .HasColumnName("idUsuario");
             entity.Property(e => e.Estado)
                 .HasMaxLength(2)
                 .IsFixedLength()
@@ -462,28 +460,19 @@ public partial class CuidaPetContext : IdentityDbContext<UsuarioIdentity>
             entity.Property(e => e.Logradouro)
                 .HasMaxLength(100)
                 .HasColumnName("logradouro");
-            entity.Property(e => e.Nome)
-                .HasMaxLength(30)
-                .HasColumnName("nome");
             entity.Property(e => e.Numero)
                 .HasMaxLength(10)
                 .HasColumnName("numero");
-            entity.Property(e => e.Senha)
-                .HasMaxLength(150)
-                .HasColumnName("senha");
             entity.Property(e => e.Status)
                 .HasDefaultValueSql("'A'")
                 .HasComment("A (Ativo), I (Inativo)")
                 .HasColumnType("enum('A','I')")
                 .HasColumnName("status");
-            entity.Property(e => e.Telefone)
-                .HasMaxLength(11)
-                .IsFixedLength()
-                .HasColumnName("telefone");
-            entity.Property(e => e.Tipo)
-                .HasComment("T (Tutor), G (Gerente), A (Atendente), V (Veterinário), Ad (Administrador)")
-                .HasColumnType("enum('T','G','A','V','Ad')")
-                .HasColumnName("tipo");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithOne(p => p.Pessoa)
+                .HasForeignKey<Pessoa>(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_pessoa_usuario");
         });
 
         modelBuilder.Entity<Pessoanotificacao>(entity =>
