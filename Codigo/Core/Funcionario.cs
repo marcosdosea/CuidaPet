@@ -23,6 +23,8 @@ public partial class Funcionario
 
     public virtual Pessoa IdPessoaNavigation { get; set; } = null!;
 
+    public string Nome => IdPessoaNavigation?.Nome ?? string.Empty;
+
     public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 
     public virtual ICollection<Vacinacao> Vacinacaos { get; set; } = new List<Vacinacao>();

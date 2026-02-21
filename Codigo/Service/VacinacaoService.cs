@@ -77,6 +77,11 @@ namespace Service
         public IEnumerable<Vacinacao> GetAll(int page, int pageSize)
         {
             return context.Vacinacaos
+                .Include(v => v.IdVacinaNavigation)
+                .Include(v => v.IdPetNavigation)
+                .Include(v => v.IdFuncionarioNavigation)
+                    .ThenInclude(f => f.IdPessoaNavigation)
+                        .ThenInclude(p => p.IdUsuarioNavigation)
                 .AsNoTracking()
                 .OrderBy(v => v.Id)
                 .Skip((page - 1) * pageSize)

@@ -97,8 +97,8 @@
                 
                 <div class="row mb-3">
                     <label asp-for="IdGerente" class="control-label"></label>
-                    <select asp-for="IdGerente" class="form-select" asp-items="@(new SelectList(ViewBag.Gerentes, "Id", "Nome"))">
-                        <option value="">Selecione um gerente</option>
+                    <select asp-for="IdGerente" class="form-select" asp-items="ViewBag.Gerentes">
+                        <option value="">Selecione o Gerente</option>
                     </select>
                     <span asp-validation-for="IdGerente" class="text-danger"></span>
                 </div>

@@ -33,6 +33,15 @@ namespace CuidaPetWeb.Models
         [Required(ErrorMessage = "É obrigatório selecionar um tutor.")]
         public uint IdTutor { get; set; }
 
+        [Display(Name = "Vacina")]
+        public string? NomeVacina { get; set; }
+
+        [Display(Name = "Pet")]
+        public string? NomePet { get; set; }
+
+        [Display(Name = "Funcionário")]
+        public string? NomeFuncionario { get; set; }
+
         public IEnumerable<SelectListItem>? Vacinas { get; set; }
         public IEnumerable<SelectListItem>? Pets { get; set; }
         public IEnumerable<SelectListItem>? Funcionarios { get; set; }

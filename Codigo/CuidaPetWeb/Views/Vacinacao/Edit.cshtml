@@ -1,0 +1,68 @@
+﻿@model CuidaPetWeb.Models.VacinacaoViewModel
+
+@{
+    ViewData["Title"] = "Editar Vacinação";
+}
+
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
+    <a asp-action="Index" title="Voltar para lista" class="btn-green-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+        </svg>
+    </a>
+</article>
+
+<div class="container mt-5" style="padding: 0;">
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label asp-for="DataVacina" class="form-label">@Html.DisplayNameFor(model => model.DataVacina)</label>
+                <input asp-for="DataVacina" type="date" class="form-control">
+                <span asp-validation-for="DataVacina" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Lote" class="form-label">@Html.DisplayNameFor(model => model.Lote)</label>
+                <input asp-for="Lote" type="text" class="form-control" placeholder="Digite o lote">
+                <span asp-validation-for="Lote" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="IdVacina" class="form-label">@Html.DisplayNameFor(model => model.IdVacina)</label>
+                <select asp-for="IdVacina" asp-items="ViewBag.Vacinas" class="form-select">
+                    <option value="">Selecione a Vacina</option>
+                </select>
+                <span asp-validation-for="IdVacina" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="IdPet" class="form-label">@Html.DisplayNameFor(model => model.IdPet)</label>
+                <select asp-for="IdPet" asp-items="ViewBag.Pets" class="form-select">
+                    <option value="">Selecione o Pet</option>
+                </select>
+                <span asp-validation-for="IdPet" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="IdFuncionario" class="form-label">@Html.DisplayNameFor(model => model.IdFuncionario)</label>
+                <select asp-for="IdFuncionario" asp-items="ViewBag.Funcionarios" class="form-select">
+                    <option value="">Selecione o Funcionário</option>
+                </select>
+                <span asp-validation-for="IdFuncionario" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="IdTutor" class="form-label">@Html.DisplayNameFor(model => model.IdTutor)</label>
+                <select asp-for="IdTutor" asp-items="ViewBag.Tutores" class="form-select">
+                    <option value="">Selecione o Tutor</option>
+                </select>
+                <span asp-validation-for="IdTutor" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="d-grid gap-2 col-2 mx-auto">
+            <button type="submit" class="btn btn-warning rounded">Salvar Alterações</button>
+            <a asp-action="Index" class="btn btn-secondary rounded">Cancelar</a>
+        </div>
+    </form>
+</div>
+

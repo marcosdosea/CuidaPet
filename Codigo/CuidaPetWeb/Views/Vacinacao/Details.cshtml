@@ -1,0 +1,85 @@
+﻿@model CuidaPetWeb.Models.VacinacaoViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Vacinação";
+}
+
+<article class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">@ViewData["Title"]</h2>
+
+    <div class="d-flex gap-2">
+        <a asp-action="Index" title="Voltar para Lista" class="btn-green-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left-circle-fill" style="font-size: 40px;"></i>
+        </a>
+    </div>
+</article>
+
+<section class="bg-gray-light p-4 rounded">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-gray-medium">
+                    <h5 class="card-title mb-0">Informações da Vacinação #@Model.Id</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DataVacina)</dt>
+                        <dd class="col-sm-9">@Model.DataVacina.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Lote)</dt>
+                        <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Lote) ? "Não informado" : Model.Lote)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdVacina)</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var vacinas = ViewBag.Vacinas as SelectList;
+                                var vacinaSelecionada = vacinas?.FirstOrDefault(v => v.Value == Model.IdVacina.ToString());
+                                @(vacinaSelecionada?.Text ?? Model.IdVacina.ToString())
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdPet)</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var pets = ViewBag.Pets as SelectList;
+                                var petSelecionado = pets?.FirstOrDefault(p => p.Value == Model.IdPet.ToString());
+                                @(petSelecionado?.Text ?? Model.IdPet.ToString())
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdFuncionario)</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var funcionarios = ViewBag.Funcionarios as SelectList;
+                                var funcionarioSelecionado = funcionarios?.FirstOrDefault(f => f.Value == Model.IdFuncionario.ToString());
+                                @(funcionarioSelecionado?.Text ?? Model.IdFuncionario.ToString())
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IdTutor)</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var tutores = ViewBag.Tutores as SelectList;
+                                var tutorSelecionado = tutores?.FirstOrDefault(t => t.Value == Model.IdTutor.ToString());
+                                @(tutorSelecionado?.Text ?? Model.IdTutor.ToString())
+                            }
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil-fill me-2"></i>Editar
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash-fill me-2"></i>Deletar
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-list me-2"></i>Voltar para Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

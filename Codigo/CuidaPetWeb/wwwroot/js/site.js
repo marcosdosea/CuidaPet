@@ -86,16 +86,26 @@
     });
 
     const currentPath = window.location.pathname.toLowerCase();
+    let bestMatch = null;
+    let bestMatchLength = 0;
+    
     $('.sidebar a').each(function () {
         const linkHref = $(this).attr('href');
         if (linkHref) {
             const linkPath = linkHref.toLowerCase();
             if (currentPath.includes(linkPath) && linkPath !== '/' && linkPath.length > 1) {
-                setActiveLink(this);
-                return false;
+                // Encontra o match mais longo (mais específico)
+                if (linkPath.length > bestMatchLength) {
+                    bestMatch = this;
+                    bestMatchLength = linkPath.length;
+                }
             }
         }
     });
+    
+    if (bestMatch) {
+        setActiveLink(bestMatch);
+    }
 
     function checkResponsive() {
         const isDesktop = $(window).width() > 768;
