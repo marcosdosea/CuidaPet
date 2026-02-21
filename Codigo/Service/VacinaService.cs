@@ -42,7 +42,10 @@ namespace Service
             var existingVacina = context.Vacinas.Find(vacina.Id);
             if (existingVacina != null)
             {
-                context.Vacinas.Update(vacina);
+                existingVacina.Nome = vacina.Nome;
+                existingVacina.PeriodoEmDias = vacina.PeriodoEmDias;
+                existingVacina.IdDoenca = vacina.IdDoenca;
+                existingVacina.IdEspecie = vacina.IdEspecie;
                 context.SaveChanges();
             }
         }
