@@ -22,6 +22,12 @@ namespace CuidaPetWeb.Controllers
             this.mapper = mapper;
         }
 
+        private void PopularViewBags()
+        {
+            var gerentes = pessoaService.GetGerentes();
+            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
+        }
+
         public ActionResult Index(int page = 1, int pageSize = 10)
         {
             var estabelecimentos = estabelecimentoService.GetAll(page, pageSize);
@@ -44,8 +50,7 @@ namespace CuidaPetWeb.Controllers
 
         public ActionResult Create()
         {
-            var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
+            PopularViewBags();
             return View();
         }
 
@@ -60,8 +65,7 @@ namespace CuidaPetWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
+            PopularViewBags();
             return View(estabelecimentoViewModel);
         }
 
@@ -69,8 +73,7 @@ namespace CuidaPetWeb.Controllers
         {
             var estabelecimento = estabelecimentoService.Get(id);
             var estabelecimentoViewModel = mapper.Map<EstabelecimentoViewModel>(estabelecimento);
-            var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
+            PopularViewBags();
             return View(estabelecimentoViewModel);
         }
 
@@ -84,8 +87,7 @@ namespace CuidaPetWeb.Controllers
                 estabelecimentoService.Edit(estabelecimento);
                 return RedirectToAction(nameof(Index));
             }
-            var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
+            PopularViewBags();
             return View(estabelecimentoViewModel);
         }
 
