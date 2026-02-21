@@ -4,6 +4,7 @@ using Core.Service;
 using CuidaPetWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CuidaPetWeb.Controllers
 {
@@ -44,7 +45,7 @@ namespace CuidaPetWeb.Controllers
         public ActionResult Create()
         {
             var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
+            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
             return View();
         }
 
@@ -54,34 +55,13 @@ namespace CuidaPetWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                Console.WriteLine($"Criando estabelecimento: {estabelecimentoViewModel.Nome}, CNPJ: {estabelecimentoViewModel.Cnpj}");
                 var estabelecimento = mapper.Map<Estabelecimento>(estabelecimentoViewModel);
                 estabelecimentoService.Create(estabelecimento);
                 return RedirectToAction(nameof(Index));
             }
 
-            Console.WriteLine("ModelState inválido. Erros:");
-            foreach (var key in ModelState.Keys)
-            {
-                // Correção 1: Armazenamos a entrada e usamos o operador ?.
-                var stateEntry = ModelState[key];
-                
-                if (stateEntry?.Errors.Count > 0)
-                {
-                    Console.WriteLine($"Erro no campo {key}: {string.Join(", ", stateEntry.Errors.Select(e => e.ErrorMessage))}");
-                }
-            }
-
             var gerentes = pessoaService.GetGerentes();
-            
-            // Correção 2: Usamos ?. para evitar NullReference caso IdUsuarioNavigation seja nulo, 
-            // e ?? para definir um valor padrão (fallback)
-            ViewBag.Gerentes = gerentes.Select(g => new 
-            { 
-                g.Id, 
-                Nome = g.IdUsuarioNavigation?.UserName ?? "Usuário não definido" 
-            });
-
+            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
             return View(estabelecimentoViewModel);
         }
 
@@ -90,7 +70,7 @@ namespace CuidaPetWeb.Controllers
             var estabelecimento = estabelecimentoService.Get(id);
             var estabelecimentoViewModel = mapper.Map<EstabelecimentoViewModel>(estabelecimento);
             var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
+            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
             return View(estabelecimentoViewModel);
         }
 
@@ -105,7 +85,7 @@ namespace CuidaPetWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var gerentes = pessoaService.GetGerentes();
-            ViewBag.Gerentes = gerentes.Select(g => new { g.Id, Nome = g.IdUsuarioNavigation.UserName });
+            ViewBag.Gerentes = new SelectList(gerentes, "Id", "Nome");
             return View(estabelecimentoViewModel);
         }
 
