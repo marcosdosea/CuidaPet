@@ -30,6 +30,8 @@ public partial class Pessoa
 
     public virtual UsuarioIdentity IdUsuarioNavigation { get; set; } = null!;
 
+    public string Nome => IdUsuarioNavigation?.UserName ?? "Sem Nome";
+
     public virtual ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 
     public virtual ICollection<Consulta> Consulta { get; set; } = new List<Consulta>();
