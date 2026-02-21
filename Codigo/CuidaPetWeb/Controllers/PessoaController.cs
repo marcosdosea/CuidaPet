@@ -74,6 +74,8 @@ namespace CuidaPetWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(PessoaViewModel viewModel)
         {
+            ModelState.Remove("Senha");
+
             if (ModelState.IsValid)
             {
                 var pessoa = mapper.Map<Pessoa>(viewModel);

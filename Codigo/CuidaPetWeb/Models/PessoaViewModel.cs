@@ -15,6 +15,8 @@ namespace CuidaPetWeb.Models
         [Display(Name = "CPF")]
         [CPF]
         public string Cpf { get; set; } = null!;
+        [Required(ErrorMessage = "Pessoa sem usuário vinculado")]
+        public string IdUsuario { get; set; } = null!;
         [Display(Name = "Email")]
         public string Email { get; set; } = null!;
         [Required(ErrorMessage = "A senha é obrigatória")]

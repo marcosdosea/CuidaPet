@@ -28,6 +28,7 @@ public class FuncionarioViewModel
     [EmailAddress(ErrorMessage = "Por favor, informe um email válido")]
     [Display(Name = "Email")]
     public string Email { get; set; } = null!;
+    [DataType(DataType.Password)]
     [Display(Name = "Senha")]
     public string? Senha { get; set; }
     [Required(ErrorMessage = "Por favor, informe um telefone")]
