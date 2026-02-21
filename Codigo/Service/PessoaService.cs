@@ -83,5 +83,17 @@ namespace Service
 
             return query.AsNoTracking().ToList();
         }
+
+        public IEnumerable<Pessoa> GetTutores()
+        {
+            var query = from pessoa in context.Pessoas.Include(p => p.IdUsuarioNavigation)
+                        join userRole in context.UserRoles on pessoa.IdUsuario equals userRole.UserId
+                        join role in context.Roles on userRole.RoleId equals role.Id
+                        where role.Name == "Tutor" && pessoa.Status == "A"
+                        orderby pessoa.IdUsuarioNavigation.UserName
+                        select pessoa;
+
+            return query.AsNoTracking().ToList() ?? new List<Pessoa>();
+        }
     }
 }

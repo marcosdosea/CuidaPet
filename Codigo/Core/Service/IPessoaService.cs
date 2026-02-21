@@ -10,5 +10,6 @@
         int GetCount();
         Pessoa? GetByCpf(string cpf);
         IEnumerable<Pessoa> GetGerentes();
+        IEnumerable<Pessoa> GetTutores();
     }
 }
