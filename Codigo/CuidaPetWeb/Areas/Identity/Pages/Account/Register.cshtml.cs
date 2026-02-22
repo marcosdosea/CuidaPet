@@ -60,7 +60,7 @@ namespace CuidaPetWeb.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "O campo Nome é obrigatório.")]
             [StringLength(100, ErrorMessage = "O {0} deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 3)]
-            [Display(Name = "Nome Completo")]
+            [Display(Name = "Usuário")]
             public string Nome { get; set; } = null!;
 
             [Required(ErrorMessage = "O campo Telefone é obrigatório.")]

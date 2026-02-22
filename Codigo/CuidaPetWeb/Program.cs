@@ -78,6 +78,7 @@ namespace CuidaPetWeb
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
             }).AddRoles<IdentityRole>()
+            .AddErrorDescriber<IdentityPortuguesErrorDescriber>()
             .AddEntityFrameworkStores<CuidaPetContext>();
 
             var app = builder.Build();
