@@ -1,4 +1,11 @@
 # CuidaPet
+
+<p align="center">
+  <img src="https://i.imgur.com/2fQaY2S.png" alt="Logo CuidaPet" width="200px"/>
+</p>
+
+<p align="center"><em>Cuide dos seus pets da melhor forma!</em></p>
+
 ## Sobre o Projeto
 O CuidaPet é uma solução de software desenvolvida para facilitar o gerenciamento completo da saúde e bem-estar dos animais de estimação. A plataforma visa auxiliar tutores a manter um controle rigoroso sobre a saúde de seus pets, notificando-os sobre informações importantes e facilitando a conexão com serviços veterinários e pet shops regionais. 
 
@@ -7,7 +14,8 @@ O CuidaPet é uma solução de software desenvolvida para facilitar o gerenciame
 - [2. A Solução](#2-a-solução-sparkles)
 - [3. Público Alvo](#3-público-alvo)
 - [4. Links Úteis](#4-links-úteis)
-- [5. Equipe](#5-equipe-busts_in_silhouette)
+- [5. Apresentação CuidaPet](#5-apresentação-cuidapet)
+- [6. Equipe](#6-equipe-busts_in_silhouette)
 
 ## 1. O Problema :warning:
 O Brasil possui mais de 160 milhões de animais de estimação, consolidando um mercado que deve atingir um faturamento de R$77,3 bilhões em 2024. Apesar desses números, muitos tutores enfrentam dificuldades para administrar e acompanhar de perto as necessidades de saúde de seus pets. A gestão informal, através de agendas ou lembretes manuais, frequentemente leva ao esquecimento de vacinas e vermífugos, o que pode resultar em doenças graves e sequelas irreversíveis para os animais.Essa desorganização afeta não apenas a saúde dos pets, mas também a rotina de clínicas veterinárias e pet shops.
