@@ -28,6 +28,7 @@ O projeto é destinado a dois grupos principais:
 
 ## 4. Links Úteis
 - [Documento de Visão CuidaPet](/Gerenciamento/Documento%20de%20Visão.pdf/)
+- [Manual de Uso CuidaPet](/Gerenciamento/Manual%20de%20Uso.pdf/)
 
 ## 5. Apresentação CuidaPet
 
