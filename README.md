@@ -23,7 +23,11 @@ O projeto é destinado a dois grupos principais:
 ## 4. Links Úteis
 - [Documento de Visão CuidaPet](/Gerenciamento/Documento%20de%20Visão.pdf/)
 
-## 5. Equipe :busts_in_silhouette:
+## 5. Apresentação CuidaPet
+
+<video src="Gerenciamento/CuidaPetApresentacao.mp4" controls width="800"></video>
+
+## 6. Equipe :busts_in_silhouette:
 <table align="center">
   <tr>
     <td align="center">
