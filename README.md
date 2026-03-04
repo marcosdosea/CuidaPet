@@ -75,6 +75,15 @@ O projeto é destinado a dois grupos principais:
         </figcapture>
       </a>
     </td>
+    <td align="center" >
+      <a href="https://github.com/Pelezinho19" target="_blank">
+        <img style="border-radius:50%;" src="https://avatars.githubusercontent.com/u/106613838?v=4" target="_blank"  width="100px;" alt="Foto de Arthur Assis no GitHub"/><br>
+        <figcapture>
+          <strong>Arthur Assis</strong>
+          <p>Desenvolvedor</p>
+        </figcapture>
+      </a>
+    </td>
   </tr>
 </table>
 <table align="center">
