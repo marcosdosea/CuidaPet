@@ -25,7 +25,7 @@ O projeto é destinado a dois grupos principais:
 
 ## 5. Apresentação CuidaPet
 
-<video src="Gerenciamento/CuidaPetApresentacao.mp4" controls width="800"></video>
+[![Apresentação CuidaPet](https://img.youtube.com/vi/k_oD3CjtdpE/0.jpg)](https://youtube.com/shorts/k_oD3CjtdpE?feature=share)
 
 ## 6. Equipe :busts_in_silhouette:
 <table align="center">
